@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
+import 'package:toastification/toastification.dart';
 
 void main() async{
   await mainApp();
@@ -37,40 +38,42 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          platform: TargetPlatform.iOS,
-          pageTransitionsTheme: const PageTransitionsTheme(
-            builders: {
-              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-            },
-          ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          elevation: 0.5,
-          titleTextStyle: TextStyle(color: Colors.black),
-        ),
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: Colors.black,
-          selectionColor: Colors.black.withOpacity(0.3),
-          selectionHandleColor: Colors.grey,
-        ),
-      ),
-      home: const SplashScreen(),
-      builder: (context, child) {
-        return MediaQuery(data: MediaQuery.of(context).copyWith(
-            textScaler: const TextScaler.linear(1.0)),
-            child: GestureDetector(
-              onTap: () {
-                WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+    return ToastificationWrapper(
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            platform: TargetPlatform.iOS,
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
-              child: child,
-            ));
-      },
+            ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            elevation: 0.5,
+            titleTextStyle: TextStyle(color: Colors.black),
+          ),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.black,
+            selectionColor: Colors.black.withOpacity(0.3),
+            selectionHandleColor: Colors.grey,
+          ),
+        ),
+        home: const SplashScreen(),
+        builder: (context, child) {
+          return MediaQuery(data: MediaQuery.of(context).copyWith(
+              textScaler: const TextScaler.linear(1.0)),
+              child: GestureDetector(
+                onTap: () {
+                  WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+                },
+                child: child,
+              ));
+        },
+      ),
     );
   }
 }
