@@ -9,7 +9,6 @@ class TextInputWidget extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final String? hintText;
-  final double? minWidth;
   final double? borderRadius;
   final List<TextInputFormatter>? formatter;
   final int? maxLength;
@@ -22,15 +21,13 @@ class TextInputWidget extends StatefulWidget {
   final bool isNotBorder;
   final Color colorBorder;
   final bool isPassword;
-  final bool canEdit;
   final bool postfixIconPath;
-  final bool prefixIconPath;
+  final String? prefixIconPath;
   final bool password;
   final String? label;
   final Function()? onTap;
   final Function()? togglePassword;
   final bool? autoFocus;
-  final bool isWhiteBackGround;
   final bool isSearch;
   final bool isDisableBackGround;
   final FontWeight fontWeight;
@@ -43,7 +40,6 @@ class TextInputWidget extends StatefulWidget {
     this.enable = true,
     this.hintText,
     this.backgroundColor,
-    this.minWidth,
     this.maxLength,
     this.maxLines,
     this.errorInput,
@@ -52,17 +48,15 @@ class TextInputWidget extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.isPassword = false,
     this.password = false,
-    this.canEdit = true,
     this.formatter,
     this.fillColor,
-    this.borderRadius = 6,
+    this.borderRadius = 10,
     this.onTap,
     this.postfixIconPath = false,
     this.label,
-    this.prefixIconPath = false,
+    this.prefixIconPath,
     this.togglePassword,
     this.autoFocus,
-    this.isWhiteBackGround = false,
     this.isSearch = false,
     this.isDisableBackGround = false,
     this.fontWeight = FontWeight.w400,
@@ -94,13 +88,13 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             return Theme(
               data: Theme.of(context).copyWith(splashColor: Colors.transparent),
               child: Container(
-                padding: EdgeInsets.only(left: 5, right: widget.isSearch ? 0 : 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: widget.backgroundColor ?? Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 0)),
                   border: widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
                 ),
-                height: widget.maxLines != null ? 200 : 46,
+                height: widget.maxLines != null ? 200 : 56,
                 child: Padding(
                   padding: widget.isSearch == true ? EdgeInsets.only(left: 16, right: widget.isSearch ? 0 : 5) : EdgeInsets.zero,
                   child: Material(
@@ -113,6 +107,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                       child: Row(
                         children: [
                           widget.isSearch ? SvgPicture.asset("assets/icon/search_icon.svg") : const SizedBox(),
+                          widget.prefixIconPath?.isNotEmpty == true ? SvgPicture.asset(widget.prefixIconPath!, width: 24) : const SizedBox(),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),
@@ -145,7 +140,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                   disabledBorder: InputBorder.none,
                                 ),
                                 maxLines: widget.maxLines ?? 1,
-                                style: TextStyle(fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, color: widget.canEdit ? Colors.black : const Color(0xff1B1A19), fontWeight: widget.fontWeight),
+                                style: TextStyle(fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, color: widget.enable ? Colors.black : const Color(0xff1B1A19), fontWeight: widget.fontWeight),
                               ),
                             ),
                           ),
@@ -162,7 +157,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                 }
                                 setState(() {});
                               },
-                              child: SizedBox(child: SvgPicture.asset('assets/svg/ic_close.svg')),
+                              child: SizedBox(child: SvgPicture.asset('assets/icons/ic_close.svg')),
                             ),
                           ],
                           if (widget.isPassword) ...[
@@ -171,18 +166,13 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                 widget.togglePassword!.call();
                               },
                               child: SvgPicture.asset(
-                                widget.password == true ? 'assets/svg/ic_eye_off.svg' : 'assets/svg/ic_eye.svg',
+                                widget.password == true ? 'assets/icons/ic_eye_off.svg' : 'assets/icons/ic_eye.svg',
                               ),
-                            ),
-                          ],
-                          if (widget.prefixIconPath) ...[
-                            SvgPicture.asset(
-                              'assets/icon/calendar_icon.svg',
                             ),
                           ],
                           if (widget.postfixIconPath) ...[
                             SvgPicture.asset(
-                              'assets/icon/select_down_icon.svg',
+                              'assets/icons/select_down_icon.svg',
                             ),
                           ],
                         ],

@@ -2,6 +2,7 @@ import 'package:rent_house/base/base_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/ui/signin/signin_screen.dart';
 
 class OnboardingController extends BaseController {
   final pageController = PageController();
@@ -16,7 +17,7 @@ class OnboardingController extends BaseController {
 
   void nextPage() {
     if (currentPageIndex.value == 2) {
-      //Get.offAll(page);
+      Get.off(() => const SignInScreen());
     } else {
       int page = currentPageIndex.value + 1;
       pageController.jumpToPage(page);
@@ -30,9 +31,7 @@ class OnboardingController extends BaseController {
     }
   }
 
-  void skipPage() {
-    //Get.offAll();
-  }
+  void skipPage() => Get.off(() => const SignInScreen());
 
   @override
   void dispose() {

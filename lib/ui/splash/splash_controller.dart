@@ -12,6 +12,6 @@ class SplashController extends BaseController{
 
   Future<void> startAnimation() async{
     await Future.delayed(const Duration(seconds: 2));
-    Get.off(const OnboardingScreen());
+    Get.off(() => const OnboardingScreen());
   }
 }
