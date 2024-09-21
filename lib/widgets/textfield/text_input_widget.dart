@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/error_input_model.dart';
+import 'package:rent_house/constants/app_colors.dart';
 
 class TextInputWidget extends StatefulWidget {
   final TextEditingController? controller;
@@ -90,7 +91,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                  color: widget.backgroundColor ?? Colors.white,
+                  color: widget.backgroundColor ?? AppColors.white,
                   borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 0)),
                   border: widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
                 ),
@@ -140,7 +141,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                   disabledBorder: InputBorder.none,
                                 ),
                                 maxLines: widget.maxLines ?? 1,
-                                style: TextStyle(fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, color: widget.enable ? Colors.black : const Color(0xff1B1A19), fontWeight: widget.fontWeight),
+                                style: TextStyle(fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, color: widget.enable ? AppColors.black : const Color(0xFF1B1A19), fontWeight: widget.fontWeight),
                               ),
                             ),
                           ),
@@ -193,7 +194,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                     style: TextStyle(
                       fontFamily: ConstantFont.fontLexendDeca,
                       fontWeight: FontWeight.w400,
-                      color: Colors.red,
+                      color: AppColors.red,
                       fontSize: 11,
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:toastification/toastification.dart';
 
 enum ToastStatus{warning, success, error}
@@ -8,14 +9,14 @@ enum ToastStatus{warning, success, error}
 class ToastUntil {
   static toastNotification(String title, String description, ToastStatus status) {
     //status error
-    Color statusColor = const Color(0xFFF04248);
+    Color statusColor = AppColors.red;
     String iconPath = 'assets/icons/ic_close_circle.svg';
     if(status == ToastStatus.success){
-      statusColor = const Color(0xFF00DF80);
+      statusColor = AppColors.green;
       iconPath = 'assets/icons/ic_checkmark_circle.svg';
     }
     if(status == ToastStatus.warning){
-      statusColor = const Color(0xFFFFD21E);
+      statusColor = AppColors.yellow;
       iconPath = 'assets/icons/ic_alert_circle.svg';
     }
 
