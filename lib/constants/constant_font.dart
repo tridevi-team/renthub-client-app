@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ConstantFont{
+
+  const ConstantFont._();
+
   static String fontLexendDeca = 'Lexend Deca';
   static TextStyle thinText = TextStyle(fontFamily: fontLexendDeca, fontSize: 14, fontWeight: FontWeight.w100, color: Colors.black);
   static TextStyle extraLightText = TextStyle(fontFamily: fontLexendDeca, fontSize: 14, fontWeight: FontWeight.w200, color: Colors.black);
