@@ -1,4 +1,4 @@
-package com.tridevi.rent_house.rent_house;
+package com.tridevi.rent_house;
 
 import io.flutter.embedding.android.FlutterActivity;
 
