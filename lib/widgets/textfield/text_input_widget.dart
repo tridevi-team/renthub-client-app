@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -75,6 +76,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
     _textEditingController = widget.controller ?? TextEditingController();
   }
 
@@ -107,7 +109,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                       },
                       child: Row(
                         children: [
-                          widget.isSearch ? SvgPicture.asset("assets/icon/search_icon.svg") : const SizedBox(),
+                          widget.isSearch ? SvgPicture.asset(AssetSvg.iconSearch) : const SizedBox(),
                           widget.prefixIconPath?.isNotEmpty == true ? SvgPicture.asset(widget.prefixIconPath!, width: 24) : const SizedBox(),
                           Expanded(
                             child: Padding(

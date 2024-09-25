@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
 import 'package:toastification/toastification.dart';
 
@@ -27,6 +28,11 @@ Future<void> mainApp() async{
     provisional: false,
     sound: true,
   );*/
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent
@@ -49,8 +55,10 @@ class MyApp extends StatelessWidget {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
             ),
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true,
+          fontFamily: ConstantFont.fontLexendDeca,
+          brightness: Brightness.light,
+          primaryColorLight: Colors.white,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
             elevation: 0.5,

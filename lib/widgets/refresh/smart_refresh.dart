@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/constant_font.dart';
 
 class SmartRefreshWidget extends StatelessWidget {
   final RefreshController controller;
@@ -29,6 +31,7 @@ class SmartRefreshWidget extends StatelessWidget {
     Widget body = Container();
     return SmartRefresher(
       controller: controller,
+      physics: const ClampingScrollPhysics(),
       header: CustomHeader(
         builder: (context, mode) {
           if (mode == RefreshStatus.canRefresh) {
@@ -91,8 +94,11 @@ class SmartRefreshWidget extends StatelessWidget {
   }
 
   Widget loadCompleted() {
-    return const Center(
-      child: Icon(Icons.check),
+    return Center(
+      child: Text(
+        'Đang tải',
+        style: ConstantFont.mediumText.copyWith(color: AppColors.primary1, fontSize: 12),
+      ),
     );
   }
 }
