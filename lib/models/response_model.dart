@@ -1,13 +1,8 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'generated/response_model.g.dart';
-
-@JsonSerializable(genericArgumentFactories: true)
 class ResponseModel<T> {
-  final bool success;
-  final String code;
-  final String message;
-  final T data;
+  final bool? success;
+  final String? code;
+  final String? message;
+  final T? data;
 
   ResponseModel({
     required this.success,
@@ -16,12 +11,14 @@ class ResponseModel<T> {
     required this.data,
   });
 
-  factory ResponseModel.fromJson(
-      Map<String, dynamic> json,
-      T Function(Object? json) fromJsonT,
-      ) => _$ResponseModelFromJson(json, fromJsonT);
+  factory ResponseModel.fromJson(Map<String, dynamic> json, T Function(dynamic) parseData) {
 
-  Map<String, dynamic> toJson(
-      Object Function(T value) toJsonT,
-      ) => _$ResponseModelToJson(this, toJsonT);
+    return ResponseModel<T>(
+      success: json['success'],
+      code: json['code'],
+      message: json['message'],
+      data: json['data'] != null ? parseData(json['data']) : null,
+    );
+  }
+
 }

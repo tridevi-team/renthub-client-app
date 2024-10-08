@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -12,15 +13,15 @@ class BaseService {
   static const int _timeoutDuration = 20; // Timeout duration in seconds
 
   static Future<http.Response> requestApi({
-      required String endpoint,
-      dynamic params,
-      required HttpMethod httpMethod,
-      required bool auth,
-        Map<String, String>? headers,
-      }) async {
+    required String endpoint,
+    dynamic params,
+    required HttpMethod httpMethod,
+    bool auth = false,
+    Map<String, String>? headers,
+  }) async {
     http.Response? response;
     headers ??= <String, String>{};
-    headers["Content-Type"] = "application/json; charset=utf-8";
+    headers["accept"] = "application/json";
 
     if (auth) {
       String? token = AccessTokenSingleton.instance.token;
@@ -76,6 +77,10 @@ class BaseService {
       if (jsonDecode(response.body)["message"] != null) {
         // Process the message
       }
+    }
+    if (kDebugMode) {
+      log("=============Response===================");
+      print(response.body);
     }
 
     return response;

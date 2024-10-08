@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
-import 'package:rent_house/models/house_data_model.dart';
-import 'package:rent_house/untils/currency_format.dart';
+import 'package:rent_house/models/room_model.dart';
 
-class HomeWidget extends StatelessWidget {
+class RoomWidget extends StatelessWidget {
 
   final void Function()? onTap;
-  final House house;
+  final Room room;
 
-  const HomeWidget({super.key, this.onTap, required this.house});
+  const RoomWidget({super.key, this.onTap, required this.room});
 
 
   @override
@@ -28,7 +27,7 @@ class HomeWidget extends StatelessWidget {
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                   clipBehavior: Clip.hardEdge,
                   child: CachedNetworkImage(
-                    imageUrl: house.thumbnail!,
+                    imageUrl: room.images?[0] ?? '',
                     width: Get.width / 4,
                     height: 3 * Get.width / 8,
                     fit: BoxFit.cover,
@@ -47,31 +46,28 @@ class HomeWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(house.name ?? '', style: ConstantFont.semiBoldText),
-                const SizedBox(height: 8),
-                  Text(
-                      '${CurrencyFormat.roundToMillion(house.minPrice!)} - ${CurrencyFormat.roundToMillion(house.maxPrice!)} triệu',
-                      style: ConstantFont.mediumText
-                          .copyWith(fontSize: 16, color: AppColors.primary1)),
-                  const SizedBox(height: 2),
-                /*Text.rich(
-                    style: ConstantFont.lightText.copyWith(fontSize: 12),
-                    const TextSpan(
-                      text: '47 m',
-                      children: [
+                  Text(room.name ?? '', style: ConstantFont.semiBoldText),
+                  const SizedBox(height: 8),
+
+                  Text.rich(
+                    style: ConstantFont.lightText.copyWith(fontSize: 16, color: AppColors.primary1),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    TextSpan(
+                      text: '${room.price}',
+                      children: const [
                         TextSpan(
-                          text: '2',
+                          text: 'đ',
                           style: TextStyle(fontSize: 12, fontFeatures: [FontFeature.superscripts()]),
                         ),
                       ],
                     ),
-                  ),*/
-                const SizedBox(height: 2),
-                Text(
-                    '${house.address?.street}, ${house.address?.ward}, ${house.address?.district}, ${house.address?.city}',
-                    maxLines: 3,
-                    style: ConstantFont.lightText.copyWith(fontSize: 12)),
-              ],),
+                  ),
+                  const SizedBox(height: 2),
+                  Text('tối đa: ${room.maxRenters}',
+                      maxLines: 3,
+                      style: ConstantFont.lightText.copyWith(fontSize: 12)),
+                ],),
             )
           ],
         ),

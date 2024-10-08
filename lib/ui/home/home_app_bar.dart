@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/notification/notification_screen.dart';
-import 'package:rent_house/widgets/badge/badge_widget.dart';
 
 class HomeAppBar extends AppBar {
   HomeAppBar({super.key})
@@ -51,7 +51,7 @@ class HomeAppBar extends AppBar {
                     onTap: () {
                       Get.to(() => const NotificationScreen());
                     },
-                    child: BadgeWidget(
+                    child: Badge(
                         child: SvgPicture.asset(
                       AssetSvg.iconNotification,
                       height: 28,

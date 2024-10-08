@@ -1,13 +1,8 @@
-import 'package:json_annotation/json_annotation.dart';
-
-part 'generated/address_model.g.dart';
-
-@JsonSerializable()
 class Address {
-  final String city;
-  final String district;
-  final String ward;
-  final String street;
+  String? city;
+  String? district;
+  String? ward;
+  String? street;
 
   Address({
     required this.city,
@@ -16,6 +11,12 @@ class Address {
     required this.street,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) => _$AddressFromJson(json);
-  Map<String, dynamic> toJson() => _$AddressToJson(this);
+  factory Address.fromJson(Map<String, dynamic> json) {
+    return Address(
+      city: json['city'] ?? '',
+      district: json['district'] ?? '',
+      ward: json['ward'] ?? '',
+      street: json['street'] ?? '',
+    );
+  }
 }

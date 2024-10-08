@@ -7,75 +7,97 @@ import 'package:rent_house/constants/constant_font.dart';
 class SmartRefreshWidget extends StatelessWidget {
   final RefreshController controller;
   final bool showLoadCompleted;
-  final Widget? widget;
+  final Widget? child;
   final bool enablePullUp;
   final bool enablePullDown;
   final ScrollController scrollController;
   final Axis? scrollDirection;
-  final Function()? onLoading;
-  final Function()? onRefresh;
+  final VoidCallback? onLoadingMore;
+  final VoidCallback? onRefresh;
 
-  const SmartRefreshWidget({super.key,
+  const SmartRefreshWidget({
+    super.key,
     required this.controller,
-    this.widget,
+    this.child,
     this.showLoadCompleted = true,
     this.enablePullUp = true,
     this.enablePullDown = true,
     required this.scrollController,
     this.scrollDirection,
-    this.onLoading,
-    this.onRefresh});
+    this.onLoadingMore,
+    this.onRefresh,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Widget body = Container();
     return SmartRefresher(
       controller: controller,
       physics: const ClampingScrollPhysics(),
       header: CustomHeader(
         builder: (context, mode) {
-          if (mode == RefreshStatus.canRefresh) {
-            body = buildReleaseToReLoad();
+          Widget headerWidget;
+
+          switch (mode) {
+            case RefreshStatus.canRefresh:
+              headerWidget = buildRefreshingIndicator();
+              break;
+            case RefreshStatus.refreshing:
+              headerWidget = buildRefreshingIndicator();
+              break;
+            case RefreshStatus.completed:
+              headerWidget = loadCompleted();
+              break;
+            default:
+              headerWidget = const SizedBox.shrink();
+              break;
           }
-          if (mode == RefreshStatus.refreshing) {
-            body = buildRefreshing();
-          }
-          if (mode == RefreshStatus.completed) {
-            body = loadCompleted();
-          }
-          return Padding(padding: const EdgeInsets.all(10), child: body);
+
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: headerWidget,
+          );
         },
       ),
       footer: CustomFooter(
         builder: (context, mode) {
-          Widget body = Container();
-          if (mode == LoadStatus.idle || mode == LoadStatus.noMore) {
-            body = const SizedBox.shrink();
+          Widget footerWidget;
+
+          switch (mode) {
+            case LoadStatus.idle:
+            case LoadStatus.noMore:
+              footerWidget = const SizedBox.shrink();
+              break;
+            case LoadStatus.loading:
+              footerWidget = buildRefreshingIndicator();
+              break;
+            case LoadStatus.canLoading:
+              footerWidget = buildReleaseToLoadMore();
+              break;
+            default:
+              footerWidget = const SizedBox.shrink();
+              break;
           }
-          if (mode == LoadStatus.loading) {
-            body = buildRefreshing();
+
+          if (showLoadCompleted) {
+            footerWidget = loadCompleted();
           }
-          if (mode == LoadStatus.canLoading) {
-            body = buildReleaseToLoadMore();
-          }
-          if (showLoadCompleted == true) {
-            body = loadCompleted();
-          }
+
           return Padding(
             padding: const EdgeInsets.all(10),
-            child: body,
+            child: footerWidget,
           );
         },
       ),
       enablePullUp: enablePullUp,
       enablePullDown: enablePullDown,
-      onLoading: onLoading,
+      onLoading: onLoadingMore,
       onRefresh: onRefresh,
-      child: widget,
+      scrollController: scrollController,
+      child: child ?? const SizedBox.shrink(),
     );
   }
 
-  Widget buildReleaseToReLoad() {
+  Widget buildReleaseToRefresh() {
     return const Center(
       child: Icon(Icons.refresh),
     );
@@ -87,7 +109,7 @@ class SmartRefreshWidget extends StatelessWidget {
     );
   }
 
-  Widget buildRefreshing() {
+  Widget buildRefreshingIndicator() {
     return const Center(
       child: CupertinoActivityIndicator(),
     );
@@ -97,7 +119,10 @@ class SmartRefreshWidget extends StatelessWidget {
     return Center(
       child: Text(
         'Đang tải',
-        style: ConstantFont.mediumText.copyWith(color: AppColors.primary1, fontSize: 12),
+        style: ConstantFont.mediumText.copyWith(
+          color: AppColors.primary1,
+          fontSize: 12,
+        ),
       ),
     );
   }

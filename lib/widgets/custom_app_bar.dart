@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
@@ -8,8 +9,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
   final bool noti;
   final double? elevationDouble;
   final Function? onTap;
+  final Function? onTapShare;
+  final bool isShared;
 
-  const CustomAppBar({super.key, required this.label, this.noti = false, this.elevationDouble, this.onTap});
+  const CustomAppBar({super.key, this.label = "", this.noti = false, this.elevationDouble, this.onTap, this.onTapShare, this.isShared = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +22,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
         elevation: elevationDouble ?? 10,
         centerTitle: true,
         actions: [
-          if (noti) ...[
+          if (noti)
             MaterialButton(
               onPressed: onTap?.call(),
-              child: SvgPicture.asset('assets/icon/ic_noti.svg'),
+              child: SvgPicture.asset(AssetSvg.iconNotification),
+            ),
+          if (isShared)
+            MaterialButton(
+              onPressed: onTapShare?.call(),
+              child: SvgPicture.asset(AssetSvg.iconShare),
             )
-          ]
         ],
         leading: InkWell(
           onTap: Get.back,

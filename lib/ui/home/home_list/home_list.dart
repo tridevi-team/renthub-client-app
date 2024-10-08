@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/ui/home/home_widget/home_widget.dart';
+import 'package:rent_house/ui/home/house_detail/house_detail_screen.dart';
+import 'package:rent_house/widgets/divider/divider_custom.dart';
 
 class HomeList extends StatelessWidget {
-  const HomeList({super.key});
+  const HomeList({super.key, this.houseList});
+
+  final List<House>? houseList;
 
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-      sliver: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Danh sách phòng', style: ConstantFont.boldText.copyWith(fontSize: 16)),
-          const SizedBox(width: 20),
-            SliverList.builder(itemBuilder: (context, index) {
-              return const HomeWidget();
-            }, addAutomaticKeepAlives: false, itemCount: 6,),
-        ],
-      ),
+      sliver: houseList != null && houseList!.isNotEmpty
+          ? SliverList(
+              delegate: SliverChildBuilderDelegate(
+                addAutomaticKeepAlives: false,
+                (BuildContext context, int index) {
+                  return DividerCustom(
+                    child: HomeWidget(
+                        onTap: () {
+                          Get.to(() => HouseDetailScreen(),
+                              arguments: {'houseId': houseList![index].id});
+                        },
+                        house: houseList![index]),
+                  );
+                },
+                childCount: houseList!.length,
+              ),
+            )
+          : const SliverToBoxAdapter(child: SizedBox.shrink()),
     );
   }
 }

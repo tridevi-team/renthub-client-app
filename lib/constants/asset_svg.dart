@@ -7,4 +7,10 @@ class AssetSvg {
   static const String iconChat = "assets/icons/ic_chat.svg";
   static const String iconChart = "assets/icons/ic_chart.svg";
   static const String iconSearch = "assets/icons/ic_search.svg";
+  static const String iconShare = "assets/icons/ic_share_social.svg";
+  static const String iconLocation = "assets/icons/ic_location.svg";
+  static const String iconCall = "assets/icons/ic_call.svg";
+  static const String iconFilter = "assets/icons/ic_funnel.svg";
+  static const String iconChevronDown = "assets/icons/ic_chevron_down.svg";
+  static const String iconChevronUp = "assets/icons/ic_chevron_up.svg";
 }
