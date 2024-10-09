@@ -24,6 +24,7 @@ class BaseService {
     headers["accept"] = "application/json";
 
     if (auth) {
+      AccessTokenSingleton.instance.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIyMjA3ODc2LWEzYmEtNDI3ZC04ODBlLTFjZGQ0YjIzMTQwNCIsImVtYWlsIjoiZXhhbXBsZUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRicFl3TEF5ektMaUJhRXRyRkRNc3AuQ0pTandQS0N5SURySTFrR3UyN1pzRUl4SW1GenNCVyIsInJvbGUiOiJ1c2VyIiwic3RhdHVzIjoxLCJpYXQiOjE3Mjc3OTMwNDMsImV4cCI6MTcyNzc5NjY0M30.qigGo7all_D4Yly8vqeXqSm3ESeo2S3E63ZrilNC9JA';
       String? token = AccessTokenSingleton.instance.token;
       headers["Authorization"] = "Bearer $token";
       if (kDebugMode) {

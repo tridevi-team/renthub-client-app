@@ -7,6 +7,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/home_app_bar.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/untils/bottom_sheet_until.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 
 import '../../../base/base_controller.dart';
@@ -46,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                                   title: Row(
                                     children: [
                                       _buildFilterOption(
-                                        title: "Xếp theo",
+                                        title: "Lọc theo",
                                         index: 0,
                                         icon: AssetSvg.iconChevronDown,
                                         controller: homeController,
@@ -57,8 +58,19 @@ class HomeScreen extends StatelessWidget {
                                         color: AppColors.neutral9E9E9E,
                                       ),
                                       _buildFilterOption(
-                                        title: "Bộ lọc",
+                                        title: "Xếp theo",
                                         index: 1,
+                                        icon: AssetSvg.iconTrendingDown,
+                                        icon2: AssetSvg.iconTrendingUp,
+                                        controller: homeController,
+                                      ),
+                                      Container(
+                                        width: 1,
+                                        height: 28,
+                                        color: AppColors.neutral9E9E9E,
+                                      ),
+                                      _buildFilterOption(
+                                        index: 2,
                                         icon: AssetSvg.iconFilter,
                                         controller: homeController,
                                       ),
@@ -97,7 +109,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildFilterOption({
-    required String title,
+    String? title,
+    String? icon2,
     required int index,
     required String icon,
     required HomeController controller,
@@ -105,29 +118,31 @@ class HomeScreen extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: () {
-          controller.filterSelected.value = index;
+          controller.onFilterSelected(index);
         },
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              title,
-              style: ConstantFont.regularText.copyWith(
-                color: controller.filterSelected.value == index
-                    ? AppColors.primary1
-                    : AppColors.black,
+            if (title != null)...[
+              Text(
+                title,
+                style: ConstantFont.regularText.copyWith(
+                  color: controller.filterSelected.value == index
+                      ? AppColors.primary1
+                      : AppColors.black,
+                ),
               ),
-            ),
+            ],
             const SizedBox(width: 4),
             SvgPicture.asset(
-              icon,
+              icon2 != null && controller.orderBy.value == 'asc' ? icon2 : icon,
               width: 18,
               color: controller.filterSelected.value == index
                   ? AppColors.primary1
                   : AppColors.black,
-            ),
+            )
           ],
         ),
       ),

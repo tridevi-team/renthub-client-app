@@ -3,11 +3,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/state_manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/asset_svg.dart';
+import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/response_model.dart';
@@ -32,13 +37,23 @@ class HomeController extends BaseController {
   ];
 
   List<House> houseList = [];
-  int page = 1;
+  int currentPage = 1;
 
   //filter
   RxBool showFilters = true.obs;
   RxInt filterSelected = 0.obs;
   double previousOffset = 0.0;
   double threshold = 20.0;
+  List<String> sorts = ["name", "numOfBeds", "numOfRenters", "roomArea", "price"];
+  int sortBySelected = 0;
+
+  RxString orderBy = "asc".obs;
+  String searchKeyword = "";
+  int? numOfBeds;
+  int? numOfRenters;
+  int? roomArea;
+  int? priceFrom;
+  int? priceTo;
 
   @override
   void onInit() {
@@ -72,17 +87,41 @@ class HomeController extends BaseController {
     });
   }
 
-  Future<void> fetchHouseList ({bool isLoadMore = false}) async {
+  Future<void> fetchHouseList(
+      {bool isLoadMore = false,
+      int? numOfBeds,
+      String? street,
+      String? ward,
+      String? district,
+      String? city,
+      int? numOfRenters,
+      int? roomArea,
+      int? priceFrom,
+      int? priceTo,
+      int limit = 10,
+      int page = 1}) async {
     try {
       viewState.value = ViewState.init;
       if (isLoadMore) {
-        page++;
+        currentPage++;
       } else {
         viewState.value = ViewState.loading;
-        page = 1;
+        currentPage = 1;
       }
-      final response = await HomeService.fetchHouseList(page: page, limit: 10);
-      if (response.statusCode!= 200) {
+      Map<String, dynamic> queryParams = {
+        'limit': limit.toString(),
+        'page': currentPage.toString(),
+        'sortBy': sorts[sortBySelected],
+        'orderBy': orderBy.value,
+        'keyword': searchKeyword,
+        if (numOfBeds != null) 'numOfBeds': numOfBeds,
+        if (numOfRenters != null) 'numOfRenters': numOfRenters,
+        if (roomArea != null) 'roomArea': roomArea,
+        if (priceFrom != null) 'priceFrom': priceFrom,
+        if (priceTo != null) 'priceTo': priceTo,
+      };
+      final response = await HomeService.fetchHouseList(queryParams);
+      if (response.statusCode != 200) {
         viewState.value = ViewState.error;
         log("Failed to fetch house list, status code: ${response.statusCode}");
         return;
@@ -99,7 +138,7 @@ class HomeController extends BaseController {
       } else {
         refreshController.loadNoData();
       }
-    } catch(e) {
+    } catch (e) {
       viewState.value = ViewState.error;
       refreshController.loadNoData();
       log("Error fetch: $e");
@@ -114,4 +153,90 @@ class HomeController extends BaseController {
     await fetchHouseList();
     refreshController.requestRefresh();
   }
+
+  void onFilterSelected(int index) {
+    filterSelected.value = index;
+    if (index == 0) {
+      showBottomSheetTypeSort();
+    }
+    if (index == 1) {
+      orderBy.value = (orderBy.value == "asc") ? "desc" : "asc";
+      fetchHouseList();
+    }
+    if (index == 2) {
+      showBottomSheetTypeSort();
+    }
+  }
+
+  Future<void> showBottomSheetTypeSort() async {
+    await Get.bottomSheet(
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      Container(
+        height: Get.height / 1.5,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Sắp xếp theo',
+                    style: ConstantFont.regularText.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: Get.back,
+                      child: SvgPicture.asset(AssetSvg.iconClose))
+                ]),
+            const SizedBox(height: 10),
+            const Divider(height: 1, color: AppColors.neutralF5F5F5),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(AssetSvg.iconRadioOff),
+                const SizedBox(width: 4),
+                const Text("Tên")
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(AssetSvg.iconRadioOff),
+                const Text("Tên")
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(AssetSvg.iconRadioOff),
+                const Text("Tên")
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(AssetSvg.iconRadioOff),
+                const Text("Tên")
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SvgPicture.asset(AssetSvg.iconRadioOff),
+                const Text("Tên")
+              ],
+            )
+
+          ],
+        ),
+      ),
+    );
+  }
+
 }
