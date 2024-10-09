@@ -18,13 +18,12 @@ import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';
+import 'package:rent_house/widgets/ratio/radio_option.dart';
 
 class HomeController extends BaseController {
-
   //controller
   RefreshController refreshController = RefreshController();
   ScrollController scrollController = ScrollController();
-
 
   //widgets
   RxList<Widget> widgets = <Widget>[].obs;
@@ -145,11 +144,11 @@ class HomeController extends BaseController {
     }
   }
 
-  void onLoadMoreHouse() async{
-   await fetchHouseList(isLoadMore: true);
+  void onLoadMoreHouse() async {
+    await fetchHouseList(isLoadMore: true);
   }
 
-  void onRefreshData() async{
+  void onRefreshData() async {
     await fetchHouseList();
     refreshController.requestRefresh();
   }
@@ -168,6 +167,12 @@ class HomeController extends BaseController {
     }
   }
 
+  void onSortBySelected(int index) {
+    sortBySelected = index;
+    Get.back();
+    fetchHouseList();
+  }
+
   Future<void> showBottomSheetTypeSort() async {
     await Get.bottomSheet(
       backgroundColor: AppColors.white,
@@ -175,68 +180,50 @@ class HomeController extends BaseController {
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       Container(
-        height: Get.height / 1.5,
+        height: Get.height / 3,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Sắp xếp theo',
-                    style: ConstantFont.regularText.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: Get.back,
-                      child: SvgPicture.asset(AssetSvg.iconClose))
-                ]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text(
+                'Sắp xếp theo',
+                style: ConstantFont.regularText.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              GestureDetector(onTap: Get.back, child: SvgPicture.asset(AssetSvg.iconClose))
+            ]),
             const SizedBox(height: 10),
             const Divider(height: 1, color: AppColors.neutralF5F5F5),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(AssetSvg.iconRadioOff),
-                const SizedBox(width: 4),
-                const Text("Tên")
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(AssetSvg.iconRadioOff),
-                const Text("Tên")
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(AssetSvg.iconRadioOff),
-                const Text("Tên")
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(AssetSvg.iconRadioOff),
-                const Text("Tên")
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SvgPicture.asset(AssetSvg.iconRadioOff),
-                const Text("Tên")
-              ],
-            )
-
+            RadioOption(
+                label: "Tên",
+                isSelected: 0 == sortBySelected,
+                onSelected: () => onSortBySelected(0)),
+            const SizedBox(height: 10),
+            RadioOption(
+                label: "Số phòng ngủ",
+                isSelected: 1 == sortBySelected,
+                onSelected: () => onSortBySelected(1)),
+            const SizedBox(height: 10),
+            RadioOption(
+                label: "Số người 1 phòng",
+                isSelected: 2 == sortBySelected,
+                onSelected: () => onSortBySelected(2)),
+            const SizedBox(height: 10),
+            RadioOption(
+                label: "Diện tích",
+                isSelected: 3 == sortBySelected,
+                onSelected: () => onSortBySelected(3)),
+            const SizedBox(height: 10),
+            RadioOption(
+                label: "Giá",
+                isSelected: 4 == sortBySelected,
+                onSelected: () => onSortBySelected(4)),
           ],
         ),
       ),
     );
   }
-
 }
