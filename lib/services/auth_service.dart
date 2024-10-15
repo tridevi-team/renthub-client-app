@@ -1,15 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_service.dart';
 
 class AuthService{
   static Future<http.Response> loginWithPassword(Map<String, dynamic> data){
-    String endpoint = '';
+    String endpoint = '/auth/login';
     return BaseService.requestApi(endpoint: endpoint, params: data,
         httpMethod: HttpMethod.post);
   }
-
-  /*TODO
-  static Future<http.Response> loginWithGoogleToken(token) async {}*/
 
   static Future<http.Response> signUp(Map<String, dynamic> data) async {
     String endpoint = '';

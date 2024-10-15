@@ -17,7 +17,7 @@ class OnboardingController extends BaseController {
 
   void nextPage() {
     if (currentPageIndex.value == 2) {
-      Get.off(() => const SignInScreen());
+      Get.off(() => SignInScreen());
     } else {
       int page = currentPageIndex.value + 1;
       pageController.jumpToPage(page);
@@ -31,7 +31,7 @@ class OnboardingController extends BaseController {
     }
   }
 
-  void skipPage() => Get.off(() => const SignInScreen());
+  void skipPage() => Get.off(() => SignInScreen());
 
   @override
   void dispose() {

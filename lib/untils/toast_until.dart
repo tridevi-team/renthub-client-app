@@ -10,7 +10,7 @@ class ToastUntil {
   static toastNotification(String title, String description, ToastStatus status) {
     //status error
     Color statusColor = AppColors.red;
-    String iconPath = 'assets/icons/ic_close_circle.svg';
+    String iconPath = 'assets/icons/ic_close.svg';
     if(status == ToastStatus.success){
       statusColor = AppColors.green;
       iconPath = 'assets/icons/ic_checkmark_circle.svg';

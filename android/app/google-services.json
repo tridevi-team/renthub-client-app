@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "914117044001",
+    "project_id": "renthub-77ad2",
+    "storage_bucket": "renthub-77ad2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914117044001:android:81d0253b7281693a4f0060",
+        "android_client_info": {
+          "package_name": "com.tridevi.rent_house"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914117044001-2r38iv10oqllfsqj6m29pel99e0e3ch5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tridevi.rent_house",
+            "certificate_hash": "94cd66c9377599e1cf807e5e95fa3b15f6acfccd"
+          }
+        },
+        {
+          "client_id": "914117044001-ek7bbbv20i4ubfl1e31hl0c127usnrk5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7k1_AkO2KHcfEL41U8c82pg-65NQxpAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914117044001-ek7bbbv20i4ubfl1e31hl0c127usnrk5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

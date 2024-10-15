@@ -3,17 +3,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/access_token_singleton.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
+import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:toastification/toastification.dart';
 
-void main() async{
+void main() async {
   await mainApp();
 }
 
-Future<void> mainApp() async{
+Future<void> mainApp() async {
   WidgetsFlutterBinding.ensureInitialized();
-  /*Firebase.initializeApp();
+  await Firebase.initializeApp();
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -27,16 +30,17 @@ Future<void> mainApp() async{
     criticalAlert: false,
     provisional: false,
     sound: true,
-  );*/
+  );
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
+  await SharedPrefHelper().init();
   runApp(const MyApp());
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent
-  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -48,13 +52,13 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            platform: TargetPlatform.iOS,
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              },
-            ),
+          platform: TargetPlatform.iOS,
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            },
+          ),
           useMaterial3: true,
           fontFamily: ConstantFont.fontLexendDeca,
           brightness: Brightness.light,
@@ -72,8 +76,8 @@ class MyApp extends StatelessWidget {
         ),
         home: const SplashScreen(),
         builder: (context, child) {
-          return MediaQuery(data: MediaQuery.of(context).copyWith(
-              textScaler: const TextScaler.linear(1.0)),
+          return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
               child: GestureDetector(
                 onTap: () {
                   WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
