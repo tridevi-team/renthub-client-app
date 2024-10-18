@@ -63,14 +63,14 @@ class BaseService {
           break;
       }
     } on SocketException {
-      response = http.Response('Không có kết nối internet...', 522);
+      response = http.Response("No internet connection", 522);
     } on TimeoutException {
-      response = http.Response('Yêu cầu đã hết thời gian chờ...', 408);
+      response = http.Response("Request timed out", 408);
     } catch (e) {
       debugPrint("======= Lỗi try catch api =====");
       debugPrint("ERROR: $e");
       debugPrint("===============================");
-      response = http.Response('Có lỗi xảy ra...', 0000);
+      response = http.Response('Something went wrong', 1000);
     }
 
     if (response.statusCode == 401) {
