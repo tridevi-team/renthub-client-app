@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:rent_house/constants/access_token_singleton.dart';
+import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
 
 enum HttpMethod { get, post, put, delete, patch }
@@ -25,7 +25,7 @@ class BaseService {
     headers["Content-Type"] = "application/json";
 
     if (auth) {
-      String? token = AccessTokenSingleton.instance.token;
+      String? token = TokenSingleton.instance.accessToken;
       headers["Authorization"] = "Bearer $token";
       if (kDebugMode) {
         print('Token: $token');

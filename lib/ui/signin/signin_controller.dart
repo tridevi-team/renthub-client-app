@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rent_house/base/base_controller.dart';
-import 'package:rent_house/constants/access_token_singleton.dart';
 import 'package:rent_house/constants/constant_string.dart';
+import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
@@ -61,7 +61,7 @@ class SignInController extends BaseController {
         idToken: googleAuth.idToken,
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
-      AccessTokenSingleton.instance.setToken(googleAuth.idToken!);
+      TokenSingleton.instance.setAccessToken(googleAuth.idToken!);
       moveToNextPage();
     } on FirebaseAuthException catch (e) {
       print('Error during Firebase sign-in: $e');
@@ -119,7 +119,7 @@ class SignInController extends BaseController {
     final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
     ResponseModel<UserModel> model = ResponseModel.fromJson(decodedResponse, parseData: (data) => UserModel.fromJson(data));
     if (model.success == true) {
-      String accessToken = model.data?.token ?? "";
+      String accessToken = model.data?.accessToken ?? "";
       saveToken(accessToken);
       moveToNextPage();
     } else {
@@ -166,7 +166,7 @@ class SignInController extends BaseController {
 
 
   void saveToken(String accessToken) {
-    AccessTokenSingleton.instance.setToken(accessToken);
+    TokenSingleton.instance.setAccessToken(accessToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefToken, accessToken);
   }
 
