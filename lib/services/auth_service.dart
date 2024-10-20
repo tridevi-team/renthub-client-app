@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_service.dart';
 
 class AuthService{
-  static Future<http.Response> loginWithEmail(Map<String, dynamic> data){
+  static Future<http.Response> generateOTPByEmail(Map<String, dynamic> data){
     String endpoint = '/renters/login';
     return BaseService.requestApi(endpoint: endpoint, params: data,
         httpMethod: HttpMethod.post);
@@ -22,8 +22,8 @@ class AuthService{
         httpMethod: HttpMethod.post);
   }
 
-  static Future<http.Response> verifyEmailPByOTP(Map<String, dynamic> data) async {
-    String endpoint = 'renters/verifyAccount';
+  static Future<http.Response> verifyEmailByOTP(Map<String, dynamic> data) async {
+    String endpoint = 'renters/verify';
     return BaseService.requestApi(endpoint: endpoint, params: data,
         httpMethod: HttpMethod.post);
   }

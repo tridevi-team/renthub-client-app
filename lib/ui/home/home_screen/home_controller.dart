@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/state_manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -110,16 +107,16 @@ class HomeController extends BaseController {
       Map<String, dynamic> queryParams = {
         'limit': limit.toString(),
         'page': currentPage.toString(),
-        'sortBy': sorts[sortBySelected],
-        'orderBy': orderBy.value,
+        'houses.sortBy': sorts[sortBySelected],
+        'houses.orderBy': orderBy.value,
         'keyword': searchKeyword,
-        if (numOfBeds != null) 'numOfBeds': numOfBeds,
-        if (numOfRenters != null) 'numOfRenters': numOfRenters,
-        if (roomArea != null) 'roomArea': roomArea,
-        if (priceFrom != null) 'priceFrom': priceFrom,
-        if (priceTo != null) 'priceTo': priceTo,
+        if (numOfBeds != null) 'houses.numOfBeds': numOfBeds,
+        if (numOfRenters != null) 'houses.numOfRenters': numOfRenters,
+        if (roomArea != null) 'houses.roomArea': roomArea,
+        if (priceFrom != null) 'houses.priceFrom': priceFrom,
+        if (priceTo != null) 'houses.priceTo': priceTo,
       };
-      final response = await HomeService.fetchHouseList(queryParams);
+      final response = await HomeService.fetchHouseList(queryParams, []);
       if (response.statusCode != 200) {
         viewState.value = ViewState.error;
         log("Failed to fetch house list, status code: ${response.statusCode}");

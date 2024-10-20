@@ -33,7 +33,10 @@ class TextInputWidget extends StatefulWidget {
   final bool isSearch;
   final bool isDisableBackGround;
   final FontWeight fontWeight;
-  final Function(String)? onFieldSubmitted;
+  final bool sendOTP;
+  final bool isSendOTP;
+  final Function(String?)? onFieldSubmitted;
+  final void Function()? onSendOTP;
 
   const TextInputWidget({
     super.key,
@@ -62,7 +65,7 @@ class TextInputWidget extends StatefulWidget {
     this.isSearch = false,
     this.isDisableBackGround = false,
     this.fontWeight = FontWeight.w400,
-    this.onFieldSubmitted,
+    this.onFieldSubmitted, this.sendOTP = false, this.isSendOTP = false, this.onSendOTP,
   });
 
   @override
@@ -178,6 +181,25 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                               'assets/icons/select_down_icon.svg',
                             ),
                           ],
+                          if (widget.sendOTP) ...[
+                            GestureDetector(
+                              onTap: widget.onSendOTP,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4),
+                                child: Container(
+                                  width: Get.width / 4,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: widget.isSendOTP ? AppColors.neutral9E9E9E : AppColors.primary1,
+                                    borderRadius: BorderRadius.circular(6)
+                                  ),
+                                  child: Text(widget.isSendOTP ? 'Đã gửi' : 'Gửi mã xác nhận', style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 12),
+                                  textAlign: TextAlign.center,),
+                                ),
+                              ),
+                            )
+                          ]
                         ],
                       ),
                     ),

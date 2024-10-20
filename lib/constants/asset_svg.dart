@@ -18,4 +18,6 @@ class AssetSvg {
   static const String iconRadioOn = "assets/icons/ic_radio_on.svg";
   static const String iconTrendingDown = "assets/icons/ic_trending_down.svg";
   static const String iconTrendingUp = "assets/icons/ic_trending_up.svg";
+  static const String iconMail = "assets/icons/ic_mail.svg";
+  static const String iconPassword = "assets/icons/ic_password.svg";
 }

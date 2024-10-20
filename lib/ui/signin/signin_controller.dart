@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -14,21 +12,24 @@ import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
+import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/untils/validate_util.dart';
 
 class SignInController extends BaseController {
   TextEditingController emailEditingController = TextEditingController();
   Rx<ErrorInputModel> emailErrorInputObject = ErrorInputModel().obs;
 
-  TextEditingController passwordEditingController = TextEditingController();
-  Rx<ErrorInputModel> passwordErrorInputObject = ErrorInputModel().obs;
-  RxBool hidePassword = true.obs;
+  TextEditingController otpEditingController = TextEditingController();
+  Rx<ErrorInputModel> otpErrorInputObject = ErrorInputModel().obs;
+
+  RxBool isSendOTP = false.obs;
 
   @override
   void onInit() {
     emailEditingController.text = "example@gmail.com";
-    passwordEditingController.text = "123456Aa";
+    otpEditingController.text = "000000";
     super.onInit();
     validateGoogleToken();
   }
@@ -59,7 +60,6 @@ class SignInController extends BaseController {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
       await FirebaseAuth.instance.signInWithCredential(credential);
       AccessTokenSingleton.instance.setToken(googleAuth.idToken!);
       moveToNextPage();
@@ -71,13 +71,8 @@ class SignInController extends BaseController {
   }
 
   Future<void> validateGoogleToken() async {
-    final googleAuth = await _authenticateWithGoogle();
-    if (googleAuth == null || googleAuth.idToken == null) {
-      return;
-    }
-
-    String token = googleAuth.idToken!;
-    if (JwtDecoder.isExpired(token)) {
+    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    if (token != null && JwtDecoder.isExpired(token)) {
       saveToken(token);
       moveToNextPage();
       return;
@@ -86,23 +81,89 @@ class SignInController extends BaseController {
     return;
   }
 
-  Future<void> loginWithPassword() async {
+  Future<void> generateOTPByEmail() async {
+    isSendOTP.value = true;
     final email = emailEditingController.text.trim();
-    final password = passwordEditingController.text.trim();
+    final response = await AuthService.generateOTPByEmail({"email": email});
 
-    final response = await AuthService.loginWithPassword({"username": email, "password": password});
+    final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+
+    if (errorMessage != null) {
+      ToastUntil.toastNotification('Có lỗi xảy ra', errorMessage, ToastStatus.error);
+      return;
+    }
+
     final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-    ResponseModel<UserModel> model =
-        ResponseModel.fromJson(decodedResponse, (data) => UserModel.fromJson(data));
+    ResponseModel model = ResponseModel.fromJson(decodedResponse);
+    if (model.success == true) {
 
-    if (model.success ?? false) {
+    } else {
+      ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
+    }
+  }
+
+  Future<void> signInWithEmail() async {
+    if (emailErrorInputObject.value.isError == true || otpErrorInputObject.value.isError == true) {
+      return;
+    }
+    final email = emailEditingController.text.trim();
+    final response = await AuthService.generateOTPByEmail({"email": email});
+
+    final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+
+    if (errorMessage != null) {
+      ToastUntil.toastNotification('Có lỗi xảy ra', errorMessage, ToastStatus.error);
+      return;
+    }
+
+    final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+    ResponseModel<UserModel> model = ResponseModel.fromJson(decodedResponse, parseData: (data) => UserModel.fromJson(data));
+    if (model.success == true) {
       String accessToken = model.data?.token ?? "";
       saveToken(accessToken);
       moveToNextPage();
     } else {
-      ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? '', ToastStatus.error);
+      ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
     }
   }
+
+  void onChangeSignInEmail(String value) {
+    if (value.isEmpty) {
+      emailErrorInputObject.value.isError = true;
+      emailErrorInputObject.value.message = "Đây là trường bắt buộc";
+    } else {
+      bool isValidEmail = false;
+      if (ValidateUtil.isValidEmail(value)) {
+        isValidEmail = true;
+      }
+      if (isValidEmail) {
+        emailErrorInputObject.value.isError = false;
+      } else {
+        emailErrorInputObject.value.isError = true;
+        emailErrorInputObject.value.message = "Dữ liệu nhập vào của bạn không đúng định dạng, vui lòng kiểm tra lại";
+      }
+    }
+  }
+
+  void onChangeOTP(String value) {
+    if (value.isEmpty) {
+      otpErrorInputObject.value.isError = true;
+      otpErrorInputObject.value.message = "Đây là trường bắt buộc";
+    } else {
+      bool isValidOTP = false;
+      if (ValidateUtil.isValidOTP(value)) {
+        isValidOTP = true;
+      }
+      if (isValidOTP) {
+        otpErrorInputObject.value.isError = false;
+      } else {
+        otpErrorInputObject.value.isError = true;
+        otpErrorInputObject.value.message = "Dữ liệu nhập vào của bạn không đúng định dạng, vui lòng kiểm tra lại";
+      }
+    }
+  }
+
+
 
   void saveToken(String accessToken) {
     AccessTokenSingleton.instance.setToken(accessToken);

@@ -7,6 +7,12 @@ class ValidateUtil {
     return regex.hasMatch(value);
   }
 
+  static bool isValidOTP(String value) {
+    var pattern = r'^\d{6}$';
+    RegExp regex = RegExp(pattern);
+    return regex.hasMatch(value);
+  }
+
   // static bool isValidEmail2(String value) {
   //   var pattern = r"^[a-zA-Z0-9.a-zA-Z0-9]+@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
   //   RegExp regex = RegExp(pattern);
