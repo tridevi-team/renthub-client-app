@@ -5,17 +5,17 @@ class ResponseModel<T> {
   T? data;
 
   ResponseModel({
-    required this.success,
-    required this.code,
-    required this.message,
-    required this.data,
+    this.success,
+    this.code,
+    this.message,
+    this.data,
   });
 
-  ResponseModel.fromJson(Map<String, dynamic> json, T Function(dynamic) parseData) {
+  ResponseModel.fromJson(Map<String, dynamic> json, {T Function(dynamic)? parseData}) {
     success = json['success'] ?? false;
     code = json['code'] ?? '';
     message = json['message'] ?? '';
-    data = json['data'] != null ? parseData(json['data']) : null;
+    data = json['data'] != null && parseData != null ? parseData(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {

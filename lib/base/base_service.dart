@@ -18,6 +18,7 @@ class BaseService {
     required HttpMethod httpMethod,
     bool auth = false,
     Map<String, String>? headers,
+    bool notUseBaseUrl = false
   }) async {
     http.Response? response;
     headers ??= <String, String>{};
@@ -32,7 +33,10 @@ class BaseService {
       }
     }
 
-    final uri = Uri.parse('${WebService.baseUrl}$endpoint');
+    var uri = Uri.parse('${WebService.baseUrl}$endpoint');
+    if (notUseBaseUrl) {
+      uri = Uri.parse(endpoint);
+    }
 
     try {
       switch (httpMethod) {

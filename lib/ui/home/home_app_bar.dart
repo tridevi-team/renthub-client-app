@@ -26,17 +26,17 @@ class HomeAppBar extends AppBar {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(width: 1, color: AppColors.neutralE5E5E3),
-                          color: AppColors.neutralE5E5E3),
+                          color: AppColors.neutralF0F0F0),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                         child: Row(
                           children: [
-                            SvgPicture.asset(AssetSvg.iconSearch),
+                            SvgPicture.asset(AssetSvg.iconSearch, color: AppColors.neutral8F8D8A),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 'Tìm kiếm nhà thuê',
-                                style: ConstantFont.mediumText.copyWith(fontSize: 12),
+                                style: ConstantFont.mediumText.copyWith(fontSize: 12, color: AppColors.neutral8F8D8A),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
@@ -46,7 +46,19 @@ class HomeAppBar extends AppBar {
                       ),
                     ),
                   )),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const NotificationScreen());
+                    },
+                    child: SvgPicture.asset(
+                      AssetSvg.iconLocation,
+                      height: 28,
+                      width: 28,
+                      color: AppColors.primary1,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
                       Get.to(() => const NotificationScreen());
