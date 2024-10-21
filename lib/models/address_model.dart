@@ -11,12 +11,19 @@ class Address {
     required this.street,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      city: json['city'] ?? '',
-      district: json['district'] ?? '',
-      ward: json['ward'] ?? '',
-      street: json['street'] ?? '',
-    );
+  Address.fromJson(Map<String, dynamic> json) {
+      city = json['city'] ?? '';
+      district = json['district'] ?? '';
+      ward = json['ward'] ?? '';
+      street = json['street'] ?? '';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'city': city,
+      'district': district,
+      'ward': ward,
+      'street': street,
+    };
   }
 }

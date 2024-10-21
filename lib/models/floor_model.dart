@@ -6,18 +6,28 @@ class Floor {
   List<Room>? rooms;
 
   Floor({
-    required this.id,
-    required this.name,
-    required this.rooms,
+    this.id,
+    this.name,
+    this.rooms,
   });
 
-  factory Floor.fromJson(Map<String, dynamic> json) {
-    var roomList = json['rooms'] as List;
-    List<Room> rooms = roomList.map((i) => Room.fromJson(i)).toList();
-    return Floor(
-      id: json['id'],
-      name: json['name'],
-      rooms: rooms,
-    );
+  Floor.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    if (json['rooms'] != null) {
+      rooms = (json['rooms'] as List)
+          .map((i) => Room.fromJson(i))
+          .toList();
+    } else {
+      rooms = [];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'rooms': rooms?.map((room) => room.toJson()).toList(),
+    };
   }
 }

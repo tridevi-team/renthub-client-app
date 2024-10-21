@@ -1,8 +1,8 @@
 class ResponseModel<T> {
-  final bool? success;
-  final String? code;
-  final String? message;
-  final T? data;
+  bool? success;
+  String? code;
+  String? message;
+  T? data;
 
   ResponseModel({
     required this.success,
@@ -11,14 +11,19 @@ class ResponseModel<T> {
     required this.data,
   });
 
-  factory ResponseModel.fromJson(Map<String, dynamic> json, T Function(dynamic) parseData) {
-
-    return ResponseModel<T>(
-      success: json['success'] ?? false,
-      code: json['code'] ?? '',
-      message: json['message'] ?? '',
-      data: json['data'] != null ? parseData(json['data']) : null,
-    );
+  ResponseModel.fromJson(Map<String, dynamic> json, T Function(dynamic) parseData) {
+    success = json['success'] ?? false;
+    code = json['code'] ?? '';
+    message = json['message'] ?? '';
+    data = json['data'] != null ? parseData(json['data']) : null;
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'success': success,
+      'code': code,
+      'message': message,
+      'data': data,
+    };
+  }
 }
