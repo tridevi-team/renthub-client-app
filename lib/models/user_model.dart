@@ -1,65 +1,139 @@
+import 'package:rent_house/models/address_model.dart';
+
 class UserModel {
   String? id;
-  String? roomId;
-  String? name;
-  String? citizenId;
-  DateTime? birthday;
-  String? gender;
   String? email;
+  String? fullName;
+  String? gender;
   String? phoneNumber;
   String? address;
-  int? tempReg;
-  DateTime? moveInDate;
-  int? represent;
-  String? note;
+  DateTime? birthday;
+  String? role;
+  String? type;
+  int? status;
+  int? verify;
+  int? firstLogin;
+  String? token;
+  List<HouseModel>? houses;
+
+  UserModel({
+    this.id,
+    this.email,
+    this.fullName,
+    this.gender,
+    this.phoneNumber,
+    this.address,
+    this.birthday,
+    this.role,
+    this.type,
+    this.status,
+    this.verify,
+    this.firstLogin,
+    this.token,
+    this.houses,
+  });
+
+  UserModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    fullName = json['fullName'];
+    gender = json['gender'];
+    phoneNumber = json['phoneNumber'];
+    address = json['address'];
+    birthday = json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
+    role = json['role'];
+    type = json['type'];
+    status = json['status'];
+    verify = json['verify'];
+    firstLogin = json['firstLogin'];
+    token = json['token'];
+    if (json['houses'] != null) {
+      houses = (json['houses'] as List)
+          .map((e) => HouseModel.fromJson(e))
+          .toList();
+    } else {
+      houses = [];
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'fullName': fullName,
+      'gender': gender,
+      'phoneNumber': phoneNumber,
+      'address': address, // Change this to address?.toJson() if using Address model
+      'birthday': birthday?.toIso8601String(),
+      'role': role,
+      'type': type,
+      'status': status,
+      'verify': verify,
+      'firstLogin': firstLogin,
+      'token': token,
+      'houses': houses?.map((house) => house.toJson()).toList(),
+    };
+  }
+}
+
+class HouseModel {
+  String? id;
+  String? name;
+  Address? address;
+  String? description;
+  int? collectionCycle;
+  int? invoiceDate;
+  int? numCollectDays;
+  int? status;
   String? createdBy;
   DateTime? createdAt;
   String? updatedBy;
   DateTime? updatedAt;
-  String? accessToken;
-  String? refreshToken;
 
-  UserModel({
+  HouseModel({
     this.id,
-    this.roomId,
     this.name,
-    this.citizenId,
-    this.birthday,
-    this.gender,
-    this.email,
-    this.phoneNumber,
     this.address,
-    this.tempReg,
-    this.moveInDate,
-    this.represent,
-    this.note,
+    this.description,
+    this.collectionCycle,
+    this.invoiceDate,
+    this.numCollectDays,
+    this.status,
     this.createdBy,
     this.createdAt,
     this.updatedBy,
     this.updatedAt,
-    this.accessToken,
-    this.refreshToken,
   });
 
-  UserModel.fromJson(Map<String, dynamic> json) {
-      id = json['id'];
-      roomId = json['roomId'];
-      name = json['name'];
-      citizenId = json['citizenId'];
-      birthday = json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
-      gender = json['gender'];
-      email = json['email'];
-      phoneNumber = json['phoneNumber'];
-      address = json['address'];
-      tempReg = json['tempReg'];
-      moveInDate = json['moveInDate'] != null ? DateTime.parse(json['moveInDate']) : null;
-      represent = json['represent'];
-      note = json['note'];
-      createdBy = json['createdBy'];
-      createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null;
-      updatedBy = json['updatedBy'];
-      updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null;
-      accessToken = json['accessToken'];
-      refreshToken = json['refreshToken'];
+  HouseModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    address = json['address'] != null ? Address.fromJson(json['address']) : null;
+    description = json['description'];
+    collectionCycle = json['collectionCycle'];
+    invoiceDate = json['invoiceDate'];
+    numCollectDays = json['numCollectDays'];
+    status = json['status'];
+    createdBy = json['createdBy'];
+    createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null;
+    updatedBy = json['updatedBy'];
+    updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'address': address?.toJson(),
+      'description': description,
+      'collectionCycle': collectionCycle,
+      'invoiceDate': invoiceDate,
+      'numCollectDays': numCollectDays,
+      'status': status,
+      'createdBy': createdBy,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedBy': updatedBy,
+      'updatedAt': updatedAt?.toIso8601String(),
+    };
   }
 }
