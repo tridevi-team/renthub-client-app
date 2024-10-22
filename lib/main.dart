@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/access_token_singleton.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
+import 'package:rent_house/ui/account/customer/customer_screen.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
@@ -19,7 +20,7 @@ void main() async {
 Future<void> mainApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  LocalNotificationUtil.initialize();
+  await LocalNotificationUtil.initialize();
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -42,7 +43,8 @@ Future<void> mainApp() async {
 
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  print("FCM token: $fcmToken");
   await SharedPrefHelper().init();
   runApp(const MyApp());
 }
