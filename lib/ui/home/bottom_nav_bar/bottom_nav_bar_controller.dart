@@ -13,5 +13,8 @@ class BottomNavBarController extends FullLifeCycleController {
     pageController = PageController(initialPage: selectedIndex.value);
   }
 
-  void onItemTapped(int value) => selectedIndex.value = value;
+  void onItemTapped(int value) {
+    selectedIndex.value = value;
+    pageController.jumpToPage(value);
+  }
 }

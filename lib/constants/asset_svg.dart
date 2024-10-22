@@ -13,9 +13,13 @@ class AssetSvg {
   static const String iconFilter = "assets/icons/ic_funnel.svg";
   static const String iconChevronDown = "assets/icons/ic_chevron_down.svg";
   static const String iconChevronUp = "assets/icons/ic_chevron_up.svg";
+  static const String iconChevronForward = "assets/icons/ic_chevron_forward.svg";
   static const String iconClose = "assets/icons/ic_close.svg";
   static const String iconRadioOff = "assets/icons/ic_radio_off.svg";
   static const String iconRadioOn = "assets/icons/ic_radio_on.svg";
   static const String iconTrendingDown = "assets/icons/ic_trending_down.svg";
   static const String iconTrendingUp = "assets/icons/ic_trending_up.svg";
+  static const String iconLock = "assets/icons/ic_lock.svg";
+  static const String iconLogout = "assets/icons/ic_logout.svg";
+  static const String iconHand = "assets/icons/ic_hand.svg";
 }
