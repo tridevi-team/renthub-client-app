@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/access_token_singleton.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
-import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
+import 'package:rent_house/untils/local_notification_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:toastification/toastification.dart';
 
@@ -18,6 +18,7 @@ void main() async {
 Future<void> mainApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await LocalNotificationUtil.initialize();
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -39,9 +40,18 @@ Future<void> mainApp() async {
 
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  print("FCM token: $fcmToken");
   await SharedPrefHelper().init();
   runApp(const MyApp());
+}
+void initFirebaseMessagingBackground() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackground);
+}
+
+@pragma('vm.entry-point')
+Future<void> _firebaseMessagingBackground(RemoteMessage message) async {
+  await Firebase.initializeApp();
 }
 
 class MyApp extends StatelessWidget {
@@ -75,7 +85,7 @@ class MyApp extends StatelessWidget {
             selectionHandleColor: Colors.grey,
           ),
         ),
-        home:  SignInScreen(),
+        home: BottomNavigationBarView(),
         builder: (context, child) {
           return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
