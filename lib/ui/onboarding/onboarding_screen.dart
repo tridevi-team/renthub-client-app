@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/onboarding/onboarding_controller.dart';
 
@@ -14,11 +15,7 @@ class OnboardingScreen extends StatelessWidget {
 
     return Scaffold(
       body:Container(
-            decoration: const BoxDecoration(gradient: LinearGradient(colors: [
-              Color(0xFF80C8FF),
-              Color(0xFFD9A3F6)
-            ], begin: Alignment.centerLeft, end: Alignment.centerRight)
-            ),
+            color: AppColors.primary400,
             padding: const EdgeInsets.all(16),
             child: Column(children: [
               Container(
@@ -26,7 +23,7 @@ class OnboardingScreen extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: TextButton(
                     onPressed: controller.skipPage,
-                    child: Obx(()=> Text(controller.currentPageIndex.value == 0 ? '' : 'Bỏ qua', style: ConstantFont.regularText)),
+                    child: Obx(()=> Text(controller.currentPageIndex.value == 0 ? '' : 'Bỏ qua', style: ConstantFont.regularText.copyWith(color: AppColors.white))),
                 ),
               ),
               Expanded(
@@ -55,8 +52,8 @@ class OnboardingScreen extends StatelessWidget {
                         margin: const EdgeInsets.only(right: 5),
                         decoration: BoxDecoration(
                           color: controller.currentPageIndex.value == index
-                              ? const Color(0xFF4B7BE5)
-                              : Colors.white,
+                              ? AppColors.primary1
+                              : AppColors.white,
                         ),
                       )),
                 ),
@@ -104,17 +101,16 @@ class OnboardingScreen extends StatelessWidget {
           image,
           height: 300,
         ),
-        SvgPicture.asset('assets/images/img_rent_house.svg', color: Colors.white, width: 2 * Get.width / 3),
         const SizedBox(height: 20),
         Text(
           'Rent House',
-          style: ConstantFont.extraBoldText.copyWith(fontSize: 32),
+          style: ConstantFont.extraBoldText.copyWith(fontSize: 32, color: AppColors.white),
         ),
         const SizedBox(height: 20),
         Text(
             description,
             textAlign: TextAlign.center,
-            style: ConstantFont.lightText
+            style: ConstantFont.lightText.copyWith(color: AppColors.white)
         ),
       ],
     );

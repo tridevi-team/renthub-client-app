@@ -20,6 +20,7 @@ class SplashController extends BaseController {
 
   Future<void> startAnimation() async {
     await initData();
+    await Future.delayed(const Duration(seconds: 3));
     String token = SharedPrefHelper.instance.getString(ConstantString.prefToken) ?? '';
     if (token.isNotEmpty && JwtDecoder.isExpired(token)) {
       TokenSingleton.instance.setAccessToken(token);

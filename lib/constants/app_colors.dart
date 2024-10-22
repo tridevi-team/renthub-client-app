@@ -20,7 +20,11 @@ class AppColors {
   static const Color dividerBoldColor = Color(0xFFF0EFED);
   static const Color shimmerColor = Color(0xFFE0E0E0);
 
-  static const Color primary1 = Color(0xFF4A9ED6);
+  static const Color primary1 = Color(0xFF3C56C3);
+  static const Color primary500 = Color(0xFF546ccb);
+  static const Color primary400 = Color(0xFF6c84d2);
+  static const Color primary300 = Color(0xFF6276cc);
+
   static const Color primary2 = Color(0xFFD9A3F6);
 
   static const Color red = Color(0xFFF04248);

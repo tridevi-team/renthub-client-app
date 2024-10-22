@@ -23,7 +23,7 @@
     </queries>
 
     <application
-        android:label="rent_house"
+        android:label="Rent House"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <meta-data

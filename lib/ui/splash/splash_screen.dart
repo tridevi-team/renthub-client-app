@@ -13,14 +13,8 @@ class SplashScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Container(
         alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.primary1,
-            AppColors.primary2
-          ], begin: Alignment.centerLeft, end: Alignment.centerRight)
-        ),
-        child: SvgPicture.asset("assets/images/img_rent_house.svg",
-            color: Colors.white, width: 2 * Get.width / 3),
+          color: AppColors.primary1,
+        child: Image.asset("assets/images/rent_logo.png", width: Get.width / 3),
       )
     );
   }
