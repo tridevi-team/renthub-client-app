@@ -7,15 +7,17 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer/customer_screen.dart';
+import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_screen.dart';
+import 'package:rent_house/ui/house_renter/house_renter_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 
 class BottomNavigationBarView extends StatelessWidget {
   BottomNavigationBarView({super.key});
 
   //controller
-  final bottomNavController = Get.put(BottomNavBarController());
+  final bottomNavController = Get.find<BottomNavBarController>();
   final notificationController = Get.put(NotificationController());
 
   @override
@@ -28,9 +30,9 @@ class BottomNavigationBarView extends StatelessWidget {
           bottomNavController.selectedIndex.value = value;
         },
         children: [
-          HomeScreen(),
-          HomeScreen(),
-          HomeScreen(),
+          true ? HomeScreen() : const HouseRenterScreen(),
+          CustomerScreen(),
+          CustomerScreen(),
           CustomerScreen(),
         ],
       ),

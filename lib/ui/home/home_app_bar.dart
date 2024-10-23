@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/notification/notification_screen.dart';
+import 'package:rent_house/untils/dialog_util.dart';
 
 class HomeAppBar extends AppBar {
   HomeAppBar({super.key})
@@ -36,7 +38,8 @@ class HomeAppBar extends AppBar {
                             Expanded(
                               child: Text(
                                 'Tìm kiếm nhà thuê',
-                                style: ConstantFont.mediumText.copyWith(fontSize: 12, color: AppColors.neutral8F8D8A),
+                                style: ConstantFont.mediumText
+                                    .copyWith(fontSize: 12, color: AppColors.neutral8F8D8A),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),
@@ -49,7 +52,11 @@ class HomeAppBar extends AppBar {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const NotificationScreen());
+                      DialogUtil.showDialogSelectLocation(
+                          onCityTap: Get.find<BottomNavBarController>().onTapOpenCityList,
+                          onDistrictTap: () {
+                            Get.find<BottomNavBarController>().onTapOpenCityList(isDistrict: true);
+                          });
                     },
                     child: SvgPicture.asset(
                       AssetSvg.iconLocation,

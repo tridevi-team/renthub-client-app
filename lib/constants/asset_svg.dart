@@ -24,4 +24,5 @@ class AssetSvg {
   static const String iconLock = "assets/icons/ic_lock.svg";
   static const String iconLogout = "assets/icons/ic_logout.svg";
   static const String iconHand = "assets/icons/ic_hand.svg";
+  static const String iconCheckMark = "assets/icons/ic_checkmark_circle.svg";
 }
