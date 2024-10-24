@@ -82,19 +82,20 @@ class HomeController extends BaseController {
     });
   }
 
-  Future<void> fetchHouseList(
-      {bool isLoadMore = false,
-      int? numOfBeds,
-      String? street,
-      String? ward,
-      String? district,
-      String? city,
-      int? numOfRenters,
-      int? roomArea,
-      int? priceFrom,
-      int? priceTo,
-      int limit = 10,
-      int page = 1}) async {
+  Future<void> fetchHouseList({
+    bool isLoadMore = false,
+    int? numOfBeds,
+    String? street,
+    String? ward,
+    String? district,
+    String? city,
+    int? numOfRenters,
+    int? roomArea,
+    int? priceFrom,
+    int? priceTo,
+    int limit = 10,
+    int page = 1
+  }) async {
     try {
       viewState.value = ViewState.init;
       if (isLoadMore) {
@@ -103,19 +104,24 @@ class HomeController extends BaseController {
         viewState.value = ViewState.loading;
         currentPage = 1;
       }
-      Map<String, dynamic> queryParams = {
-        'limit': limit.toString(),
-        'page': currentPage.toString(),
-        'houses.sortBy': sorts[sortBySelected],
-        'houses.orderBy': orderBy.value,
-        'keyword': searchKeyword,
-        if (numOfBeds != null) 'houses.numOfBeds': numOfBeds,
-        if (numOfRenters != null) 'houses.numOfRenters': numOfRenters,
-        if (roomArea != null) 'houses.roomArea': roomArea,
-        if (priceFrom != null) 'houses.priceFrom': priceFrom,
-        if (priceTo != null) 'houses.priceTo': priceTo,
-      };
-      final response = await HomeService.fetchHouseList(queryParams, []);
+
+      String sort = '''{
+       "field": "houses.${sorts[sortBySelected]}",
+          "direction": "${orderBy.value}"
+        }''';
+
+      List<String> filters = [];
+      filters.add(
+        '''filter[]={
+        "field": "houses.${sorts[sortBySelected]}",
+        "operator": "cont",
+        "value": $searchKeyword
+        }&
+        '''
+      );
+
+      final response = await HomeService.fetchHouseList(sort, filters, page);
+
       if (response.statusCode != 200) {
         viewState.value = ViewState.error;
         log("Failed to fetch house list, status code: ${response.statusCode}");

@@ -25,7 +25,7 @@ class RoomDetailScreen extends StatelessWidget {
         slivers: [
           SliverToBoxAdapter(
             child: CachedNetworkImage(
-              imageUrl: controller.selectedRoom.images?[0] ?? '',
+              imageUrl: controller.selectedRoom.images?[0].imageUrl ?? '',
               placeholder: (context, url) => Image.asset('assets/images/image.png',
                   width: Get.width, height: 200, fit: BoxFit.cover),
             ),
@@ -126,11 +126,11 @@ class RoomDetailScreen extends StatelessWidget {
                 if (controller.selectedRoom.images != null &&
                     controller.selectedRoom.images!.isNotEmpty)
                   CarouselSlider(
-                      items: controller.selectedRoom.images?.map((imageUrl) {
+                      items: controller.selectedRoom.images?.map((image) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: CachedNetworkImage(
-                              imageUrl: imageUrl,
+                              imageUrl: image.imageUrl ?? '',
                               width: double.infinity,
                               height: 150,
                               fit: BoxFit.cover),

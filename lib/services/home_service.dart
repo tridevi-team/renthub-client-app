@@ -2,18 +2,13 @@ import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_service.dart';
 
 class HomeService {
-  static Future<http.Response> fetchHouseList(Map<String, dynamic> queryParams, List<Map<String, dynamic>> filters) {
-    String filterString = filters.map((filter) {
-      return Uri.encodeComponent(filter.toString());
-    }).join('&filter[]=');
+  static Future<http.Response> fetchHouseList(String sort, List<String> filters, int page,
+      {int pageSize = 10}) {
 
-    String queryString = Uri(queryParameters: queryParams).query;
-
-    String endpoint = '/houses/search?filter[]=$filterString&$queryString';
+    String endpoint = '/houses/search?$filters$sort&page=$page&pageSize=$pageSize';
 
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
-
 
   static Future<http.Response> fetchHouseInformation(String houseId) {
     String endpoint = '/houses/$houseId/rooms/';

@@ -6,7 +6,7 @@ class Room {
   int? maxRenters;
   String? status;
   String? description;
-  List<String>? images;
+  List<ImageModel>? images;
   List<Service>? services;
 
   Room({
@@ -25,11 +25,11 @@ class Room {
     id = json['id'] ?? '';
     name = json['name'] ?? '';
     price = json['price'] ?? 0;
-    area = json['area'] ?? 0;
+    area = json['roomArea'] ?? 0;
     maxRenters = json['maxRenters'] ?? 1;
     status = json['status'] ?? '';
     description = json['description'] ?? '';
-    images = List<String>.from(json['images'] ?? []);
+    images = (json['images'] as List?)?.map((i) => ImageModel.fromJson(i)).toList() ?? [];
     if (json['services'] != null) {
       services = (json['services'] as List)
           .map((i) => Service.fromJson(i))
@@ -44,12 +44,38 @@ class Room {
       'id': id,
       'name': name,
       'price': price,
-      'area': area,
+      'roomArea': area,
       'maxRenters': maxRenters,
       'status': status,
       'description': description,
-      'images': images,
+      'images': images?.map((image) => image.toJson()).toList(),
       'services': services?.map((service) => service.toJson()).toList(),
+    };
+  }
+}
+
+class ImageModel {
+  String? id;
+  String? imageUrl;
+  String? description;
+
+  ImageModel({
+    this.id,
+    this.imageUrl,
+    this.description,
+  });
+
+  ImageModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'] ?? '';
+    imageUrl = json['imageUrl'] ?? '';
+    description = json['description'] ?? '';
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'imageUrl': imageUrl,
+      'description': description,
     };
   }
 }
@@ -57,29 +83,37 @@ class Room {
 class Service {
   String? id;
   String? name;
-  int? price;
+  int? unitPrice;
   String? description;
+  String? type;
+  int? quantity;
 
   Service({
     required this.id,
     this.name,
-    this.price,
+    this.unitPrice,
     this.description,
+    this.type,
+    this.quantity,
   });
 
   Service.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
     name = json['name'];
-    price = json['price'];
+    unitPrice = json['unitPrice'];
     description = json['description'];
+    type = json['type'];
+    quantity = json['quantity'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'price': price,
+      'unitPrice': unitPrice,
       'description': description,
+      'type': type,
+      'quantity': quantity,
     };
   }
 }
