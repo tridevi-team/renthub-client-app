@@ -15,6 +15,7 @@ import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/services/home_service.dart';
+import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
@@ -76,6 +77,7 @@ class BottomNavBarController extends FullLifeCycleController {
     } else {
       await _requestAndHandlePermission();
     }
+    await NotificationService.saveFcmTokenToFirestore();
   }
 
   Future<void> _requestAndHandlePermission() async {
@@ -186,13 +188,6 @@ class BottomNavBarController extends FullLifeCycleController {
       WillPopScope(
         onWillPop: () {
           Get.back();
-          DialogUtil.showDialogSelectLocation(onCityTap: () {
-            Get.back();
-            onTapOpenCityList();
-          }, onDistrictTap: () {
-            Get.back();
-            onTapOpenCityList(isDistrict: true);
-          });
           return Future.value(true);
         },
         child: Column(
