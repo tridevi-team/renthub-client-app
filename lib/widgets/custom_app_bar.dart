@@ -39,7 +39,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
             alignment: Alignment.center,
             children: [
               const SizedBox(height: 24, width: 24),
-              SvgPicture.asset('assets/icons/ic_chevron_back.svg'),
+              SvgPicture.asset(AssetSvg.iconChevronBack),
             ],
           ),
         )

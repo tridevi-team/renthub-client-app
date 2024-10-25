@@ -33,6 +33,7 @@ class TextInputWidget extends StatefulWidget {
   final bool isSearch;
   final bool isDisableBackGround;
   final FontWeight fontWeight;
+  final double? height;
   final bool sendOTP;
   final bool isSendOTP;
   final Function(String?)? onFieldSubmitted;
@@ -65,7 +66,7 @@ class TextInputWidget extends StatefulWidget {
     this.isSearch = false,
     this.isDisableBackGround = false,
     this.fontWeight = FontWeight.w400,
-    this.onFieldSubmitted, this.sendOTP = false, this.isSendOTP = false, this.onSendOTP,
+    this.onFieldSubmitted, this.sendOTP = false, this.isSendOTP = false, this.onSendOTP, this.height = 56,
   });
 
   @override
@@ -94,15 +95,14 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             return Theme(
               data: Theme.of(context).copyWith(splashColor: Colors.transparent),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   color: widget.backgroundColor ?? AppColors.white,
                   borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 0)),
                   border: widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
                 ),
-                height: widget.maxLines != null ? 200 : 56,
+                height: widget.maxLines != null ? 200 : widget.height,
                 child: Padding(
-                  padding: widget.isSearch == true ? EdgeInsets.only(left: 16, right: widget.isSearch ? 0 : 5) : EdgeInsets.zero,
+                  padding: widget.isSearch == true ? EdgeInsets.only(left: 10, right: widget.isSearch ? 0 : 5) : EdgeInsets.zero,
                   child: Material(
                     color: Colors.transparent,
                     child: GestureDetector(
@@ -113,7 +113,10 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                       child: Row(
                         children: [
                           widget.isSearch ? SvgPicture.asset(AssetSvg.iconSearch) : const SizedBox(),
-                          widget.prefixIconPath?.isNotEmpty == true ? SvgPicture.asset(widget.prefixIconPath!, width: 24) : const SizedBox(),
+                          widget.prefixIconPath?.isNotEmpty == true ? Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: SvgPicture.asset(widget.prefixIconPath!, width: 24),
+                          ) : const SizedBox(),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),

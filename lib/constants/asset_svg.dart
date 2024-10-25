@@ -14,6 +14,7 @@ class AssetSvg {
   static const String iconChevronDown = "assets/icons/ic_chevron_down.svg";
   static const String iconChevronUp = "assets/icons/ic_chevron_up.svg";
   static const String iconChevronForward = "assets/icons/ic_chevron_forward.svg";
+  static const String iconChevronBack = "assets/icons/ic_chevron_back.svg";
   static const String iconClose = "assets/icons/ic_close.svg";
   static const String iconRadioOff = "assets/icons/ic_radio_off.svg";
   static const String iconRadioOn = "assets/icons/ic_radio_on.svg";
