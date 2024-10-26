@@ -42,50 +42,7 @@ class HomeScreen extends StatelessWidget {
                         : CustomScrollView(
                             physics: const ClampingScrollPhysics(),
                             slivers: [
-                              if (homeController.showFilters.value)
-                                SliverAppBar(
-                                  title: Row(
-                                    children: [
-                                      _buildFilterOption(
-                                        title: "Lọc theo",
-                                        index: 0,
-                                        icon: AssetSvg.iconChevronDown,
-                                        controller: homeController,
-                                      ),
-                                      Container(
-                                        width: 1,
-                                        height: 28,
-                                        color: AppColors.neutral9E9E9E,
-                                      ),
-                                      _buildFilterOption(
-                                        title: "Xếp theo",
-                                        index: 1,
-                                        icon: AssetSvg.iconTrendingDown,
-                                        icon2: AssetSvg.iconTrendingUp,
-                                        controller: homeController,
-                                      ),
-                                      Container(
-                                        width: 1,
-                                        height: 28,
-                                        color: AppColors.neutral9E9E9E,
-                                      ),
-                                      _buildFilterOption(
-                                        index: 2,
-                                        icon: AssetSvg.iconFilter,
-                                        controller: homeController,
-                                      ),
-                                    ],
-                                  ),
-                                  pinned: true,
-                                  floating: true,
-                                  snap: true,
-                                  toolbarHeight: 40,
-                                  elevation: 10,
-                                  shadowColor: AppColors.neutral9E9E9E,
-                                  surfaceTintColor: AppColors.white,
-                                )
-                              else
-                                const SliverToBoxAdapter(),
+
                               SliverList(
                                   delegate: SliverChildListDelegate(
                                 [...homeController.widgets],
@@ -105,47 +62,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             )),
-    );
-  }
-
-  Widget _buildFilterOption({
-    String? title,
-    String? icon2,
-    required int index,
-    required String icon,
-    required HomeController controller,
-  }) {
-    return Expanded(
-      child: InkWell(
-        onTap: () {
-          controller.onFilterSelected(index);
-        },
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (title != null)...[
-              Text(
-                title,
-                style: ConstantFont.regularText.copyWith(
-                  color: controller.filterSelected.value == index
-                      ? AppColors.primary1
-                      : AppColors.black,
-                ),
-              ),
-            ],
-            const SizedBox(width: 4),
-            SvgPicture.asset(
-              icon2 != null && controller.orderBy.value == 'asc' ? icon2 : icon,
-              width: 18,
-              color: controller.filterSelected.value == index
-                  ? AppColors.primary1
-                  : AppColors.black,
-            )
-          ],
-        ),
-      ),
     );
   }
 }

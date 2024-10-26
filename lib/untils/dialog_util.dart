@@ -13,8 +13,7 @@ class DialogUtil {
   static showDialogSelectLocation({
     String? content,
     bool isShowBottomSheet = false,
-    Function? onCityTap,
-    Function? onDistrictTap,
+    required Function(bool isDistrict) onLocationTap,
   }) {
     final controller = Get.find<BottomNavBarController>();
     final homeController = Get.find<HomeController>();
@@ -54,8 +53,8 @@ class DialogUtil {
                       cityLabel: controller.currentLabelCity,
                       districtLabel: controller.currentLabelDistrict,
                       isShowBottomSheet: isShowBottomSheet,
-                      onCityTap: onCityTap,
-                      onDistrictTap: onDistrictTap,
+                      onCityTap: () => onLocationTap(false),
+                      onDistrictTap: () => onLocationTap(true),
                       onConfirm: () {
                         Get.back();
                         homeController.onRefreshData();

@@ -17,7 +17,7 @@ class BottomNavigationBarView extends StatelessWidget {
   BottomNavigationBarView({super.key});
 
   //controller
-  final bottomNavController = Get.find<BottomNavBarController>();
+  final bottomNavController = Get.put(BottomNavBarController());
   final notificationController = Get.put(NotificationController());
 
   @override

@@ -8,6 +8,7 @@ import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/notification/notification_screen.dart';
+import 'package:rent_house/ui/search/search_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 
 class HomeAppBar extends AppBar {
@@ -23,7 +24,9 @@ class HomeAppBar extends AppBar {
                 children: [
                   Expanded(
                       child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(() => SearchScreen());
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
@@ -52,11 +55,10 @@ class HomeAppBar extends AppBar {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
-                      DialogUtil.showDialogSelectLocation(
-                          onCityTap: Get.find<BottomNavBarController>().onTapOpenCityList,
-                          onDistrictTap: () {
-                            Get.find<BottomNavBarController>().onTapOpenCityList(isDistrict: true);
-                          });
+                      DialogUtil.showDialogSelectLocation(onLocationTap: (isDistrict) {
+                        Get.find<BottomNavBarController>()
+                            .onTapOpenCityList(isDistrict: isDistrict);
+                      });
                     },
                     child: SvgPicture.asset(
                       AssetSvg.iconLocation,

@@ -19,8 +19,6 @@ import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
-import 'package:rent_house/untils/response_error_util.dart';
-import 'package:rent_house/untils/toast_until.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class BottomNavBarController extends FullLifeCycleController {
@@ -41,29 +39,23 @@ class BottomNavBarController extends FullLifeCycleController {
   Rxn<District> districtSelected = Rxn<District>();
   District districtTemp = District();
 
-
   @override
   void onInit() {
     super.onInit();
     checkAndRegisterNotification();
     pageController = PageController(initialPage: selectedIndex.value);
-  }
+    provinces = ProvinceSingleton.instance.provinces;
 
-  Future<void> getListProvince() async {
-    try {
-      final response = await HomeService.fetchProvinces();
-      ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-
-      final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
-      if (decodedResponse.isNotEmpty) {
-        provinces = decodedResponse.map((json) => City.fromJson(json)).toList();
-        ProvinceSingleton.instance.setProvinces(provinces);
-        filteredCities.addAll(provinces);
-      }
-    } catch (e) {
-      ToastUntil.toastNotification('Error fetching provinces', '$e', ToastStatus.error);
-      print("Error fetching provinces: $e");
-    }
+    currentLabelCity.value = '${provinces[0].name}';
+    citySelected.value = provinces[0];
+    filteredCities.addAll([...provinces]);
+    cityTemp = provinces[0];
+    filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await DialogUtil.showDialogSelectLocation(onLocationTap: (bool isDistrict) {
+        onTapOpenCityList(isDistrict: isDistrict);
+      });
+    });
   }
 
   void onItemTapped(int value) {
@@ -163,9 +155,8 @@ class BottomNavBarController extends FullLifeCycleController {
             location.name ?? "",
             style: TextStyle(
               color: const Color(0xff1C1D1F),
-              fontWeight: selectedLocation?.name == location.name
-                  ? FontWeight.w500
-                  : FontWeight.w400,
+              fontWeight:
+                  selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
               fontSize: 14,
             ),
           ),
@@ -188,6 +179,7 @@ class BottomNavBarController extends FullLifeCycleController {
       WillPopScope(
         onWillPop: () {
           Get.back();
+          onSelectedCancel();
           return Future.value(true);
         },
         child: Column(
@@ -225,6 +217,7 @@ class BottomNavBarController extends FullLifeCycleController {
                               colorBorder: AppColors.neutral8F8D8A,
                               fillColor: Colors.white,
                               hintText: 'Tìm kiếm',
+                              height: 48,
                               onChanged: (value) {
                                 onFilterCity(value, isDistrict: isDistrict);
                               },
@@ -270,21 +263,12 @@ class BottomNavBarController extends FullLifeCycleController {
                     child: OutlinedButton(
                       onPressed: () {
                         FocusManager.instance.primaryFocus?.unfocus();
-                        Future.delayed(const Duration(milliseconds: 300), () {
-                          Get.back();
-                          if (isDistrict) {
-                            setSelectedDistrict();
-                          } else {
-                            setSelectedCity();
-                          }
-                          /*DialogUtil.showDialogSelectLocation(onCityTap: () {
-                            Get.back();
-                            onTapOpenCityList();
-                          }, onDistrictTap: () {
-                            Get.back();
-                            onTapOpenCityList(isDistrict: true);
-                          });*/
-                        });
+                        Get.back();
+                        if (isDistrict) {
+                          setSelectedDistrict();
+                        } else {
+                          setSelectedCity();
+                        }
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(AppColors.primary1)),
@@ -304,6 +288,8 @@ class BottomNavBarController extends FullLifeCycleController {
   void onSelectedCancel() {
     citySelected.value = cityTemp;
     districtSelected.value = districtTemp;
+    filteredCities.clear();
+    filteredCities.addAll(provinces);
     filteredDistricts.clear();
     filteredDistricts.addAll(citySelected.value?.districts ?? []);
   }
