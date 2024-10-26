@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -9,7 +11,6 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/models/response_model.dart';
-import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/untils/response_error_util.dart';
@@ -21,17 +22,24 @@ class SignInController extends BaseController {
   TextEditingController emailEditingController = TextEditingController();
   Rx<ErrorInputModel> emailErrorInputObject = ErrorInputModel().obs;
 
+  TextEditingController phoneEditingController = TextEditingController();
+  Rx<ErrorInputModel> phoneErrorInputObject = ErrorInputModel().obs;
+
   TextEditingController otpEditingController = TextEditingController();
   Rx<ErrorInputModel> otpErrorInputObject = ErrorInputModel().obs;
 
   RxBool isSendOTP = false.obs;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  RxString verificationId = ''.obs;
+
   @override
   void onInit() {
     emailEditingController.text = "example@gmail.com";
     otpEditingController.text = "000000";
+    phoneEditingController.text = "0869330512";
     super.onInit();
-    validateGoogleToken();
+    //validateGoogleToken();
   }
 
   Future<GoogleSignInAuthentication?> _authenticateWithGoogle() async {
@@ -60,18 +68,24 @@ class SignInController extends BaseController {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      TokenSingleton.instance.setAccessToken(googleAuth.idToken!);
-      moveToNextPage();
+      await _auth.signInWithCredential(credential);
+      String? token = await _auth.currentUser?.getIdToken();
+      if (token != null) {
+        saveToken(token);
+        moveToNextPage();
+      }
     } on FirebaseAuthException catch (e) {
-      print('Error during Firebase sign-in: $e');
+      ToastUntil.toastNotification('Có lỗi xảy ra', e.toString(), ToastStatus.warning);
     } catch (e) {
-      print('Error during sign-in: $e');
+      if (kDebugMode) {
+        print('Error during sign-in: $e');
+      }
+      ToastUntil.toastNotification('Có lỗi xảy ra', e.toString(), ToastStatus.warning);
     }
   }
 
   Future<void> validateGoogleToken() async {
-    String? token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    String? token = await _auth.currentUser?.getIdToken();
     if (token != null && JwtDecoder.isExpired(token)) {
       saveToken(token);
       moveToNextPage();
@@ -103,7 +117,8 @@ class SignInController extends BaseController {
   }
 
   Future<void> signInWithEmail() async {
-    if (emailErrorInputObject.value.isError == true || otpErrorInputObject.value.isError == true) {
+    verifyOtp();
+    /*if (emailErrorInputObject.value.isError == true || otpErrorInputObject.value.isError == true) {
       return;
     }
     final email = emailEditingController.text.trim();
@@ -124,7 +139,7 @@ class SignInController extends BaseController {
       moveToNextPage();
     } else {
       ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
-    }
+    }*/
   }
 
   void onChangeSignInEmail(String value) {
@@ -163,6 +178,62 @@ class SignInController extends BaseController {
     }
   }
 
+  void verifyPhoneNumber() async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneEditingController.text.trim().replaceFirst('0', '+84'),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _auth.signInWithCredential(credential);
+
+          print("accessTokenfff ${credential.accessToken}");
+
+          print("tokenINd ${credential.token}");
+          Get.snackbar("Success", "Logged in successfully!");
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print("Verification failed: $e");
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          this.verificationId.value = verificationId;
+          print("VerifiedId: $verificationId");
+
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          this.verificationId.value = verificationId;
+        },
+        timeout: const Duration(seconds: 120),
+      );
+    } catch (e) {
+      Get.snackbar("Error", "Failed to verify phone number.");
+    }
+  }
+
+  void verifyOtp() async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId.value, smsCode: otpEditingController.text);
+      await _auth.signInWithCredential(credential);
+      _getToken();
+      Get.snackbar("Success", "Logged in successfully!");
+    } catch (e) {
+      Get.snackbar("Error", "Invalid OTP.");
+    }
+  }
+  void _getToken() async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        String? token = await user.getIdToken();
+        log("Token: $token");
+        if (JwtDecoder.isExpired(token!)) {
+          print("kkfkfk");
+        }
+      }
+    } catch (e) {
+      print("Failed to get token: $e");
+    }
+  }
 
 
   void saveToken(String accessToken) {

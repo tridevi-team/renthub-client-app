@@ -66,7 +66,11 @@ class TextInputWidget extends StatefulWidget {
     this.isSearch = false,
     this.isDisableBackGround = false,
     this.fontWeight = FontWeight.w400,
-    this.onFieldSubmitted, this.sendOTP = false, this.isSendOTP = false, this.onSendOTP, this.height = 56,
+    this.onFieldSubmitted,
+    this.sendOTP = false,
+    this.isSendOTP = false,
+    this.onSendOTP,
+    this.height = 56,
   });
 
   @override
@@ -98,11 +102,14 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                 decoration: BoxDecoration(
                   color: widget.backgroundColor ?? AppColors.white,
                   borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 0)),
-                  border: widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
+                  border:
+                      widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
                 ),
                 height: widget.maxLines != null ? 200 : widget.height,
                 child: Padding(
-                  padding: widget.isSearch == true ? EdgeInsets.only(left: 10, right: widget.isSearch ? 0 : 5) : EdgeInsets.zero,
+                  padding: widget.isSearch == true
+                      ? const EdgeInsets.only(left: 10, right: 5)
+                      : EdgeInsets.zero,
                   child: Material(
                     color: Colors.transparent,
                     child: GestureDetector(
@@ -110,16 +117,20 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                         widget.onTap?.call();
                         FocusScope.of(context).requestFocus(_focusNode);
                       },
-                      child: Row(
-                        children: [
-                          widget.isSearch ? SvgPicture.asset(AssetSvg.iconSearch) : const SizedBox(),
-                          widget.prefixIconPath?.isNotEmpty == true ? Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: SvgPicture.asset(widget.prefixIconPath!, width: 24),
-                          ) : const SizedBox(),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 1),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Row(
+                          children: [
+                            widget.isSearch
+                                ? SvgPicture.asset(AssetSvg.iconSearch)
+                                : const SizedBox(),
+                            widget.prefixIconPath?.isNotEmpty == true
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: SvgPicture.asset(widget.prefixIconPath!, width: 24),
+                                  )
+                                : const SizedBox(),
+                            Expanded(
                               child: TextFormField(
                                 onFieldSubmitted: (value) {
                                   widget.onFieldSubmitted?.call(value);
@@ -141,69 +152,88 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                   fillColor: Colors.transparent,
                                   hintText: widget.hintText ?? widget.label,
                                   filled: true,
-                                  hintStyle: TextStyle(color: Colors.black, fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, fontWeight: FontWeight.w400),
-                                  contentPadding: EdgeInsets.fromLTRB(10, widget.maxLines != null ? 10 : 0, 0, 6),
+                                  hintStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontFamily: ConstantFont.fontLexendDeca,
+                                      fontWeight: FontWeight.w400),
+                                  contentPadding: EdgeInsets.fromLTRB(
+                                      10, widget.maxLines != null ? 10 : 0, 0, 10),
                                   focusedBorder: InputBorder.none,
                                   enabledBorder: InputBorder.none,
                                   errorBorder: InputBorder.none,
                                   disabledBorder: InputBorder.none,
                                 ),
                                 maxLines: widget.maxLines ?? 1,
-                                style: TextStyle(fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, color: widget.enable ? AppColors.black : const Color(0xFF1B1A19), fontWeight: widget.fontWeight),
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: ConstantFont.fontLexendDeca,
+                                    color:
+                                        widget.enable ? AppColors.black : const Color(0xFF1B1A19),
+                                    fontWeight: widget.fontWeight),
                               ),
                             ),
-                          ),
-                          if (widget.controller != null && widget.controller!.text.isNotEmpty) ...[
-                            InkWell(
-                              onTap: () {
-                                if (widget.controller == null) {
-                                  _textEditingController.clear();
-                                } else {
-                                  widget.controller?.clear();
-                                }
-                                if (widget.onChanged != null) {
-                                  widget.onChanged?.call("");
-                                }
-                                setState(() {});
-                              },
-                              child: SizedBox(child: SvgPicture.asset('assets/icons/ic_close.svg')),
-                            ),
-                          ],
-                          if (widget.isPassword) ...[
-                            InkWell(
-                              onTap: () {
-                                widget.togglePassword!.call();
-                              },
-                              child: SvgPicture.asset(
-                                widget.password == true ? 'assets/icons/ic_eye_off.svg' : 'assets/icons/ic_eye.svg',
+                            if (widget.controller != null &&
+                                widget.controller!.text.isNotEmpty) ...[
+                              InkWell(
+                                onTap: () {
+                                  if (widget.controller == null) {
+                                    _textEditingController.clear();
+                                  } else {
+                                    widget.controller?.clear();
+                                  }
+                                  if (widget.onChanged != null) {
+                                    widget.onChanged?.call("");
+                                  }
+                                  setState(() {});
+                                },
+                                child:
+                                    SizedBox(child: SvgPicture.asset('assets/icons/ic_close.svg')),
                               ),
-                            ),
-                          ],
-                          if (widget.postfixIconPath) ...[
-                            SvgPicture.asset(
-                              'assets/icons/select_down_icon.svg',
-                            ),
-                          ],
-                          if (widget.sendOTP) ...[
-                            GestureDetector(
-                              onTap: widget.onSendOTP,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  width: Get.width / 4,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: widget.isSendOTP ? AppColors.neutral9E9E9E : AppColors.primary1,
-                                    borderRadius: BorderRadius.circular(6)
-                                  ),
-                                  child: Text(widget.isSendOTP ? 'Đã gửi' : 'Gửi mã xác nhận', style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 12),
-                                  textAlign: TextAlign.center,),
+                            ],
+                            if (widget.isPassword) ...[
+                              InkWell(
+                                onTap: () {
+                                  widget.togglePassword!.call();
+                                },
+                                child: SvgPicture.asset(
+                                  widget.password == true
+                                      ? 'assets/icons/ic_eye_off.svg'
+                                      : 'assets/icons/ic_eye.svg',
                                 ),
                               ),
-                            )
-                          ]
-                        ],
+                            ],
+                            if (widget.postfixIconPath) ...[
+                              SvgPicture.asset(
+                                'assets/icons/select_down_icon.svg',
+                              ),
+                            ],
+                            if (widget.sendOTP) ...[
+                              GestureDetector(
+                                onTap: widget.onSendOTP,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  child: Container(
+                                    width: Get.width / 4,
+                                    height: 50,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: widget.isSendOTP
+                                            ? AppColors.neutral9E9E9E
+                                            : AppColors.primary1,
+                                        borderRadius: BorderRadius.circular(6)),
+                                    child: Text(
+                                      widget.isSendOTP ? 'Đã gửi' : 'Gửi mã xác nhận',
+                                      style: ConstantFont.mediumText
+                                          .copyWith(color: AppColors.white, fontSize: 12),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ]
+                          ],
+                        ),
                       ),
                     ),
                   ),

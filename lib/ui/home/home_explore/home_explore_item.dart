@@ -21,7 +21,7 @@ class HomeExploreItem extends StatelessWidget {
         child: Stack(
           children: [
             CachedNetworkImage(
-              imageUrl: 'assets/images/started.png',
+              imageUrl: '',
               errorWidget: (_, __, ___) => Image.asset(
                 'assets/images/image.png',
                 width: Get.width / 3,

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/room_model.dart';
+import 'package:rent_house/untils/currency_format.dart';
 
 class RoomWidget extends StatelessWidget {
 
@@ -48,23 +49,9 @@ class RoomWidget extends StatelessWidget {
                 children: [
                   Text(room.name ?? '', style: ConstantFont.semiBoldText),
                   const SizedBox(height: 8),
-
-                  Text.rich(
-                    style: ConstantFont.lightText.copyWith(fontSize: 16, color: AppColors.primary1),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    TextSpan(
-                      text: '${room.price}',
-                      children: const [
-                        TextSpan(
-                          text: 'đ',
-                          style: TextStyle(fontSize: 12, fontFeatures: [FontFeature.superscripts()]),
-                        ),
-                      ],
-                    ),
-                  ),
+                  Text(CurrencyFormat.formatCurrency(room.price ?? 0), style: ConstantFont.lightText.copyWith(fontSize: 16, color: AppColors.primary1)),
                   const SizedBox(height: 2),
-                  Text('tối đa: ${room.maxRenters}',
+                  Text('Tối đa: ${room.maxRenters}',
                       maxLines: 3,
                       style: ConstantFont.lightText.copyWith(fontSize: 12)),
                 ],),

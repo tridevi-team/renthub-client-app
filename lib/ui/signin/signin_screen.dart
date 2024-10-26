@@ -34,13 +34,13 @@ class SignInScreen extends StatelessWidget {
                     TextInputWidget(
                       hintText: 'Nhập email',
                       prefixIconPath: AssetSvg.iconMail,
-                      controller: controller.emailEditingController,
-                      errorInput: controller.emailErrorInputObject,
+                      controller: controller.phoneEditingController,
+                      errorInput: controller.phoneErrorInputObject,
                       sendOTP: true,
                       isSendOTP: controller.isSendOTP.value,
                       onSendOTP: () {
-                        if (controller.emailErrorInputObject.value.isError == false) {
-                          controller.generateOTPByEmail();
+                        if (controller.phoneErrorInputObject.value.isError == false) {
+                          controller.verifyPhoneNumber();
                         }
                       },
                       onChanged: controller.onChangeSignInEmail,
