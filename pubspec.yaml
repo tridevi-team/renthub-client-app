@@ -49,6 +49,7 @@ dependencies:
   firebase_auth: ^5.3.1
   firebase_messaging: ^15.1.2
   firebase_analytics: ^11.3.2
+  cloud_firestore: ^5.4.4
   http: ^1.2.2
   toastification: ^2.1.0
   pull_to_refresh: ^2.0.0
@@ -59,6 +60,7 @@ dependencies:
   google_sign_in: ^6.2.1
   jwt_decoder: ^2.0.1
   package_info_plus: ^8.1.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
