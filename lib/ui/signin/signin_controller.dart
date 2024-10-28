@@ -226,7 +226,7 @@ class SignInController extends BaseController {
       if (user != null) {
         String? token = await user.getIdToken();
         log("Token: $token");
-        if (JwtDecoder.isExpired(token!)) {
+        if (!JwtDecoder.isExpired(token!)) {
           print("kkfkfk");
         }
       }

@@ -12,6 +12,7 @@ import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart
 import 'package:rent_house/ui/home/home_screen/home_screen.dart';
 import 'package:rent_house/ui/house_renter/house_renter_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
+import 'package:rent_house/ui/statistic/statistic_screen.dart';
 
 class BottomNavigationBarView extends StatelessWidget {
   BottomNavigationBarView({super.key});
@@ -31,7 +32,7 @@ class BottomNavigationBarView extends StatelessWidget {
         },
         children: [
           true ? HomeScreen() : const HouseRenterScreen(),
-          CustomerScreen(),
+          StatisticScreen(),
           CustomerScreen(),
           CustomerScreen(),
         ],
