@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/statistic/widgets/line_chart_widget.dart';
+import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
 import 'package:rent_house/untils/currency_format.dart';
 
 class StatisticScreen extends StatelessWidget {
@@ -42,9 +43,13 @@ class StatisticScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
-                Text('Thống kê', style: ConstantFont.semiBoldText.copyWith(fontSize: 20)),
+                Text('Tiền thuê', style: ConstantFont.semiBoldText.copyWith(fontSize: 20)),
                 const SizedBox(height: 20),
-                LineChartWidget()
+                const LineChartWidget(),
+                const SizedBox(height: 20),
+                Text('Dịch vụ', style: ConstantFont.semiBoldText.copyWith(fontSize: 20)),
+                const SizedBox(height: 20),
+                const PieChartWidget()
               ],
             ),
           ),
