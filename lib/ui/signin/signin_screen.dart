@@ -40,7 +40,7 @@ class SignInScreen extends StatelessWidget {
                       isSendOTP: controller.isSendOTP.value,
                       onSendOTP: () {
                         if (controller.contactErrorInputObject.value.isError == false) {
-                          controller.verifyPhoneNumber();
+                          controller.sendOTP();
                         }
                       },
                       onChanged: controller.onChangeContactInput,

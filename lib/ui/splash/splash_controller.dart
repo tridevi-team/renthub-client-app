@@ -50,7 +50,7 @@ class SplashController extends BaseController {
         ProvinceSingleton.instance.setProvinces(provinces);
       }
     } catch (e) {
-      ToastUntil.toastNotification('Error fetching provinces', '$e', ToastStatus.error);
+      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
       print("Error fetching provinces: $e");
     }
   }

@@ -46,16 +46,17 @@ class SignInController extends BaseController {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
+        ToastUntil.toastNotification(description: 'Quá trình xác thực Google bị hủy bỏ.', status: ToastStatus.warning);
         return null;
       }
-
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       return googleAuth;
     } catch (e) {
-      print('Error during Google sign-in: $e');
+      ToastUntil.toastNotification(description: 'Đã xảy ra lỗi trong quá trình xác thực Google. Vui lòng thử lại.', status: ToastStatus.error);
       return null;
     }
   }
+
 
   Future<void> signInWithGoogle() async {
     try {
@@ -76,12 +77,24 @@ class SignInController extends BaseController {
         moveToNextPage();
       }
     } on FirebaseAuthException catch (e) {
-      ToastUntil.toastNotification('Có lỗi xảy ra', e.toString(), ToastStatus.warning);
+      String errorMessage;
+      switch (e.code) {
+        case 'user-disabled':
+          errorMessage = 'Tài khoản đã bị vô hiệu hóa.';
+          break;
+        case 'invalid-credential':
+          errorMessage = 'Thông tin xác thực không hợp lệ.';
+          break;
+        default:
+          errorMessage = 'Lỗi xác thực';
+          break;
+      }
+      ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.warning);
     } catch (e) {
       if (kDebugMode) {
-        print('Error during sign-in: $e');
+        print('Lỗi trong quá trình đăng nhập: $e');
       }
-      ToastUntil.toastNotification('Có lỗi xảy ra', e.toString(), ToastStatus.warning);
+      ToastUntil.toastNotification(description: 'Đã xảy ra lỗi không xác định.', status: ToastStatus.warning);
     }
   }
 
@@ -93,7 +106,7 @@ class SignInController extends BaseController {
     final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
 
     if (errorMessage != null) {
-      ToastUntil.toastNotification('Có lỗi xảy ra', errorMessage, ToastStatus.error);
+      ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.error);
       return;
     }
 
@@ -102,7 +115,7 @@ class SignInController extends BaseController {
     if (model.success == true) {
 
     } else {
-      ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
+      ToastUntil.toastNotification(description: model.message ?? 'Có lỗi xảy ra. Vui lòng thử lại sau.', status: ToastStatus.error);
     }
   }
 
@@ -126,7 +139,7 @@ class SignInController extends BaseController {
     final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
 
     if (errorMessage != null) {
-      ToastUntil.toastNotification('Có lỗi xảy ra', errorMessage, ToastStatus.error);
+      ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.error);
       return;
     }
 
@@ -138,7 +151,7 @@ class SignInController extends BaseController {
       saveToken();
       moveToNextPage();
     } else {
-      ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
+      ToastUntil.toastNotification(description: model.message ?? 'Có lỗi xảy ra. Vui lòng thử lại sau.', status: ToastStatus.error);
     }
   }
 
@@ -178,21 +191,18 @@ class SignInController extends BaseController {
     }
   }
 
-  void verifyPhoneNumber() async {
+  void sendOTP() async {
     try {
       await _auth.verifyPhoneNumber(
         phoneNumber: contactInputController.text.trim().replaceFirst('0', '+84'),
         verificationCompleted: (PhoneAuthCredential credential) async {
           await _auth.signInWithCredential(credential);
-          Get.snackbar("Success", "Logged in successfully!");
         },
         verificationFailed: (FirebaseAuthException e) {
-          print("Verification failed: $e");
+          ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
         },
         codeSent: (String verificationId, int? resendToken) {
           this.verificationId = verificationId;
-          print("VerifiedId: $verificationId");
-
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           this.verificationId = verificationId;
@@ -200,7 +210,7 @@ class SignInController extends BaseController {
         timeout: const Duration(seconds: 120),
       );
     } catch (e) {
-      Get.snackbar("Error", "Failed to verify phone number.");
+      ToastUntil.toastNotification(description: "Không xác minh được số điện thoại", status: ToastStatus.error);
     }
   }
 
@@ -210,10 +220,28 @@ class SignInController extends BaseController {
           verificationId: verificationId, smsCode: otpEditingController.text);
       await _auth.signInWithCredential(credential);
       saveToken();
-      ToastUntil.toastNotification("", "Đăng nhập thành công", ToastStatus.success);
+      ToastUntil.toastNotification(description: "Đăng nhập thành công", status: ToastStatus.success);
     } catch (e) {
-
-      ToastUntil.toastNotification('Có lỗi xảy ra', "Mã xác thực không hợp lệ", ToastStatus.error);
+      String errorMessage;
+      if (e is FirebaseAuthException) {
+        switch (e.code) {
+          case 'invalid-verification-code':
+            errorMessage = 'Mã xác minh không hợp lệ. Vui lòng kiểm tra lại.';
+            break;
+          case 'session-expired':
+            errorMessage = 'Phiên xác thực đã hết hạn. Vui lòng gửi lại mã OTP.';
+            break;
+          case 'too-many-requests':
+            errorMessage = 'Quá nhiều yêu cầu. Vui lòng thử lại sau.';
+            break;
+          default:
+            errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+            break;
+        }
+      } else {
+        errorMessage = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+      }
+      ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.error);
     }
   }
 
