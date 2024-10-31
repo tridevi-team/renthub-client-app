@@ -18,9 +18,9 @@ class BaseService {
     required HttpMethod httpMethod,
     bool auth = false,
     Map<String, String>? headers,
-    bool notUseBaseUrl = false
+    bool notUseBaseUrl = false,
   }) async {
-    http.Response? response;
+    http.Response response;
     headers ??= <String, String>{};
     headers["accept"] = "application/json";
     headers["Content-Type"] = "application/json";
@@ -65,26 +65,28 @@ class BaseService {
             const Duration(seconds: _timeoutDuration),
           );
           break;
+        default:
+          throw Exception("Unsupported HTTP method");
       }
     } on SocketException {
-      response = http.Response("No internet connection", 522);
+      return http.Response('No internet connection', 522);
     } on TimeoutException {
-      response = http.Response("Request timed out", 408);
+      return http.Response('Request timed out', 408);
     } catch (e) {
-      debugPrint("======= Lỗi try catch api =====");
+      debugPrint("======= Error in API request =======");
       debugPrint("ERROR: $e");
-      debugPrint("===============================");
-      response = http.Response('Something went wrong', 1000);
+      debugPrint("====================================");
+      return http.Response('Something went wrong', 500);
     }
 
     if (response.statusCode == 401) {
-      // Handle unauthorized access, e.g., token expiration
-      if (jsonDecode(response.body)["message"] != null) {
-        // Process the message
-      }
+      // Handle unauthorized access (e.g., token expiration)
+      // Implement token refresh logic here
     }
+
     if (kDebugMode) {
       log("=============Response===================");
+      log("Method: $httpMethod, Endpoint: $endpoint");
       print(response.body);
     }
 

@@ -43,14 +43,18 @@ class SplashController extends BaseController {
   Future<void> getListProvince() async {
     try {
       final response = await HomeService.fetchProvinces();
-      ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+      String? message = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+      if (message?.isNotEmpty ?? false) {
+        ToastUntil.toastNotification(description: '$message', status: ToastStatus.error);
+        return;
+      }
       final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
       if (decodedResponse.isNotEmpty) {
         final provinces = decodedResponse.map((json) => City.fromJson(json)).toList();
         ProvinceSingleton.instance.setProvinces(provinces);
       }
     } catch (e) {
-      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: e.toString(), status: ToastStatus.error);
       print("Error fetching provinces: $e");
     }
   }
