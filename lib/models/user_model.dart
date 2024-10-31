@@ -14,6 +14,7 @@ class UserModel {
   int? verify;
   int? firstLogin;
   String? token;
+  String? refreshToken;
   List<HouseModel>? houses;
 
   UserModel({
@@ -30,6 +31,7 @@ class UserModel {
     this.verify,
     this.firstLogin,
     this.token,
+    this.refreshToken,
     this.houses,
   });
 
@@ -47,6 +49,7 @@ class UserModel {
     verify = json['verify'];
     firstLogin = json['firstLogin'];
     token = json['token'];
+    refreshToken = json['refreshToken'];
     if (json['houses'] != null) {
       houses = (json['houses'] as List)
           .map((e) => HouseModel.fromJson(e))
@@ -71,6 +74,7 @@ class UserModel {
       'verify': verify,
       'firstLogin': firstLogin,
       'token': token,
+      'refreshToken': refreshToken,
       'houses': houses?.map((house) => house.toJson()).toList(),
     };
   }

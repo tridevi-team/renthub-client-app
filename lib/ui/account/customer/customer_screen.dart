@@ -6,6 +6,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 
 class CustomerScreen extends StatelessWidget {
@@ -72,6 +73,9 @@ class CustomerScreen extends StatelessWidget {
                 _buildListTile(
                   leadingAsset: AssetSvg.iconLogout,
                   titleText: 'Logout',
+                  onTap: () async {
+                    AppUtil.logout();
+                  }
                 ),
                 _buildListTile(leadingAsset: AssetSvg.iconHand, titleText: 'Remove account', color: AppColors.red),
               ],

@@ -39,4 +39,9 @@ class SharedPrefHelper {
   bool? getBool(String key) {
     return _prefs?.getBool(key);
   }
+
+  Future<bool> removeString(String key) async {
+    if (_prefs == null) await init();
+    return _prefs!.remove(key);
+  }
 }

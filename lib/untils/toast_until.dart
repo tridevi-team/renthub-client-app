@@ -15,11 +15,13 @@ class ToastUntil {
       statusColor = AppColors.green;
       iconPath = 'assets/icons/ic_checkmark_circle.svg';
     }
+
     if(status == ToastStatus.warning){
       statusColor = AppColors.yellow;
       iconPath = 'assets/icons/ic_alert_circle.svg';
     }
 
+    toastification.dismissAll();
     toastification.show(
         title: Text(title),
         description: Text(description),

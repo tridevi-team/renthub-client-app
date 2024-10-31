@@ -29,21 +29,21 @@ class SignInScreen extends StatelessWidget {
                     const SizedBox(height: 50),
                     SvgPicture.asset('assets/images/img_rent_house.svg', width: Get.width / 2),
                     const SizedBox(height: 50),
-                    const TitleInputWidget(title: 'Email', isRequired: true),
+                    const TitleInputWidget(title: 'Email / Phone', isRequired: true),
                     const SizedBox(height: 4),
                     TextInputWidget(
-                      hintText: 'Nhập email',
-                      prefixIconPath: AssetSvg.iconMail,
-                      controller: controller.phoneEditingController,
-                      errorInput: controller.phoneErrorInputObject,
+                      hintText: 'Nhập Email / Phone',
+                      prefixIconPath: AssetSvg.iconPerson,
+                      controller: controller.contactInputController,
+                      errorInput: controller.contactErrorInputObject,
                       sendOTP: true,
                       isSendOTP: controller.isSendOTP.value,
                       onSendOTP: () {
-                        if (controller.phoneErrorInputObject.value.isError == false) {
+                        if (controller.contactErrorInputObject.value.isError == false) {
                           controller.verifyPhoneNumber();
                         }
                       },
-                      onChanged: controller.onChangeSignInEmail,
+                      onChanged: controller.onChangeContactInput,
                     ),
                     const SizedBox(height: 16),
                     const TitleInputWidget(title: 'OTP', isRequired: true),
@@ -68,7 +68,7 @@ class SignInScreen extends StatelessWidget {
                     const SizedBox(height: 18),
                     CustomElevatedButton(
                         label: 'Đăng nhập',
-                        onTap: controller.signInWithEmail,
+                        onTap: controller.onLogin,
                         bgColor: const Color(0xFF4B7BE5),
                         textColor: Colors.white),
                     const SizedBox(height: 16),

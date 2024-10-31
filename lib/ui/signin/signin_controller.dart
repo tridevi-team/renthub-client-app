@@ -11,6 +11,7 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/models/response_model.dart';
+import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/untils/response_error_util.dart';
@@ -19,11 +20,8 @@ import 'package:rent_house/untils/toast_until.dart';
 import 'package:rent_house/untils/validate_util.dart';
 
 class SignInController extends BaseController {
-  TextEditingController emailEditingController = TextEditingController();
-  Rx<ErrorInputModel> emailErrorInputObject = ErrorInputModel().obs;
-
-  TextEditingController phoneEditingController = TextEditingController();
-  Rx<ErrorInputModel> phoneErrorInputObject = ErrorInputModel().obs;
+  TextEditingController contactInputController = TextEditingController();
+  Rx<ErrorInputModel> contactErrorInputObject = ErrorInputModel().obs;
 
   TextEditingController otpEditingController = TextEditingController();
   Rx<ErrorInputModel> otpErrorInputObject = ErrorInputModel().obs;
@@ -31,15 +29,17 @@ class SignInController extends BaseController {
   RxBool isSendOTP = false.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  RxString verificationId = ''.obs;
+  String verificationId = '';
+  String accessToken = '';
+  String refreshToken = '';
 
   @override
   void onInit() {
-    emailEditingController.text = "example@gmail.com";
-    otpEditingController.text = "000000";
-    phoneEditingController.text = "0869330512";
+    if (kDebugMode) {
+      otpEditingController.text = "000000";
+      contactInputController.text = "0123456789";
+    }
     super.onInit();
-    //validateGoogleToken();
   }
 
   Future<GoogleSignInAuthentication?> _authenticateWithGoogle() async {
@@ -70,8 +70,9 @@ class SignInController extends BaseController {
       );
       await _auth.signInWithCredential(credential);
       String? token = await _auth.currentUser?.getIdToken();
-      if (token != null) {
-        saveToken(token);
+      String? refreshToken = _auth.currentUser?.refreshToken;
+      if (token != null && refreshToken != null) {
+        saveToken();
         moveToNextPage();
       }
     } on FirebaseAuthException catch (e) {
@@ -84,20 +85,9 @@ class SignInController extends BaseController {
     }
   }
 
-  Future<void> validateGoogleToken() async {
-    String? token = await _auth.currentUser?.getIdToken();
-    if (token != null && JwtDecoder.isExpired(token)) {
-      saveToken(token);
-      moveToNextPage();
-      return;
-    }
-    ToastUntil.toastNotification('Có lỗi xảy ra', "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại để tiếp tục.", ToastStatus.warning);
-    return;
-  }
-
   Future<void> generateOTPByEmail() async {
     isSendOTP.value = true;
-    final email = emailEditingController.text.trim();
+    final email = contactInputController.text.trim();
     final response = await AuthService.generateOTPByEmail({"email": email});
 
     final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
@@ -116,12 +106,21 @@ class SignInController extends BaseController {
     }
   }
 
-  Future<void> signInWithEmail() async {
-    verifyOtp();
-    /*if (emailErrorInputObject.value.isError == true || otpErrorInputObject.value.isError == true) {
+  Future<void> onLogin() async {
+    if (contactErrorInputObject.value.isError == true || otpErrorInputObject.value.isError == true) {
       return;
     }
-    final email = emailEditingController.text.trim();
+
+    if (contactInputController.text.isPhoneNumber) {
+      signInWithPhone();
+    } else {
+      signInWithEmail();
+    }
+  }
+
+  Future<void> signInWithEmail() async {
+
+    final email = contactInputController.text.trim();
     final response = await AuthService.generateOTPByEmail({"email": email});
 
     final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
@@ -134,28 +133,29 @@ class SignInController extends BaseController {
     final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
     ResponseModel<UserModel> model = ResponseModel.fromJson(decodedResponse, parseData: (data) => UserModel.fromJson(data));
     if (model.success == true) {
-      String accessToken = model.data?.accessToken ?? "";
-      saveToken(accessToken);
+      accessToken = model.data?.token ?? "";
+      refreshToken = model.data?.refreshToken ?? "";
+      saveToken();
       moveToNextPage();
     } else {
       ToastUntil.toastNotification('Có lỗi xảy ra', model.message ?? 'Unknown error', ToastStatus.error);
-    }*/
+    }
   }
 
-  void onChangeSignInEmail(String value) {
+  void onChangeContactInput(String value) {
     if (value.isEmpty) {
-      emailErrorInputObject.value.isError = true;
-      emailErrorInputObject.value.message = "Đây là trường bắt buộc";
+      contactErrorInputObject.value.isError = true;
+      contactErrorInputObject.value.message = "Đây là trường bắt buộc";
     } else {
-      bool isValidEmail = false;
       if (ValidateUtil.isValidEmail(value)) {
-        isValidEmail = true;
-      }
-      if (isValidEmail) {
-        emailErrorInputObject.value.isError = false;
+        contactErrorInputObject.value.isError = false;
+        contactErrorInputObject.value.message = "";
+      } else if (ValidateUtil.isValidPhone(value)) {
+        contactErrorInputObject.value.isError = false;
+        contactErrorInputObject.value.message = "";
       } else {
-        emailErrorInputObject.value.isError = true;
-        emailErrorInputObject.value.message = "Dữ liệu nhập vào của bạn không đúng định dạng, vui lòng kiểm tra lại";
+        contactErrorInputObject.value.isError = true;
+        contactErrorInputObject.value.message = "Dữ liệu nhập vào của bạn không đúng định dạng, vui lòng kiểm tra lại";
       }
     }
   }
@@ -181,25 +181,21 @@ class SignInController extends BaseController {
   void verifyPhoneNumber() async {
     try {
       await _auth.verifyPhoneNumber(
-        phoneNumber: phoneEditingController.text.trim().replaceFirst('0', '+84'),
+        phoneNumber: contactInputController.text.trim().replaceFirst('0', '+84'),
         verificationCompleted: (PhoneAuthCredential credential) async {
           await _auth.signInWithCredential(credential);
-
-          print("accessTokenfff ${credential.accessToken}");
-
-          print("tokenINd ${credential.token}");
           Get.snackbar("Success", "Logged in successfully!");
         },
         verificationFailed: (FirebaseAuthException e) {
           print("Verification failed: $e");
         },
         codeSent: (String verificationId, int? resendToken) {
-          this.verificationId.value = verificationId;
+          this.verificationId = verificationId;
           print("VerifiedId: $verificationId");
 
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          this.verificationId.value = verificationId;
+          this.verificationId = verificationId;
         },
         timeout: const Duration(seconds: 120),
       );
@@ -208,37 +204,24 @@ class SignInController extends BaseController {
     }
   }
 
-  void verifyOtp() async {
+  void signInWithPhone() async {
     try {
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId.value, smsCode: otpEditingController.text);
+          verificationId: verificationId, smsCode: otpEditingController.text);
       await _auth.signInWithCredential(credential);
-      _getToken();
-      Get.snackbar("Success", "Logged in successfully!");
+      saveToken();
+      ToastUntil.toastNotification("", "Đăng nhập thành công", ToastStatus.success);
     } catch (e) {
-      Get.snackbar("Error", "Invalid OTP.");
-    }
-  }
-  void _getToken() async {
-    try {
-      User? user = _auth.currentUser;
 
-      if (user != null) {
-        String? token = await user.getIdToken();
-        log("Token: $token");
-        if (!JwtDecoder.isExpired(token!)) {
-          print("kkfkfk");
-        }
-      }
-    } catch (e) {
-      print("Failed to get token: $e");
+      ToastUntil.toastNotification('Có lỗi xảy ra', "Mã xác thực không hợp lệ", ToastStatus.error);
     }
   }
 
-
-  void saveToken(String accessToken) {
+  void saveToken() {
     TokenSingleton.instance.setAccessToken(accessToken);
+    TokenSingleton.instance.setRefreshToken(refreshToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefToken, accessToken);
+    SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, accessToken);
   }
 
    void moveToNextPage() {
