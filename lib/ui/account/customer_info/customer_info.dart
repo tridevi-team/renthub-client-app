@@ -126,7 +126,7 @@ class CustomerInfo extends StatelessWidget {
         ),
         InkWell(
           onTap: controller.useNFC,
-            child: Text("USE NFC"))
+            child: Text("Use Scan QR"))
       ],
     );
   }
