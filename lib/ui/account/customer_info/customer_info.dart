@@ -125,7 +125,7 @@ class CustomerInfo extends StatelessWidget {
           colorBorder: AppColors.white,
         ),
         InkWell(
-          onTap: controller.useNFC,
+          onTap: controller.useScanQR,
             child: Text("Use Scan QR"))
       ],
     );
