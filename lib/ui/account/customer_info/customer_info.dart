@@ -1,27 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/ui/account/customer_info/customer_info_controller.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 import 'package:rent_house/widgets/textfield/title_input_widget.dart';
 
-class CustomerInfo extends StatefulWidget {
-  const CustomerInfo({super.key});
+class CustomerInfo extends StatelessWidget {
+  CustomerInfo({super.key});
 
-  @override
-  _CustomerInfoState createState() => _CustomerInfoState();
-}
-
-class _CustomerInfoState extends State<CustomerInfo> {
+  final controller = Get.put(CustomerInfoController());
   bool isTempReg = false;
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: const CustomAppBar(label: "Thông tin cá nhân"),
@@ -126,6 +124,9 @@ class _CustomerInfoState extends State<CustomerInfo> {
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
         ),
+        InkWell(
+          onTap: controller.useNFC,
+            child: Text("USE NFC"))
       ],
     );
   }
@@ -191,9 +192,7 @@ class _CustomerInfoState extends State<CustomerInfo> {
             alignment: Alignment.bottomRight,
             child: InkWell(
               onTap: () {
-                setState(() {
-                  isTempReg = true;
-                });
+
               },
               child: Text(
                 'Bỏ qua',
