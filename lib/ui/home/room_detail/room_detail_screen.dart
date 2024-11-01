@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/house_detail/house_detail_controller.dart';
-import 'package:rent_house/untils/currency_format.dart';
+import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 
 class RoomDetailScreen extends StatelessWidget {
@@ -46,7 +45,7 @@ class RoomDetailScreen extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: ConstantFont.boldText.copyWith(fontSize: 18)),
                   const SizedBox(height: 10),
-                  Text(CurrencyFormat.formatCurrency(controller.selectedRoom.price ?? 0),
+                  Text(FormatUtil.formatCurrency(controller.selectedRoom.price ?? 0),
                       style: ConstantFont.mediumText.copyWith(fontSize: 16)),
                   const SizedBox(height: 4),
                   Text('Đống Đa, Hà Nội',

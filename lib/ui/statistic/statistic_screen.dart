@@ -4,7 +4,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/statistic/widgets/line_chart_widget.dart';
 import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
-import 'package:rent_house/untils/currency_format.dart';
+import 'package:rent_house/untils/format_util.dart';
 
 class StatisticScreen extends StatelessWidget {
   const StatisticScreen({super.key});
@@ -34,7 +34,7 @@ class StatisticScreen extends StatelessWidget {
                         children: [
                           Text("Hóa đơn", style: ConstantFont.mediumText.copyWith(fontSize: 18, color: AppColors.white)),
                           const SizedBox(width: 10),
-                          Text(CurrencyFormat.formatCurrency(2800000), style: ConstantFont.mediumText.copyWith(fontSize: 18, color: AppColors.white)),
+                          Text(FormatUtil.formatCurrency(2800000), style: ConstantFont.mediumText.copyWith(fontSize: 18, color: AppColors.white)),
                         ],
                       ),
                       const SizedBox(height: 10),

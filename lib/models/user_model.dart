@@ -2,81 +2,82 @@ import 'package:rent_house/models/address_model.dart';
 
 class UserModel {
   String? id;
+  String? roomId;
+  String? name;
+  String? citizenId;
+  DateTime? birthday;
+  int? gender;
   String? email;
-  String? fullName;
-  String? gender;
   String? phoneNumber;
   String? address;
-  DateTime? birthday;
-  String? role;
-  String? type;
-  int? status;
-  int? verify;
-  int? firstLogin;
-  String? token;
-  String? refreshToken;
-  List<HouseModel>? houses;
+  int? tempReg;
+  String? moveInDate;
+  int? represent;
+  String? note;
+  String? createdBy;
+  String? createdAt;
+  String? updatedBy;
+  String? updatedAt;
 
-  UserModel({
-    this.id,
-    this.email,
-    this.fullName,
+
+  UserModel({this.id,
+    this.roomId,
+    this.name,
+    this.citizenId,
+    this.birthday,
     this.gender,
+    this.email,
     this.phoneNumber,
     this.address,
-    this.birthday,
-    this.role,
-    this.type,
-    this.status,
-    this.verify,
-    this.firstLogin,
-    this.token,
-    this.refreshToken,
-    this.houses,
-  });
+    this.tempReg,
+    this.moveInDate,
+    this.represent,
+    this.note,
+    this.createdBy,
+    this.createdAt,
+    this.updatedBy,
+    this.updatedAt});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    email = json['email'];
-    fullName = json['fullName'];
+    roomId = json['roomId'];
+    name = json['name'];
+    citizenId = json['citizenId'];
+    birthday = json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
     gender = json['gender'];
+    email = json['email'];
     phoneNumber = json['phoneNumber'];
     address = json['address'];
-    birthday = json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
-    role = json['role'];
-    type = json['type'];
-    status = json['status'];
-    verify = json['verify'];
-    firstLogin = json['firstLogin'];
-    token = json['token'];
-    refreshToken = json['refreshToken'];
-    if (json['houses'] != null) {
-      houses = (json['houses'] as List)
-          .map((e) => HouseModel.fromJson(e))
-          .toList();
-    } else {
-      houses = [];
-    }
+    tempReg = json['tempReg'];
+    moveInDate = json['moveInDate'];
+    represent = json['represent'];
+    note = json['note'];
+    createdBy = json['createdBy'];
+    createdAt = json['createdAt'];
+    updatedBy = json['updatedBy'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'fullName': fullName,
-      'gender': gender,
-      'phoneNumber': phoneNumber,
-      'address': address, // Change this to address?.toJson() if using Address model
-      'birthday': birthday?.toIso8601String(),
-      'role': role,
-      'type': type,
-      'status': status,
-      'verify': verify,
-      'firstLogin': firstLogin,
-      'token': token,
-      'refreshToken': refreshToken,
-      'houses': houses?.map((house) => house.toJson()).toList(),
-    };
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['roomId'] = roomId;
+    data['name'] = name;
+    data['citizenId'] = citizenId;
+    data['birthday'] = birthday;
+    data['gender'] = gender;
+    data['email'] = email;
+    data['phoneNumber'] = phoneNumber;
+    data['address'] = address;
+    data['tempReg'] = tempReg;
+    data['moveInDate'] = moveInDate;
+    data['represent'] = represent;
+    data['note'] = note;
+    data['createdBy'] = createdBy;
+    data['createdAt'] = createdAt;
+    data['updatedBy'] = updatedBy;
+    data['updatedAt'] = updatedAt;
+    return data;
   }
 }
 

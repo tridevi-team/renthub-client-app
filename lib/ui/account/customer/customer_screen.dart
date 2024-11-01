@@ -6,6 +6,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
+import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 
@@ -27,25 +28,30 @@ class CustomerScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                  leading: CachedNetworkImage(
-                    imageUrl: 'imageUrl',
-                    height: 60,
-                    width: 60,
-                    errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
+                InkWell(
+                  onTap: () {
+                    Get.to(() => CustomerInfo());
+                  },
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    leading: CachedNetworkImage(
+                      imageUrl: 'imageUrl',
+                      height: 60,
+                      width: 60,
+                      errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
+                    ),
+                    title: Text(
+                      'Lê Hòa',
+                      style: ConstantFont.boldText.copyWith(fontSize: 18),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      'Show profile',
+                      style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
+                    ),
+                    trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
                   ),
-                  title: Text(
-                    'Lê Hòa',
-                    style: ConstantFont.boldText.copyWith(fontSize: 18),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    'Show profile',
-                    style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
-                  ),
-                  trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
                 ),
                 const SizedBox(height: 10),
                 const Divider(height: 1, color: AppColors.neutralE5E5E3),

@@ -26,4 +26,6 @@ class AssetSvg {
   static const String iconLogout = "assets/icons/ic_logout.svg";
   static const String iconHand = "assets/icons/ic_hand.svg";
   static const String iconCheckMark = "assets/icons/ic_checkmark_circle.svg";
+  static const String iconGoogle = "assets/icons/ic_google.svg";
+  static const String iconRent = "assets/icons/ic_rent.svg";
 }

@@ -43,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget{
             alignment: Alignment.center,
             children: [
               const SizedBox(height: 24, width: 24),
-              SvgPicture.asset(AssetSvg.iconChevronBack, color: AppColors.white),
+              SvgPicture.asset(AssetSvg.iconChevronBack, color: isTransparent ? AppColors.white : AppColors.black),
             ],
           ),
         )

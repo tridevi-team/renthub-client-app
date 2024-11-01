@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/house_data_model.dart';
-import 'package:rent_house/untils/currency_format.dart';
+import 'package:rent_house/untils/format_util.dart';
 
 class HomeWidget extends StatelessWidget {
 
@@ -50,7 +50,7 @@ class HomeWidget extends StatelessWidget {
                 Text(house.name ?? '', style: ConstantFont.semiBoldText),
                 const SizedBox(height: 8),
                   Text(
-                      '${CurrencyFormat.roundToMillion(house.minPrice!)} - ${CurrencyFormat.roundToMillion(house.maxPrice!)} triệu',
+                      '${FormatUtil.roundToMillion(house.minPrice!)} - ${FormatUtil.roundToMillion(house.maxPrice!)} triệu',
                       style: ConstantFont.mediumText
                           .copyWith(fontSize: 16, color: AppColors.primary1)),
                   const SizedBox(height: 2),
