@@ -6,10 +6,10 @@ import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
 class CustomerInfoController extends BaseController {
 
   void useNFC () {
-    Get.to(() => NfcScreen());
+    Get.to(() => const NfcScreen());
   }
 
   void useScanQR() {
-    Get.to(() => QrScanScreen());
+    Get.to(() => const QrScanScreen());
   }
 }

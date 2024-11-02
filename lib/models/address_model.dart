@@ -26,4 +26,9 @@ class Address {
       'street': street,
     };
   }
+
+  @override
+  String toString() {
+    return "$street, $ward, $district, $city";
+  }
 }

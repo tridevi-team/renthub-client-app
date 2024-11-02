@@ -17,6 +17,7 @@ import 'package:rent_house/widgets/ratio/radio_option.dart';
 class SearchXController extends BaseController {
 
   RefreshController refreshController = RefreshController();
+  @override
   ScrollController scrollController = ScrollController();
 
   List<House> houseList = [];

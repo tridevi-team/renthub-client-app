@@ -7,7 +7,7 @@ class Room {
   String? status;
   String? description;
   List<ImageModel>? images;
-  List<Service>? services;
+  List<ServiceModel>? services;
 
   Room({
     this.id,
@@ -32,7 +32,7 @@ class Room {
     images = (json['images'] as List?)?.map((i) => ImageModel.fromJson(i)).toList() ?? [];
     if (json['services'] != null) {
       services = (json['services'] as List)
-          .map((i) => Service.fromJson(i))
+          .map((i) => ServiceModel.fromJson(i))
           .toList();
     } else {
       services = [];
@@ -80,7 +80,7 @@ class ImageModel {
   }
 }
 
-class Service {
+class ServiceModel {
   String? id;
   String? name;
   int? unitPrice;
@@ -88,7 +88,7 @@ class Service {
   String? type;
   int? quantity;
 
-  Service({
+  ServiceModel({
     required this.id,
     this.name,
     this.unitPrice,
@@ -97,7 +97,7 @@ class Service {
     this.quantity,
   });
 
-  Service.fromJson(Map<String, dynamic> json) {
+  ServiceModel.fromJson(Map<String, dynamic> json) {
     id = json['id'] ?? '';
     name = json['name'];
     unitPrice = json['unitPrice'];

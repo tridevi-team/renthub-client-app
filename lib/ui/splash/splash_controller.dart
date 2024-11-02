@@ -16,6 +16,7 @@ import 'package:rent_house/untils/toast_until.dart';
 
 class SplashController extends BaseController {
 
+  String token = '';
   @override
   void onInit() {
     startAnimation();
@@ -25,19 +26,22 @@ class SplashController extends BaseController {
   Future<void> startAnimation() async {
     await initData();
     await Future.delayed(const Duration(seconds: 1));
-    String token = SharedPrefHelper.instance.getString(ConstantString.prefToken) ?? '';
-
-    if (token.isNotEmpty && JwtDecoder.isExpired(token)) {
+    token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
+    if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
       TokenSingleton.instance.setAccessToken(token);
       Get.off(() => BottomNavigationBarView());
     } else {
       TokenSingleton.instance.setAccessToken('');
+      SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken);
       Get.off(() => const OnboardingScreen());
     }
   }
 
   Future<void> initData() async{
     await getListProvince();
+    if (token.isNotEmpty) {
+      //fetch info customer
+    }
   }
 
   Future<void> getListProvince() async {

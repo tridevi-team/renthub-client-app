@@ -1,14 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
-import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore_item.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 
 class HomeExplore extends StatelessWidget {
-  HomeExplore({super.key});
+  const HomeExplore({super.key});
 
 
   @override

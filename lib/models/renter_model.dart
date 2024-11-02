@@ -51,7 +51,7 @@ class RenterModel {
     if (json['houses'] != null) {
       houses = <Houses>[];
       json['houses'].forEach((v) {
-        houses!.add(new Houses.fromJson(v));
+        houses!.add(Houses.fromJson(v));
       });
     }
   }
@@ -175,45 +175,45 @@ class Permissions {
         this.payment});
 
   Permissions.fromJson(Map<String, dynamic> json) {
-    house = json['house'] != null ? new House.fromJson(json['house']) : null;
-    role = json['role'] != null ? new House.fromJson(json['role']) : null;
-    room = json['room'] != null ? new House.fromJson(json['room']) : null;
-    renter = json['renter'] != null ? new House.fromJson(json['renter']) : null;
+    house = json['house'] != null ? House.fromJson(json['house']) : null;
+    role = json['role'] != null ? House.fromJson(json['role']) : null;
+    room = json['room'] != null ? House.fromJson(json['room']) : null;
+    renter = json['renter'] != null ? House.fromJson(json['renter']) : null;
     service =
-    json['service'] != null ? new House.fromJson(json['service']) : null;
-    bill = json['bill'] != null ? new House.fromJson(json['bill']) : null;
+    json['service'] != null ? House.fromJson(json['service']) : null;
+    bill = json['bill'] != null ? House.fromJson(json['bill']) : null;
     equipment = json['equipment'] != null
-        ? new House.fromJson(json['equipment'])
+        ? House.fromJson(json['equipment'])
         : null;
     payment =
-    json['payment'] != null ? new House.fromJson(json['payment']) : null;
+    json['payment'] != null ? House.fromJson(json['payment']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.house != null) {
-      data['house'] = this.house!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (house != null) {
+      data['house'] = house!.toJson();
     }
-    if (this.role != null) {
-      data['role'] = this.role!.toJson();
+    if (role != null) {
+      data['role'] = role!.toJson();
     }
-    if (this.room != null) {
-      data['room'] = this.room!.toJson();
+    if (room != null) {
+      data['room'] = room!.toJson();
     }
-    if (this.renter != null) {
-      data['renter'] = this.renter!.toJson();
+    if (renter != null) {
+      data['renter'] = renter!.toJson();
     }
-    if (this.service != null) {
-      data['service'] = this.service!.toJson();
+    if (service != null) {
+      data['service'] = service!.toJson();
     }
-    if (this.bill != null) {
-      data['bill'] = this.bill!.toJson();
+    if (bill != null) {
+      data['bill'] = bill!.toJson();
     }
-    if (this.equipment != null) {
-      data['equipment'] = this.equipment!.toJson();
+    if (equipment != null) {
+      data['equipment'] = equipment!.toJson();
     }
-    if (this.payment != null) {
-      data['payment'] = this.payment!.toJson();
+    if (payment != null) {
+      data['payment'] = payment!.toJson();
     }
     return data;
   }
@@ -235,11 +235,11 @@ class House {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['create'] = this.create;
-    data['read'] = this.read;
-    data['update'] = this.update;
-    data['delete'] = this.delete;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['create'] = create;
+    data['read'] = read;
+    data['update'] = update;
+    data['delete'] = delete;
     return data;
   }
 }

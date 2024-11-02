@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/ui/splash/splash_controller.dart';

@@ -13,6 +13,7 @@ import 'package:rent_house/ui/home/home_explore/home_explore.dart';
 class HomeController extends BaseController {
   //controller
   RefreshController refreshController = RefreshController();
+  @override
   ScrollController scrollController = ScrollController();
 
   //widgets
@@ -37,7 +38,7 @@ class HomeController extends BaseController {
   }
 
   void _buildExploreWidget() {
-    widgets.add(HomeExplore());
+    widgets.add(const HomeExplore());
   }
 
   Future<void> fetchHouseList({

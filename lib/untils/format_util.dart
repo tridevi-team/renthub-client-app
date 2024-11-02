@@ -2,8 +2,10 @@ import 'package:intl/intl.dart';
 class FormatUtil {
   FormatUtil._();
 
-  static int roundToMillion(int price) {
-    return (price / 1000000).round();
+  static String roundToMillion(int price) {
+    double rounded = (price / 100000).roundToDouble() / 10;
+    final formatter = NumberFormat("##0.0", "vi");
+    return formatter.format(rounded);
   }
 
   static String formatCurrency(int amount) {

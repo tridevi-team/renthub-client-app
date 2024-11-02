@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +6,6 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer/customer_screen.dart';
-import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_screen.dart';
 import 'package:rent_house/ui/house_renter/house_renter_screen.dart';
@@ -32,7 +30,7 @@ class BottomNavigationBarView extends StatelessWidget {
         },
         children: [
           true ? HomeScreen() : const HouseRenterScreen(),
-          StatisticScreen(),
+          const StatisticScreen(),
           CustomerScreen(),
           CustomerScreen(),
         ],

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rent_house/services/nfc_service.dart';
 
 class NfcScreen extends StatefulWidget {
+  const NfcScreen({super.key});
+
   @override
   _NfcScreenState createState() => _NfcScreenState();
 }
@@ -14,21 +16,21 @@ class _NfcScreenState extends State<NfcScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('NFC Example'),
+        title: const Text('NFC Example'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(_nfcData),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _getCardUID,
-              child: Text('Get Card UID'),
+              child: const Text('Get Card UID'),
             ),
             ElevatedButton(
               onPressed: () => _getVersion('YOUR_COMMANDS_HERE'),
-              child: Text('Get Version'),
+              child: const Text('Get Version'),
             ),
           ],
         ),

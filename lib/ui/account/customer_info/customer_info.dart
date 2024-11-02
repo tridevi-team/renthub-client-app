@@ -68,8 +68,8 @@ class CustomerInfo extends StatelessWidget {
 
   Widget _buildAccountInfo() {
     return _infoContainer([
-      _buildInfoItem("Email", AssetSvg.iconMail, "hoalt@magenest.com"),
-      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber('+84123456789')),
+      _buildInfoItem("Email", AssetSvg.iconMail, "hoalt@magenest.com", color: AppColors.primary500),
+      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber('+84123456789'), color: AppColors.primary500),
       _buildInfoItem("Tài khoản liên kết", AssetSvg.iconGoogle, "Google"),
     ]);
   }
@@ -91,7 +91,7 @@ class CustomerInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(String title, String iconPath, String content) {
+  Widget _buildInfoItem(String title, String iconPath, String content, {Color? color}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -102,7 +102,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 10),
         Row(
           children: [
-            SvgPicture.asset(iconPath, color: AppColors.primary500, width: 26),
+            SvgPicture.asset(iconPath, color: color, width: 26),
             const SizedBox(width: 6),
             Expanded(child: Text(content, style: ConstantFont.mediumText.copyWith(fontSize: 16))),
           ],
@@ -126,7 +126,7 @@ class CustomerInfo extends StatelessWidget {
         ),
         InkWell(
           onTap: controller.useScanQR,
-            child: Text("Use Scan QR"))
+            child: const Text("Use Scan QR"))
       ],
     );
   }

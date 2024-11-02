@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_font.dart';
-import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
-import 'package:rent_house/ui/house_renter/house_renter_screen.dart';
-import 'package:rent_house/ui/signin/signin_screen.dart';
-import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
@@ -87,7 +83,7 @@ class MyApp extends StatelessWidget {
             selectionHandleColor: Colors.grey,
           ),
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
         builder: (context, child) {
           return MediaQuery(
               data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),

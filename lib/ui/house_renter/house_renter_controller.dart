@@ -4,8 +4,4 @@ class HouseRenterController extends BaseController {
 
 
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 }

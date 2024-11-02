@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -7,18 +6,20 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
-import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
+import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class BottomNavBarController extends FullLifeCycleController {
@@ -126,7 +127,10 @@ class BottomNavBarController extends FullLifeCycleController {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) {
-        LocalNotificationUtil.createNotification(message);
+        bool isValidAccessToken = JwtDecoder.isExpired(SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
+        if (isValidAccessToken) {
+          LocalNotificationUtil.createNotification(message);
+        }
       }
     });
 
@@ -271,7 +275,7 @@ class BottomNavBarController extends FullLifeCycleController {
                         }
                       },
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(AppColors.primary1)),
+                          backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
                       child: Text('Xác nhận',
                           style: ConstantFont.regularText.copyWith(color: AppColors.white)),
                     ),
