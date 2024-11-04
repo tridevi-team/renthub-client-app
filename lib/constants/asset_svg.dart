@@ -28,4 +28,6 @@ class AssetSvg {
   static const String iconCheckMark = "assets/icons/ic_checkmark_circle.svg";
   static const String iconGoogle = "assets/icons/ic_google.svg";
   static const String iconRent = "assets/icons/ic_rent.svg";
+  static const String iconQR = "assets/icons/ic_qr.svg";
+  static const String iconNFC = "assets/icons/ic_nfc.svg";
 }

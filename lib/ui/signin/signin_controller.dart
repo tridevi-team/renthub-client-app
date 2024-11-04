@@ -64,7 +64,7 @@ class SignInController extends BaseController {
         idToken: googleAuth.idToken,
       );
       await _auth.signInWithCredential(credential);
-      _processLogin(await _auth.currentUser?.getIdToken(), _auth.currentUser?.refreshToken, ConstantString.prefTypeEmail);
+      _processLogin(await _auth.currentUser?.getIdToken(), ConstantString.prefTypeEmail);
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
@@ -176,7 +176,7 @@ class SignInController extends BaseController {
         smsCode: otpEditingController.text,
       );
       await _auth.signInWithCredential(credential);
-      _processLogin(await _auth.currentUser?.getIdToken(), _auth.currentUser?.refreshToken, ConstantString.prefTypePhone);
+      _processLogin(await _auth.currentUser?.getIdToken(), ConstantString.prefTypePhone);
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
@@ -184,10 +184,10 @@ class SignInController extends BaseController {
     }
   }
 
-  void _processLogin(String? token, String? refreshToken, String type) {
-    if (token != null && refreshToken != null) {
+  void _processLogin(String? token, String type, {String? refreshToken}) {
+    if (token != null) {
       accessToken = token;
-      this.refreshToken = refreshToken;
+      this.refreshToken = refreshToken ?? '';
       saveToken(type);
       moveToNextPage();
     }

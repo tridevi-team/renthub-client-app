@@ -26,4 +26,22 @@ class FormatUtil {
     DateTime dateTime = DateTime.parse(isoTime).toLocal();
     return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   }
+
+  static String formatDateOfBirth(String? dateOfBirth) {
+    if (dateOfBirth?.length != 8) {
+      return "Invalid date format";
+    }
+
+    String day = dateOfBirth!.substring(0, 2);
+    String month = dateOfBirth.substring(2, 4);
+    String year = dateOfBirth.substring(4, 8);
+
+    try {
+      DateTime dob = DateTime.parse("$year-$month-$day");
+
+      return DateFormat('dd/MM/yyyy').format(dob);
+    } catch (e) {
+      return "Invalid date format";
+    }
+  }
 }

@@ -8,6 +8,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info_controller.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
+import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 import 'package:rent_house/widgets/textfield/title_input_widget.dart';
@@ -17,27 +18,60 @@ class CustomerInfo extends StatelessWidget {
 
   final controller = Get.put(CustomerInfoController());
   bool isTempReg = false;
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: const CustomAppBar(label: "Thông tin cá nhân"),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileImage(),
-            const SizedBox(height: 10),
-            _buildProfileName(),
-            const SizedBox(height: 20),
-            _buildAccountInfo(),
-            const SizedBox(height: 20),
-            _buildCustomerInfo(),
-            const SizedBox(height: 20),
-            _buildOtherInfo(),
-          ],
+      body: Obx(
+          () => Visibility(
+            visible: controller.isVisible.value,
+            child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProfileImage(),
+                const SizedBox(height: 10),
+                _buildProfileName(),
+                const SizedBox(height: 20),
+                _buildAccountInfo(),
+                const SizedBox(height: 20),
+                _buildCustomerInfo(),
+                const SizedBox(height: 20),
+                _buildOtherInfo(),
+              ],
+            ),
+                    ),
+          ),
+      ),
+      bottomNavigationBar: Material(
+        elevation: 10,
+        child: Container(
+          width: Get.width,
+          padding: const EdgeInsets.all(10),
+          color: AppColors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: CustomElevatedButton(
+                    label: 'Hủy',
+                    onTap: () {
+                      Get.back();
+                    }),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: CustomElevatedButton(
+                    label: 'Xác nhận',
+                    textColor: AppColors.white,
+                    bgColor: AppColors.primary600,
+                    onTap: () {}),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -69,7 +103,8 @@ class CustomerInfo extends StatelessWidget {
   Widget _buildAccountInfo() {
     return _infoContainer([
       _buildInfoItem("Email", AssetSvg.iconMail, "hoalt@magenest.com", color: AppColors.primary500),
-      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber('+84123456789'), color: AppColors.primary500),
+      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber('+84123456789'),
+          color: AppColors.primary500),
       _buildInfoItem("Tài khoản liên kết", AssetSvg.iconGoogle, "Google"),
     ]);
   }
@@ -113,20 +148,50 @@ class CustomerInfo extends StatelessWidget {
   }
 
   Widget _buildCustomerInfo() {
-    return Column(
+    return  Column(
       children: [
+        const TitleInputWidget(title: 'Nhập thông tin cá nhân'),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            InkWell(
+                onTap: controller.useScanQR, child: Text("Use QR Scan", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),)),
+            InkWell(
+                onTap: controller.useNFC, child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600))),
+          ],
+        ),
+        const SizedBox(height: 10),
         const TitleInputWidget(title: 'Số định danh cá nhân'),
         const SizedBox(height: 6),
-        const TextInputWidget(
+        TextInputWidget(
           enable: false,
-          label: '026203002093',
-          height: 42,
+          label: '${controller.citizenId}',
+          height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
         ),
-        InkWell(
-          onTap: controller.useScanQR,
-            child: const Text("Use Scan QR"))
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Ngày sinh'),
+        const SizedBox(height: 6),
+        TextInputWidget(
+          enable: false,
+          label: '${FormatUtil.formatDateOfBirth(controller.dateOfBirth)}',
+          height: 48,
+          backgroundColor: AppColors.neutralE5E5E3,
+          colorBorder: AppColors.white,
+        ),
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Địa chỉ'),
+        const SizedBox(height: 6),
+        TextInputWidget(
+          enable: false,
+          label: '${controller.address}',
+          maxLines: 2,
+          height: 60,
+          backgroundColor: AppColors.neutralE5E5E3,
+          colorBorder: AppColors.white,
+        ),
       ],
     );
   }
@@ -144,7 +209,7 @@ class CustomerInfo extends StatelessWidget {
         TextInputWidget(
           enable: false,
           label: dateOfBirth,
-          height: 42,
+          height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
         ),
@@ -191,9 +256,7 @@ class CustomerInfo extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: InkWell(
-              onTap: () {
-
-              },
+              onTap: () {},
               child: Text(
                 'Bỏ qua',
                 style: ConstantFont.mediumText.copyWith(color: AppColors.primary400, fontSize: 12),

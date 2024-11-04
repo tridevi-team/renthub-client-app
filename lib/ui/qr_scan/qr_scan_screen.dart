@@ -2,138 +2,30 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:rent_house/ui/qr_scan/qr_scan_controller.dart';
+import 'package:rent_house/widgets/errors/error_camera_widget.dart';
 
 class QrScanScreen extends StatelessWidget {
-  const QrScanScreen({super.key});
+  QrScanScreen({super.key});
 
-  Widget _buildItem(BuildContext context, String label, Widget page) {
-
-    Permission.camera.request();
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => page,
-              ),
-            );
-          },
-          child: Text(label),
-        ),
-      ),
-    );
-  }
+  final controller = Get.put(QrScanController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mobile Scanner Example')),
-      body: Center(
-        child: _buildItem(
-          context,
-          'MobileScanner with Overlay',
-          const BarcodeScannerWithOverlay(),
+      body: SafeArea(
+        child: Obx(
+          () => controller.isCameraGranted.value ? const Center(
+            child: BarcodeScannerWithOverlay(),
+          ) : ErrorCameraWidget(openAppSettings: controller.openSettings),
         ),
       ),
     );
   }
 }
 
-
-
-
-
-
-
-
-class BarcodeScannerPageView extends StatefulWidget {
-  const BarcodeScannerPageView({super.key});
-
-  @override
-  State<BarcodeScannerPageView> createState() => _BarcodeScannerPageViewState();
-}
-
-class _BarcodeScannerPageViewState extends State<BarcodeScannerPageView> {
-  final MobileScannerController controller = MobileScannerController();
-
-  final PageController pageController = PageController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('With PageView')),
-      backgroundColor: Colors.black,
-      body: PageView(
-        controller: pageController,
-        onPageChanged: (index) async {
-          // Stop the camera view for the current page,
-          // and then restart the camera for the new page.
-          await controller.stop();
-
-          // When switching pages, add a delay to the next start call.
-          // Otherwise the camera will start before the next page is displayed.
-          await Future.delayed(const Duration(seconds: 1, milliseconds: 500));
-
-          if (!mounted) {
-            return;
-          }
-
-          unawaited(controller.start());
-        },
-        children: [
-          _BarcodeScannerPage(controller: controller),
-          const SizedBox(),
-          _BarcodeScannerPage(controller: controller),
-          _BarcodeScannerPage(controller: controller),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Future<void> dispose() async {
-    pageController.dispose();
-    super.dispose();
-    await controller.dispose();
-  }
-}
-
-class _BarcodeScannerPage extends StatelessWidget {
-  const _BarcodeScannerPage({required this.controller});
-
-  final MobileScannerController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        MobileScanner(
-          controller: controller,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, child) {
-            return ScannerErrorWidget(error: error);
-          },
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            alignment: Alignment.bottomCenter,
-            height: 100,
-            color: Colors.black.withOpacity(0.4),
-            child: Center(
-              child: ScannedBarcodeLabel(barcodes: controller.barcodes),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 
 class ScannerOverlay extends CustomPainter {
@@ -263,9 +155,7 @@ class _BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text('Scanner with Overlay Example app'),
-      ),
+
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -310,7 +200,6 @@ class _BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ToggleFlashlightButton(controller: controller),
-                  SwitchCameraButton(controller: controller),
                 ],
               ),
             ),
@@ -350,57 +239,13 @@ class ScannedBarcodeLabel extends StatelessWidget {
           );
         }
 
-        return Text(
-          scannedBarcodes.first.displayValue ?? 'No display value.',
-          overflow: TextOverflow.fade,
-          style: const TextStyle(color: Colors.white),
-        );
-      },
-    );
-  }
-}
+        final scannedData = scannedBarcodes.first.displayValue;
 
-
-
-
-
-class SwitchCameraButton extends StatelessWidget {
-  const SwitchCameraButton({required this.controller, super.key});
-
-  final MobileScannerController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: controller,
-      builder: (context, state, child) {
-        if (!state.isInitialized || !state.isRunning) {
-          return const SizedBox.shrink();
+        if (scannedData != null) {
+          Future.microtask(() => Get.back(result: scannedData));
         }
 
-        final int? availableCameras = state.availableCameras;
-
-        if (availableCameras != null && availableCameras < 2) {
-          return const SizedBox.shrink();
-        }
-
-        final Widget icon;
-
-        switch (state.cameraDirection) {
-          case CameraFacing.front:
-            icon = const Icon(Icons.camera_front);
-          case CameraFacing.back:
-            icon = const Icon(Icons.camera_rear);
-        }
-
-        return IconButton(
-          color: Colors.white,
-          iconSize: 32.0,
-          icon: icon,
-          onPressed: () async {
-            await controller.switchCamera();
-          },
-        );
+        return const SizedBox.shrink();
       },
     );
   }
@@ -475,13 +320,13 @@ class ScannerErrorWidget extends StatelessWidget {
 
     switch (error.errorCode) {
       case MobileScannerErrorCode.controllerUninitialized:
-        errorMessage = 'Controller not ready.';
+        errorMessage = 'Đã xảy ra lỗi không mong muốn';
       case MobileScannerErrorCode.permissionDenied:
-        errorMessage = 'Permission denied';
+        errorMessage = 'Quyền bị từ chối';
       case MobileScannerErrorCode.unsupported:
-        errorMessage = 'Scanning is unsupported on this device';
+        errorMessage = 'Thiết bị này không hỗ trợ quét QR';
       default:
-        errorMessage = 'Generic Error';
+        errorMessage = 'Đã xảy ra lỗi không mong muốn';
         break;
     }
 

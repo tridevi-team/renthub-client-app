@@ -8,19 +8,20 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onTap;
   final Color? bgColor;
   final Color? textColor;
+  final double height;
 
   const CustomElevatedButton(
       {super.key,
       required this.label,
       required this.onTap,
       this.bgColor = Colors.white,
-      this.textColor = const Color(0xFF4B7BE5), this.iconPath});
+      this.textColor = const Color(0xFF4B7BE5), this.iconPath, this.height = 50});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
+      height: height,
       child: ElevatedButton(
           onPressed: onTap,
           style: ButtonStyle(
