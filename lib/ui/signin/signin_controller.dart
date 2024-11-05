@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +29,8 @@ class SignInController extends BaseController {
   String verificationId = '';
   String accessToken = '';
   String refreshToken = '';
+  Timer? _timer;
+  RxInt remainingSeconds = 90.obs;
 
   static const String defaultErrorMessage = "Có lỗi xảy ra. Vui lòng thử lại.";
 
@@ -74,7 +77,6 @@ class SignInController extends BaseController {
   }
 
   Future<void> generateOTPByEmail() async {
-    isSendOTP.value = true;
     final email = contactInputController.text.trim();
     final response = await AuthService.generateOTPByEmail({"email": email});
 
@@ -83,10 +85,12 @@ class SignInController extends BaseController {
       _showToast(errorMessage, ToastStatus.error);
       return;
     }
-
     final model = ResponseModel.fromJson(jsonDecode(response.body));
     if (model.success != true) {
       _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+    } else {
+      _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
+      startCountdown();
     }
   }
 
@@ -152,6 +156,7 @@ class SignInController extends BaseController {
         phoneNumber: contactInputController.text.trim().replaceFirst('0', '+84'),
         verificationCompleted: (PhoneAuthCredential credential) async {
           await _auth.signInWithCredential(credential);
+          startCountdown();
         },
         verificationFailed: (FirebaseAuthException e) {
           _showToast(defaultErrorMessage, ToastStatus.error);
@@ -248,6 +253,28 @@ class SignInController extends BaseController {
     }
     _showToast(message, ToastStatus.warning);
   }
+
+  void startCountdown() {
+    if (_timer == null || !_timer!.isActive) {
+      isSendOTP.value = true;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (remainingSeconds > 0) {
+          remainingSeconds.value--;
+        } else {
+          isSendOTP.value = false;
+          timer.cancel();
+          _timer = null;
+        }
+      });
+    }
+  }
+
+  String get formattedRemainingTime {
+    final minutes = (remainingSeconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (remainingSeconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
 
   void _logError(String message, Object e) {
     if (kDebugMode) {

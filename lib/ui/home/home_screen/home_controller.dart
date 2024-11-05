@@ -53,7 +53,6 @@ class HomeController extends BaseController {
     int? priceFrom,
     int? priceTo,
     int limit = 10,
-    int page = 1
   }) async {
     try {
       viewState.value = ViewState.init;
@@ -79,7 +78,7 @@ class HomeController extends BaseController {
         '''
       );
 
-      final response = await HomeService.fetchHouseList(sort, filters, page);
+      final response = await HomeService.fetchHouseList(sort, filters, currentPage);
 
       if (response.statusCode != 200) {
         viewState.value = ViewState.error;

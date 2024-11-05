@@ -37,6 +37,7 @@ class SignInScreen extends StatelessWidget {
                       errorInput: controller.contactErrorInputObject,
                       sendOTP: true,
                       isSendOTP: controller.isSendOTP.value,
+                      timeCountdown: controller.formattedRemainingTime,
                       onSendOTP: () {
                         if (controller.contactErrorInputObject.value.isError == false) {
                           controller.sendOTP();

@@ -36,6 +36,7 @@ class TextInputWidget extends StatefulWidget {
   final double? height;
   final bool sendOTP;
   final bool isSendOTP;
+  final String? timeCountdown;
   final Function(String?)? onFieldSubmitted;
   final void Function()? onSendOTP;
 
@@ -70,7 +71,7 @@ class TextInputWidget extends StatefulWidget {
     this.sendOTP = false,
     this.isSendOTP = false,
     this.onSendOTP,
-    this.height = 56,
+    this.height = 56, this.timeCountdown,
   });
 
   @override
@@ -218,7 +219,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                           : AppColors.primary1,
                                       borderRadius: BorderRadius.circular(6)),
                                   child: Text(
-                                    widget.isSendOTP ? 'Đã gửi' : 'Gửi mã xác nhận',
+                                    widget.isSendOTP ? '${widget.timeCountdown}' : 'Gửi mã xác nhận',
                                     style: ConstantFont.mediumText
                                         .copyWith(color: AppColors.white, fontSize: 12),
                                     textAlign: TextAlign.center,
