@@ -100,16 +100,15 @@ class _TextInputWidgetState extends State<TextInputWidget> {
             return Theme(
               data: Theme.of(context).copyWith(splashColor: Colors.transparent),
               child: Container(
+                height: widget.height,
                 padding: widget.isSearch == true
                     ? const EdgeInsets.only(left: 10, right: 5)
                     : EdgeInsets.zero,
                 decoration: BoxDecoration(
                   color: widget.backgroundColor ?? AppColors.white,
                   borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 0)),
-                  border:
-                      widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
+                  border: widget.isNotBorder ? null : Border.all(width: 1, color: widget.colorBorder),
                 ),
-                height: widget.height,
                 child: Material(
                   color: Colors.transparent,
                   child: GestureDetector(
@@ -148,6 +147,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                               keyboardType: widget.keyboardType,
                               obscureText: widget.password,
                               decoration: InputDecoration(
+                                isDense: true,
                                 counterText: "",
                                 fillColor: Colors.transparent,
                                 hintText: widget.hintText ?? widget.label,
