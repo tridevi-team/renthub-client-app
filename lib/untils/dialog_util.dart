@@ -6,6 +6,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 
 class DialogUtil {
   DialogUtil._();
@@ -30,10 +31,8 @@ class DialogUtil {
                 Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(12), topLeft: Radius.circular(12)),
-                      child: Image.asset("assets/images/image.png",
-                              width: 343, height: 208, fit: BoxFit.cover),
+                      borderRadius: const BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
+                      child: Image.asset("assets/images/image.png", width: 343, height: 208, fit: BoxFit.cover),
                     ),
                     Positioned(
                         top: 10,
@@ -156,6 +155,44 @@ class DialogUtil {
           child: Text(
             'Xác nhận',
             style: ConstantFont.regularText.copyWith(color: AppColors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static showDialogConfirm({VoidCallback? onClose, required VoidCallback onConfirm}) {
+    return Get.dialog(
+      barrierDismissible: false,
+      Dialog(
+        insetPadding: const EdgeInsets.symmetric(horizontal: 14),
+        backgroundColor: AppColors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Container(
+          height: 200,
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Bạn xác nhận những thông tin này là đúng sự thật. Nếu có bất cứ vấn đề gì bạn sẽ phải chịu hoàn toàn mọi trách nhiệm?",
+                style: ConstantFont.mediumText,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CustomElevatedButton(label: 'Hủy', onTap: onClose ?? Get.back),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: CustomElevatedButton(label: 'Xác nhận', textColor: AppColors.white, bgColor: AppColors.primary600, onTap: onConfirm),
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       ),

@@ -7,4 +7,6 @@ class ConstantString {
   static const String prefTypePhone = 'pref_type_phone';
   static const String prefTypeEmail = 'pref_type_email';
   static const String prefTypeServer = 'pref_type_server';
+  static const String prefCity = 'pref_city';
+  static const String prefDistrict = 'pref_district';
 }

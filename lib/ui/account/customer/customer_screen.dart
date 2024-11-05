@@ -47,7 +47,7 @@ class CustomerScreen extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
-                      'Show profile',
+                      'Xem thông tin',
                       style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
                     ),
                     trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
@@ -56,34 +56,42 @@ class CustomerScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 const Divider(height: 1, color: AppColors.neutralE5E5E3),
                 const SizedBox(height: 30),
-                Text('Account settings', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+                Text('Tổng quát', style: ConstantFont.boldText.copyWith(fontSize: 18)),
                 const SizedBox(height: 10),
                 _buildListTile(
                   leadingAsset: AssetSvg.iconPerson,
-                  titleText: 'Personal Information',
-                  trailingAsset: AssetSvg.iconChevronForward,
-                ),
-                _buildListTile(
-                  leadingAsset: AssetSvg.iconPerson,
-                  titleText: 'Payment method',
+                  titleText: 'Phương thức thanh toán',
                   trailingAsset: AssetSvg.iconChevronForward,
                 ),
                 _buildListTile(
                   leadingAsset: AssetSvg.iconLock,
-                  titleText: 'Privacy and sharing',
+                  titleText: 'Điều khoản',
+                  trailingAsset: AssetSvg.iconChevronForward,
+                ),
+                _buildListTile(
+                  leadingAsset: AssetSvg.iconLock,
+                  titleText: 'Chính sách bảo mật',
                   trailingAsset: AssetSvg.iconChevronForward,
                 ),
                 const SizedBox(height: 20),
-                Text('Danger zone', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+                Text('Trung tâm trợ giúp', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+                const SizedBox(height: 10),
+                _buildListTile(
+                    trailingAsset: AssetSvg.iconChevronForward,
+                    leadingAsset: AssetSvg.iconMailOpen,
+                    titleText: 'Báo cáo vấn đề',
+                    onTap: () {}
+                ),
+                const SizedBox(height: 20),
+                Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),
                 const SizedBox(height: 10),
                 _buildListTile(
                   leadingAsset: AssetSvg.iconLogout,
-                  titleText: 'Logout',
+                  titleText: 'Đăng xuất',
                   onTap: () async {
                     AppUtil.logout();
                   }
                 ),
-                _buildListTile(leadingAsset: AssetSvg.iconHand, titleText: 'Remove account', color: AppColors.red),
               ],
             ),
             Align(

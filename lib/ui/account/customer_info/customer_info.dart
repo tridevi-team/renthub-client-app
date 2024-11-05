@@ -6,6 +6,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info_controller.dart';
+import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
@@ -68,7 +69,9 @@ class CustomerInfo extends StatelessWidget {
                     label: 'Xác nhận',
                     textColor: AppColors.white,
                     bgColor: AppColors.primary600,
-                    onTap: () {}),
+                    onTap: () {
+                      DialogUtil.showDialogConfirm(onConfirm: (){});
+                    }),
               )
             ],
           ),
@@ -160,6 +163,16 @@ class CustomerInfo extends StatelessWidget {
             InkWell(
                 onTap: controller.useNFC, child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600))),
           ],
+        ),
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Họ tên'),
+        const SizedBox(height: 6),
+        TextInputWidget(
+          enable: false,
+          label: '${controller.fullName}',
+          height: 48,
+          backgroundColor: AppColors.neutralE5E5E3,
+          colorBorder: AppColors.white,
         ),
         const SizedBox(height: 10),
         const TitleInputWidget(title: 'Số định danh cá nhân'),
@@ -256,7 +269,14 @@ class CustomerInfo extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                DialogUtil.showDialogConfirm(onConfirm: () {
+                  isTempReg = true;
+                  controller.isVisible.value = false;
+                  controller.isVisible.value = true;
+                  Get.close(1);
+                });
+              },
               child: Text(
                 'Bỏ qua',
                 style: ConstantFont.mediumText.copyWith(color: AppColors.primary400, fontSize: 12),
