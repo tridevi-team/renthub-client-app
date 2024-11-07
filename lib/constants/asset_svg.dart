@@ -31,4 +31,6 @@ class AssetSvg {
   static const String iconQR = "assets/icons/ic_qr.svg";
   static const String iconNFC = "assets/icons/ic_nfc.svg";
   static const String iconMailOpen = "assets/icons/ic_mail_open.svg";
+  static const String iconCamera = "assets/icons/ic_camera.svg";
+  static const String iconVideo = "assets/icons/ic_video.svg";
 }

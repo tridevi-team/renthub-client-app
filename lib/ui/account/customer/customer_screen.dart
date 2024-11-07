@@ -7,6 +7,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
+import 'package:rent_house/ui/account/customer_issue/customer_issue_screen.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 
@@ -80,7 +81,9 @@ class CustomerScreen extends StatelessWidget {
                     trailingAsset: AssetSvg.iconChevronForward,
                     leadingAsset: AssetSvg.iconMailOpen,
                     titleText: 'Báo cáo vấn đề',
-                    onTap: () {}
+                    onTap: () {
+                      Get.to(() => CustomerIssueScreen());
+                    }
                 ),
                 const SizedBox(height: 20),
                 Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),
