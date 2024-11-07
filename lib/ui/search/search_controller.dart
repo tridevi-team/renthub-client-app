@@ -51,20 +51,37 @@ class SearchXController extends BaseController {
       double currentOffset = scrollController.position.pixels;
       double scrollDelta = (currentOffset - previousOffset).abs();
 
-      if (scrollDelta > threshold) {
+      if (scrollDelta > threshold * 2) {
         if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
           if (showFilters.value) {
-            showFilters.value = false;
+            _hideFiltersDebounced();
           }
         } else if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
           if (!showFilters.value) {
-            showFilters.value = true;
+            _showFiltersDebounced();
           }
         }
         previousOffset = currentOffset;
       }
     });
   }
+
+  void _hideFiltersDebounced() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        showFilters.value = false;
+      }
+    });
+  }
+
+  void _showFiltersDebounced() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+        showFilters.value = true;
+      }
+    });
+  }
+
 
   Future<void> fetchHouseList({
     bool isLoadMore = false,
@@ -104,7 +121,7 @@ class SearchXController extends BaseController {
         '''
       );
 
-      final response = await HomeService.fetchHouseList(sort, filters, page);
+      final response = await HomeService.fetchHouseList(sort, filters, currentPage);
 
       if (response.statusCode != 200) {
         viewState.value = ViewState.error;

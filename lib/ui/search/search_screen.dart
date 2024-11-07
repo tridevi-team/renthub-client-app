@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/search/search_controller.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
@@ -39,57 +41,65 @@ class SearchScreen extends StatelessWidget {
                         ))),
               ],
             ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56.0),
-          child: Visibility(
-            visible: searchController.showFilters.value,
-            child: AppBar(
-              automaticallyImplyLeading: false,
-                forceMaterialTransparency: true,
-                title: Row(
-              children: [
-                _buildFilterOption(
-                  title: "Lọc theo",
-                  index: 0,
-                  icon: AssetSvg.iconChevronDown,
-                  controller: searchController,
+            bottom: searchController.showFilters.value ? PreferredSize(
+              preferredSize: const Size.fromHeight(56.0),
+              child: AnimatedOpacity(
+                opacity: searchController.showFilters.value ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: AppBar(
+                    automaticallyImplyLeading: false,
+                    forceMaterialTransparency: true,
+                    title: Row(
+                      children: [
+                        _buildFilterOption(
+                          title: "Lọc theo",
+                          index: 0,
+                          icon: AssetSvg.iconChevronDown,
+                          controller: searchController,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 28,
+                          color: AppColors.neutral9E9E9E,
+                        ),
+                        _buildFilterOption(
+                          title: "Xếp theo",
+                          index: 1,
+                          icon: AssetSvg.iconTrendingDown,
+                          icon2: AssetSvg.iconTrendingUp,
+                          controller: searchController,
+                        ),
+                        Container(
+                          width: 1,
+                          height: 28,
+                          color: AppColors.neutral9E9E9E,
+                        ),
+                        _buildFilterOption(
+                          index: 2,
+                          icon: AssetSvg.iconFilter,
+                          controller: searchController,
+                        ),
+                      ],
+                    )),
+              ),
+            ): null),
+        body: Obx(
+          () => searchController.viewState.value == ViewState.loading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 4,
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
+                  ),
+                )
+              : SmartRefreshWidget(
+                  controller: searchController.refreshController,
+                  scrollController: searchController.scrollController,
+                  onRefresh: searchController.onRefreshData,
+                  onLoadingMore: searchController.onLoadMoreHouse,
+                  child: CustomScrollView(
+                    slivers: [HomeList(houseList: searchController.houseList)],
+                  ),
                 ),
-                Container(
-                  width: 1,
-                  height: 28,
-                  color: AppColors.neutral9E9E9E,
-                ),
-                _buildFilterOption(
-                  title: "Xếp theo",
-                  index: 1,
-                  icon: AssetSvg.iconTrendingDown,
-                  icon2: AssetSvg.iconTrendingUp,
-                  controller: searchController,
-                ),
-                Container(
-                  width: 1,
-                  height: 28,
-                  color: AppColors.neutral9E9E9E,
-                ),
-                _buildFilterOption(
-                  index: 2,
-                  icon: AssetSvg.iconFilter,
-                  controller: searchController,
-                ),
-              ],
-            )),
-          ),
-        )),
-        body: SmartRefreshWidget(
-          controller: searchController.refreshController,
-          scrollController: searchController.scrollController,
-          onRefresh: searchController.onRefreshData,
-          onLoadingMore: searchController.onLoadMoreHouse,
-          child: const CustomScrollView(
-            slivers: [
-
-            ],
-          ),
         ),
       ),
     );
@@ -112,7 +122,7 @@ class SearchScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (title != null)...[
+            if (title != null) ...[
               Text(
                 title,
                 style: ConstantFont.regularText.copyWith(
@@ -126,9 +136,8 @@ class SearchScreen extends StatelessWidget {
             SvgPicture.asset(
               icon2 != null && controller.orderBy.value == 'asc' ? icon2 : icon,
               width: 18,
-              color: controller.filterSelected.value == index
-                  ? AppColors.primary1
-                  : AppColors.black,
+              color:
+                  controller.filterSelected.value == index ? AppColors.primary1 : AppColors.black,
             )
           ],
         ),

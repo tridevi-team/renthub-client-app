@@ -33,4 +33,7 @@ class AssetSvg {
   static const String iconMailOpen = "assets/icons/ic_mail_open.svg";
   static const String iconCamera = "assets/icons/ic_camera.svg";
   static const String iconVideo = "assets/icons/ic_video.svg";
+  static const String iconMultiPeople = "assets/icons/ic_multi_people.svg";
+  static const String iconBusiness = "assets/icons/ic_business.svg";
+  static const String iconCrop = "assets/icons/ic_crop.svg";
 }
