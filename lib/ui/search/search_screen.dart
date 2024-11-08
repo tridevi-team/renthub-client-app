@@ -7,6 +7,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/search/search_controller.dart';
+import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
@@ -30,14 +31,18 @@ class SearchScreen extends StatelessWidget {
                 GestureDetector(
                     onTap: Get.back, child: SvgPicture.asset(AssetSvg.iconChevronBack, height: 30)),
                 const SizedBox(width: 10),
-                const Expanded(
+                Expanded(
                     child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: TextInputWidget(
+                          controller: searchController.searchEdtCtrl,
                           isSearch: true,
                           height: 40,
                           colorBorder: Colors.transparent,
                           backgroundColor: AppColors.neutralF5F5F5,
+                          onChanged: (value) {
+                            searchController.onSearchChanged();
+                          },
                         ))),
               ],
             ),
@@ -84,22 +89,22 @@ class SearchScreen extends StatelessWidget {
               ),
             ): null),
         body: Obx(
-          () => searchController.viewState.value == ViewState.loading
+          () => searchController.viewState.value == ViewState.loading && searchController.houseList.isEmpty
               ? const Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 4,
                     valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
                   ),
                 )
-              : SmartRefreshWidget(
-                  controller: searchController.refreshController,
-                  scrollController: searchController.scrollController,
-                  onRefresh: searchController.onRefreshData,
-                  onLoadingMore: searchController.onLoadMoreHouse,
-                  child: CustomScrollView(
-                    slivers: [HomeList(houseList: searchController.houseList)],
-                  ),
-                ),
+              : searchController.houseList.isNotEmpty ? SmartRefreshWidget(
+            controller: searchController.refreshController,
+            scrollController: searchController.scrollCtrl,
+            onRefresh: searchController.onRefreshData,
+            onLoadingMore: searchController.onLoadMoreHouse,
+            child: CustomScrollView(
+              slivers: [HomeList(houseList: searchController.houseList)],
+            ),
+          ) : const NotFoundWidget(),
         ),
       ),
     );

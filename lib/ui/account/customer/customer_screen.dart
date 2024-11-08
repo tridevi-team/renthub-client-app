@@ -23,80 +23,75 @@ class CustomerScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 14, vertical: MediaQuery.of(context).padding.top),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Get.to(() => CustomerInfo());
-                  },
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                    leading: CachedNetworkImage(
-                      imageUrl: 'imageUrl',
-                      height: 60,
-                      width: 60,
-                      errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
-                    ),
-                    title: Text(
-                      'Lê Hòa',
-                      style: ConstantFont.boldText.copyWith(fontSize: 18),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      'Xem thông tin',
-                      style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
-                    ),
-                    trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
-                  ),
+            InkWell(
+              onTap: () {
+                Get.to(() => CustomerInfo());
+              },
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                leading: CachedNetworkImage(
+                  imageUrl: 'imageUrl',
+                  height: 60,
+                  width: 60,
+                  errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
                 ),
-                const SizedBox(height: 10),
-                const Divider(height: 1, color: AppColors.neutralE5E5E3),
-                const SizedBox(height: 30),
-                Text('Tổng quát', style: ConstantFont.boldText.copyWith(fontSize: 18)),
-                const SizedBox(height: 10),
-                _buildListTile(
-                  leadingAsset: AssetSvg.iconPerson,
-                  titleText: 'Phương thức thanh toán',
-                  trailingAsset: AssetSvg.iconChevronForward,
+                title: Text(
+                  'Lê Hòa',
+                  style: ConstantFont.boldText.copyWith(fontSize: 18),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                _buildListTile(
-                  leadingAsset: AssetSvg.iconLock,
-                  titleText: 'Điều khoản',
-                  trailingAsset: AssetSvg.iconChevronForward,
+                subtitle: Text(
+                  'Xem thông tin',
+                  style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
                 ),
-                _buildListTile(
-                  leadingAsset: AssetSvg.iconLock,
-                  titleText: 'Chính sách bảo mật',
-                  trailingAsset: AssetSvg.iconChevronForward,
-                ),
-                const SizedBox(height: 20),
-                Text('Trung tâm trợ giúp', style: ConstantFont.boldText.copyWith(fontSize: 18)),
-                const SizedBox(height: 10),
-                _buildListTile(
-                    trailingAsset: AssetSvg.iconChevronForward,
-                    leadingAsset: AssetSvg.iconMailOpen,
-                    titleText: 'Báo cáo vấn đề',
-                    onTap: () {
-                      Get.to(() => CustomerIssueScreen());
-                    }
-                ),
-                const SizedBox(height: 20),
-                Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),
-                const SizedBox(height: 10),
-                _buildListTile(
-                  leadingAsset: AssetSvg.iconLogout,
-                  titleText: 'Đăng xuất',
-                  onTap: () async {
-                    AppUtil.logout();
-                  }
-                ),
-              ],
+                trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
+              ),
             ),
+            const SizedBox(height: 10),
+            const Divider(height: 1, color: AppColors.neutralE5E5E3),
+            const SizedBox(height: 30),
+            Text('Tổng quát', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+            const SizedBox(height: 10),
+            _buildListTile(
+              leadingAsset: AssetSvg.iconPerson,
+              titleText: 'Phương thức thanh toán',
+              trailingAsset: AssetSvg.iconChevronForward,
+            ),
+            _buildListTile(
+              leadingAsset: AssetSvg.iconLock,
+              titleText: 'Điều khoản',
+              trailingAsset: AssetSvg.iconChevronForward,
+            ),
+            _buildListTile(
+              leadingAsset: AssetSvg.iconLock,
+              titleText: 'Chính sách bảo mật',
+              trailingAsset: AssetSvg.iconChevronForward,
+            ),
+            const SizedBox(height: 20),
+            Text('Trung tâm trợ giúp', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+            const SizedBox(height: 10),
+            _buildListTile(
+                trailingAsset: AssetSvg.iconChevronForward,
+                leadingAsset: AssetSvg.iconMailOpen,
+                titleText: 'Báo cáo vấn đề',
+                onTap: () {
+                  Get.to(() => CustomerIssueScreen());
+                }
+            ),
+            const SizedBox(height: 20),
+            Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+            const SizedBox(height: 10),
+            _buildListTile(
+              leadingAsset: AssetSvg.iconLogout,
+              titleText: 'Đăng xuất',
+              onTap: () async {
+                AppUtil.logout();
+              }
+            ),
+            const Spacer(),
             Align(
                 alignment: Alignment.center,
                 child: Text(

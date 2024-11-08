@@ -36,4 +36,5 @@ class AssetSvg {
   static const String iconMultiPeople = "assets/icons/ic_multi_people.svg";
   static const String iconBusiness = "assets/icons/ic_business.svg";
   static const String iconCrop = "assets/icons/ic_crop.svg";
+  static const String iconNoResult = "assets/icons/ic_no_result.svg";
 }

@@ -6,7 +6,9 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
+import 'package:rent_house/widgets/ratio/radio_option.dart';
 
 class DialogUtil {
   DialogUtil._();
@@ -195,6 +197,126 @@ class DialogUtil {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  static Future<void> showSortBottomSheet({
+    required int selectedOption,
+    required List<String> options,
+    required void Function(int index) onSelected,
+  }) async {
+    await Get.bottomSheet(
+      Container(
+        height: Get.height / 3,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Sắp xếp theo',
+                  style: ConstantFont.mediumText,
+                ),
+                GestureDetector(
+                  onTap: Get.back,
+                  child: SvgPicture.asset(AssetSvg.iconClose),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Divider(height: 1, color: AppColors.neutralF5F5F5),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.separated(
+                itemCount: options.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                itemBuilder: (context, index) {
+                  return RadioOption(
+                    label: options[index],
+                    isSelected: index == selectedOption,
+                    onSelected: () => onSelected(index),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+    );
+  }
+
+  static Future<void> showFilterBottomSheet({
+    required Rx<RangeValues> currentRange,
+    required ValueChanged<RangeValues> onChanged,
+    required VoidCallback onApply,
+    required double minPrice,
+    required double maxPrice,
+  }) async {
+    await Get.bottomSheet(
+      Container(
+        height: Get.height / 3,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: const BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Khoảng giá",
+                style: ConstantFont.mediumText.copyWith(fontSize: 16),
+              ),
+              RangeSlider(
+                  values: currentRange.value,
+                  min: minPrice,
+                  max: maxPrice,
+                  divisions: ((maxPrice - minPrice) ~/ 100000),
+                  inactiveColor: AppColors.neutralCCCAC6,
+                  activeColor: AppColors.primary1,
+
+                  onChanged: onChanged,
+                ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    FormatUtil.formatCurrency(currentRange.value.start.toInt()),
+                    style: ConstantFont.mediumText,
+                  ),
+                  Text(
+                    FormatUtil.formatCurrency(currentRange.value.end.toInt()),
+                    style: ConstantFont.mediumText,
+                  ),
+                ],
+              ),
+              const Spacer(),
+              CustomElevatedButton(
+                onTap: onApply,
+                label: "Áp dụng",
+                textColor: AppColors.white,
+                bgColor: AppColors.primary600,
+              ),
+            ],
+          ),
+        ),
+      ),
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
     );
   }

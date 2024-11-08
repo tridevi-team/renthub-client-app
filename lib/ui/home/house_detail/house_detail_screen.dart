@@ -17,7 +17,7 @@ class HouseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(label: 'Danh sách nhà'),
+      appBar: const CustomAppBar(label: 'Danh sách phòng'),
       backgroundColor: AppColors.white,
       body: Obx(() => houseDetailController.viewState.value == ViewState.loading
           ? const Center(

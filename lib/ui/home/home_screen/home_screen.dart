@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: SmartRefreshWidget(
                     controller: homeController.refreshController,
-                    scrollController: homeController.scrollController,
+                    scrollController: homeController.scrollCtrl,
                     onRefresh: homeController.onRefreshData,
                     onLoadingMore: homeController.onLoadMoreHouse,
                     child: homeController.widgets.isEmpty

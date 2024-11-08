@@ -13,8 +13,7 @@ import 'package:rent_house/ui/home/home_explore/home_explore.dart';
 class HomeController extends BaseController {
   //controller
   RefreshController refreshController = RefreshController();
-  @override
-  ScrollController scrollController = ScrollController();
+  ScrollController scrollCtrl = ScrollController();
 
   //widgets
   RxList<Widget> widgets = <Widget>[].obs;
@@ -68,15 +67,12 @@ class HomeController extends BaseController {
           "direction": "asc"
         }''';
 
-      List<String> filters = [];
-      filters.add(
-        '''filter[]={
+      String filters = '''filter[]={
         "field": "houses.name",
         "operator": "cont",
-        "value": ''
+        "value": ""
         }&
-        '''
-      );
+        ''';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
 

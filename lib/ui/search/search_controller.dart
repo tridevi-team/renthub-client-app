@@ -1,62 +1,76 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
-import 'package:rent_house/constants/app_colors.dart';
-import 'package:rent_house/constants/asset_svg.dart';
-import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
-import 'package:rent_house/widgets/ratio/radio_option.dart';
+import 'package:rent_house/untils/dialog_util.dart';
+import 'package:rent_house/untils/toast_until.dart';
 
 class SearchXController extends BaseController {
-
   RefreshController refreshController = RefreshController();
-  @override
-  ScrollController scrollController = ScrollController();
+  ScrollController scrollCtrl = ScrollController();
+
+  TextEditingController searchEdtCtrl = TextEditingController();
+  Timer? _debounce;
 
   List<House> houseList = [];
   int currentPage = 1;
+
+  List<String> sortOptions = [
+    "Tên",
+    "Số phòng ngủ",
+    "Số người 1 phòng",
+    "Diện tích",
+    "Giá",
+  ];
 
   //filter
   RxBool showFilters = true.obs;
   RxInt filterSelected = 0.obs;
   double previousOffset = 0.0;
   double threshold = 20.0;
-  List<String> sorts = ["name", "numOfBeds", "numOfRenters", "roomArea", "price"];
+  List<String> sorts = ["houses.name", "numOfBeds", "rooms.max_renters", "rooms.room_area", "rooms.price"];
   int sortBySelected = 0;
 
   RxString orderBy = "asc".obs;
-  String searchKeyword = "";
   int? numOfBeds;
   int? numOfRenters;
   int? roomArea;
-  int? priceFrom;
-  int? priceTo;
+  double minPrice = 100000000;
+  double maxPrice = 0;
+  Rx<RangeValues> currentFilterPrice = const RangeValues(0, 0).obs;
 
   @override
   void onInit() {
     super.onInit();
     initScrollController();
-    fetchHouseList();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    searchEdtCtrl.removeListener(onSearchChanged);
+    searchEdtCtrl.dispose();
+    super.dispose();
   }
 
   void initScrollController() {
-    scrollController.addListener(() {
-      double currentOffset = scrollController.position.pixels;
+    scrollCtrl.addListener(() {
+      double currentOffset = scrollCtrl.position.pixels;
       double scrollDelta = (currentOffset - previousOffset).abs();
 
       if (scrollDelta > threshold * 2) {
-        if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (scrollCtrl.position.userScrollDirection == ScrollDirection.reverse) {
           if (showFilters.value) {
             _hideFiltersDebounced();
           }
-        } else if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+        } else if (scrollCtrl.position.userScrollDirection == ScrollDirection.forward) {
           if (!showFilters.value) {
             _showFiltersDebounced();
           }
@@ -68,58 +82,37 @@ class SearchXController extends BaseController {
 
   void _hideFiltersDebounced() {
     Future.delayed(const Duration(milliseconds: 100), () {
-      if (scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      if (scrollCtrl.position.userScrollDirection == ScrollDirection.reverse) {
         showFilters.value = false;
       }
     });
   }
 
   void _showFiltersDebounced() {
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (scrollCtrl.position.userScrollDirection == ScrollDirection.forward) {
         showFilters.value = true;
       }
     });
   }
 
-
-  Future<void> fetchHouseList({
-    bool isLoadMore = false,
-    int? numOfBeds,
-    String? street,
-    String? ward,
-    String? district,
-    String? city,
-    int? numOfRenters,
-    int? roomArea,
-    int? priceFrom,
-    int? priceTo,
-    int limit = 10,
-    int page = 1
-  }) async {
+  Future<void> fetchHouseList({bool isLoadMore = false, int? numOfBeds, String? street, String? ward, String? district, String? city, int? numOfRenters, int? roomArea, int? priceFrom, int? priceTo, int limit = 10, int page = 1}) async {
     try {
       viewState.value = ViewState.init;
       if (isLoadMore) {
         currentPage++;
       } else {
+        houseList.clear();
         viewState.value = ViewState.loading;
         currentPage = 1;
       }
 
       String sort = '''{
-       "field": "houses.${sorts[sortBySelected]}",
+       "field": "${sorts[sortBySelected]}",
           "direction": "${orderBy.value}"
         }''';
 
-      List<String> filters = [];
-      filters.add(
-          '''filter[]={
-        "field": "houses.${sorts[sortBySelected]}",
-        "operator": "cont",
-        "value": $searchKeyword
-        }&
-        '''
-      );
+      String filters = 'filter[]={"field": "${sorts[sortBySelected]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
 
@@ -131,18 +124,25 @@ class SearchXController extends BaseController {
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
       viewState.value = ViewState.complete;
+      final houses = houseDataModel.results ?? [];
       if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
-        if (!isLoadMore) {
-          houseList.clear();
+        for (var house in houses) {
+          if (house.minPrice != null && minPrice > house.minPrice!) {
+            minPrice = house.minPrice!.toDouble();
+          }
+          if (house.maxPrice != null && maxPrice < house.maxPrice!) {
+            maxPrice = house.maxPrice!.toDouble();
+          }
         }
-        houseList.addAll(houseDataModel.results!);
+        currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
+        houseList.addAll(houses);
         refreshController.loadComplete();
       } else {
-        refreshController.loadNoData();
+        houseList.clear();
       }
     } catch (e) {
       viewState.value = ViewState.error;
-      refreshController.loadNoData();
+      houseList.clear();
       log("Error fetch: $e");
     }
   }
@@ -157,76 +157,60 @@ class SearchXController extends BaseController {
   }
 
   void onFilterSelected(int index) {
+    onHideKeyboard();
     filterSelected.value = index;
     if (index == 0) {
-      showBottomSheetTypeSort();
+      DialogUtil.showSortBottomSheet(
+        selectedOption: sortBySelected,
+        options: sortOptions,
+        onSelected: (index) {
+          onSortBySelected(index);
+          Get.back();
+        },
+      );
     }
     if (index == 1) {
       orderBy.value = (orderBy.value == "asc") ? "desc" : "asc";
       fetchHouseList();
     }
     if (index == 2) {
-      showBottomSheetTypeSort();
+      if (houseList.isEmpty) {
+        ToastUntil.toastNotification(title: "Thông báo", description: "Bạn cần có ít nhất 5 căn phòng để thực hiện việc lọc danh sách.", status: ToastStatus.warning);
+        return;
+      }
+      DialogUtil.showFilterBottomSheet(
+        currentRange: currentFilterPrice,
+        onChanged: updateRange,
+        onApply: () {},
+        minPrice: roundDownToMillion(minPrice),
+        maxPrice: roundUpToMillion(maxPrice),
+      );
     }
   }
 
   void onSortBySelected(int index) {
     sortBySelected = index;
-    Get.back();
     fetchHouseList();
   }
 
-  Future<void> showBottomSheetTypeSort() async {
-    await Get.bottomSheet(
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      Container(
-        height: Get.height / 3,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(
-                'Sắp xếp theo',
-                style: ConstantFont.regularText.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              GestureDetector(onTap: Get.back, child: SvgPicture.asset(AssetSvg.iconClose))
-            ]),
-            const SizedBox(height: 10),
-            const Divider(height: 1, color: AppColors.neutralF5F5F5),
-            const SizedBox(height: 20),
-            RadioOption(
-                label: "Tên",
-                isSelected: 0 == sortBySelected,
-                onSelected: () => onSortBySelected(0)),
-            const SizedBox(height: 10),
-            RadioOption(
-                label: "Số phòng ngủ",
-                isSelected: 1 == sortBySelected,
-                onSelected: () => onSortBySelected(1)),
-            const SizedBox(height: 10),
-            RadioOption(
-                label: "Số người 1 phòng",
-                isSelected: 2 == sortBySelected,
-                onSelected: () => onSortBySelected(2)),
-            const SizedBox(height: 10),
-            RadioOption(
-                label: "Diện tích",
-                isSelected: 3 == sortBySelected,
-                onSelected: () => onSortBySelected(3)),
-            const SizedBox(height: 10),
-            RadioOption(
-                label: "Giá",
-                isSelected: 4 == sortBySelected,
-                onSelected: () => onSortBySelected(4)),
-          ],
-        ),
-      ),
-    );
+  void onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      fetchHouseList();
+    });
+  }
+
+  void updateRange(RangeValues values) {
+    if (values.end - values.start >= 100000) {
+      currentFilterPrice.value = values;
+    }
+  }
+
+  double roundDownToMillion(double value) {
+    return (value ~/ 1000000) * 1000000;
+  }
+
+  double roundUpToMillion(double value) {
+    return ((value + 999999) ~/ 1000000) * 1000000;
   }
 }
