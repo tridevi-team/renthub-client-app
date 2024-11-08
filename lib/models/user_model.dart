@@ -5,11 +5,11 @@ class UserModel {
   String? roomId;
   String? name;
   String? citizenId;
-  DateTime? birthday;
-  int? gender;
+  String? birthday;
+  String? gender;
   String? email;
   String? phoneNumber;
-  String? address;
+  Address? address;
   int? tempReg;
   String? moveInDate;
   int? represent;
@@ -43,11 +43,11 @@ class UserModel {
     roomId = json['roomId'];
     name = json['name'];
     citizenId = json['citizenId'];
-    birthday = json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
+    birthday = json['birthday'];
     gender = json['gender'];
     email = json['email'];
     phoneNumber = json['phoneNumber'];
-    address = json['address'];
+    address = Address.fromJson(json['address']);
     tempReg = json['tempReg'];
     moveInDate = json['moveInDate'];
     represent = json['represent'];

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -7,7 +8,9 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
+import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/services/home_service.dart';
+import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/onboarding/onboarding_screen.dart';
 import 'package:rent_house/untils/response_error_util.dart';
@@ -17,6 +20,7 @@ import 'package:rent_house/untils/toast_until.dart';
 class SplashController extends BaseController {
 
   String token = '';
+  CustomerController customerController = Get.put(CustomerController());
   @override
   void onInit() {
     startAnimation();
@@ -24,11 +28,12 @@ class SplashController extends BaseController {
   }
 
   Future<void> startAnimation() async {
-    await initData();
+    await getListProvince();
     await Future.delayed(const Duration(seconds: 1));
     token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
     if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
       TokenSingleton.instance.setAccessToken(token);
+      await initData();
       Get.off(() => BottomNavigationBarView());
     } else {
       TokenSingleton.instance.setAccessToken('');
@@ -38,10 +43,7 @@ class SplashController extends BaseController {
   }
 
   Future<void> initData() async{
-    await getListProvince();
-    if (token.isNotEmpty) {
-      //fetch info customer
-    }
+    customerController.getCustomerInfo();
   }
 
   Future<void> getListProvince() async {

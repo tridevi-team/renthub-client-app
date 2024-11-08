@@ -27,6 +27,11 @@ class FormatUtil {
     return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   }
 
+  static String formatToDayMonthYear(String isoTime) {
+    DateTime dateTime = DateTime.parse(isoTime).toLocal();
+    return DateFormat('dd/MM/yyyy').format(dateTime);
+  }
+
   static String formatDateOfBirth(String? dateOfBirth) {
     if (dateOfBirth?.length != 8) {
       return "Invalid date format";

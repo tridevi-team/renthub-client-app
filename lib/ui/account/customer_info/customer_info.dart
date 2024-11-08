@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info_controller.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/format_util.dart';
@@ -18,7 +20,7 @@ class CustomerInfo extends StatelessWidget {
   CustomerInfo({super.key});
 
   final controller = Get.put(CustomerInfoController());
-  bool isTempReg = false;
+  UserModel user = UserSingleton.instance.getUser();
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +28,31 @@ class CustomerInfo extends StatelessWidget {
       backgroundColor: AppColors.white,
       appBar: const CustomAppBar(label: "Thông tin cá nhân"),
       body: Obx(
-          () => Visibility(
-            visible: controller.isVisible.value,
-            child: SingleChildScrollView(
+        () => Visibility(
+          visible: controller.isVisible.value,
+          child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProfileImage(),
+                _buildProfileImage(user.name ?? ''),
                 const SizedBox(height: 10),
-                _buildProfileName(),
+                _buildProfileName(user.name ?? ''),
                 const SizedBox(height: 20),
-                _buildAccountInfo(),
+                _buildAccountInfo(email: user.email ?? '', phone: user.phoneNumber ?? ''),
                 const SizedBox(height: 20),
-                _buildCustomerInfo(),
+                _buildCustomerInfo(
+                  name: user.name ?? '',
+                  address: "${user.address?.street}, ${user.address?.ward}, ${user.address?.district}, ${user.address?.city}",
+                  citizenId: user.citizenId ?? '',
+                  dob: user.birthday ?? '',
+                ),
                 const SizedBox(height: 20),
-                _buildOtherInfo(),
+                _buildOtherInfo(moveInDate: user.moveInDate ?? '', tempReg: user.tempReg ?? 0),
               ],
             ),
-                    ),
           ),
+        ),
       ),
       bottomNavigationBar: Material(
         elevation: 10,
@@ -70,7 +77,7 @@ class CustomerInfo extends StatelessWidget {
                     textColor: AppColors.white,
                     bgColor: AppColors.primary600,
                     onTap: () {
-                      DialogUtil.showDialogConfirm(onConfirm: (){});
+                      DialogUtil.showDialogConfirm(onConfirm: () {});
                     }),
               )
             ],
@@ -80,34 +87,34 @@ class CustomerInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileImage() {
+  Widget _buildProfileImage(String name) {
+    String lastName = name.split(' ').last;
     return Align(
       alignment: Alignment.topCenter,
       child: CachedNetworkImage(
         imageUrl: 'imageUrl',
         height: 80,
         width: 80,
-        errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
+        errorWidget: (context, url, error) => AvatarWidget(lastName: lastName),
       ),
     );
   }
 
-  Widget _buildProfileName() {
+  Widget _buildProfileName(String name) {
     return Align(
       alignment: Alignment.topCenter,
       child: Text(
-        'Lê Hòa',
+        name,
         style: ConstantFont.semiBoldText.copyWith(fontSize: 20),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _buildAccountInfo() {
+  Widget _buildAccountInfo({required String email, required String phone}) {
     return _infoContainer([
-      _buildInfoItem("Email", AssetSvg.iconMail, "hoalt@magenest.com", color: AppColors.primary500),
-      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber('+84123456789'),
-          color: AppColors.primary500),
+      _buildInfoItem("Email", AssetSvg.iconMail, email, color: AppColors.primary500),
+      _buildInfoItem("Phone", AssetSvg.iconCall, FormatUtil.formatPhoneNumber(phone), color: AppColors.primary500),
       _buildInfoItem("Tài khoản liên kết", AssetSvg.iconGoogle, "Google"),
     ]);
   }
@@ -150,8 +157,8 @@ class CustomerInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomerInfo() {
-    return  Column(
+  Widget _buildCustomerInfo({required String name, required String citizenId, required String address, required String dob}) {
+    return Column(
       children: [
         const TitleInputWidget(title: 'Nhập thông tin cá nhân'),
         const SizedBox(height: 10),
@@ -159,9 +166,12 @@ class CustomerInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             InkWell(
-                onTap: controller.useScanQR, child: Text("Use QR Scan", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),)),
-            InkWell(
-                onTap: controller.useNFC, child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600))),
+                onTap: controller.useScanQR,
+                child: Text(
+                  "Use QR Scan",
+                  style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
+                )),
+            InkWell(onTap: controller.useNFC, child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600))),
           ],
         ),
         const SizedBox(height: 10),
@@ -169,7 +179,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: '${controller.fullName}',
+          label: controller.fullName ?? name,
           height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
@@ -179,7 +189,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: '${controller.citizenId}',
+          label: controller.citizenId ?? citizenId,
           height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
@@ -189,7 +199,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: '${FormatUtil.formatDateOfBirth(controller.dateOfBirth)}',
+          label: controller.dateOfBirth != null ? FormatUtil.formatDateOfBirth(controller.dateOfBirth) : FormatUtil.formatToDayMonthYear(dob),
           height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
@@ -199,7 +209,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: '${controller.address}',
+          label: controller.address ?? address,
           maxLines: 2,
           height: 60,
           backgroundColor: AppColors.neutralE5E5E3,
@@ -209,9 +219,7 @@ class CustomerInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildOtherInfo() {
-    final dateOfBirth = FormatUtil.formatToDayMonthYearTime('2023-12-31T17:00:00.000Z');
-
+  Widget _buildOtherInfo({required String moveInDate, required int tempReg}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -221,7 +229,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: dateOfBirth,
+          label: FormatUtil.formatToDayMonthYearTime(moveInDate),
           height: 48,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
@@ -230,27 +238,27 @@ class CustomerInfo extends StatelessWidget {
         Row(
           children: [
             SvgPicture.asset(
-              isTempReg ? AssetSvg.iconCheckMark : AssetSvg.iconClose,
+              tempReg == 1 ? AssetSvg.iconCheckMark : AssetSvg.iconClose,
               height: 24,
-              color: isTempReg ? AppColors.green900 : AppColors.red,
+              color: tempReg == 1 ? AppColors.green900 : AppColors.red,
             ),
             const SizedBox(width: 4),
             Expanded(
               child: Text(
-                isTempReg ? 'Đã đăng ký tạm trú.' : 'Chưa đăng ký tạm trú.',
+                tempReg == 1 ? 'Đã đăng ký tạm trú.' : 'Chưa đăng ký tạm trú.',
                 style: ConstantFont.regularText.copyWith(
-                  color: isTempReg ? AppColors.green900 : AppColors.red,
+                  color: tempReg == 1 ? AppColors.green900 : AppColors.red,
                 ),
               ),
             ),
           ],
         ),
-        if (!isTempReg) _buildRegistrationNotice(),
+        if (tempReg != 1) _buildRegistrationNotice(tempReg: tempReg),
       ],
     );
   }
 
-  Widget _buildRegistrationNotice() {
+  Widget _buildRegistrationNotice({required int tempReg}) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -271,7 +279,7 @@ class CustomerInfo extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 DialogUtil.showDialogConfirm(onConfirm: () {
-                  isTempReg = true;
+                  tempReg = 1;
                   controller.isVisible.value = false;
                   controller.isVisible.value = true;
                   Get.close(1);

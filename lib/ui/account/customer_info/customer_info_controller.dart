@@ -9,6 +9,12 @@ class CustomerInfoController extends BaseController {
   String? citizenId, fullName, dateOfBirth, address;
   RxBool isVisible = true.obs;
 
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
+
   void useNFC () {
     Get.to(() => const NfcScreen());
   }
