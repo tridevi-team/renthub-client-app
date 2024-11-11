@@ -8,6 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
@@ -115,7 +116,8 @@ class SignInController extends BaseController {
       parseData: (data) => UserModel.fromJson(data),
     );
 
-    if (model.success == true) {
+    if (model.success == true && model.data != null) {
+      UserSingleton.instance.setUser(model.data!);
       _processLogin(model.data?.accessToken, ConstantString.prefTypeServer, refreshToken: model.data?.refreshToken);
     } else {
       _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -50,6 +52,23 @@ class AppUtil {
       TokenSingleton.instance.setRefreshToken(refreshToken!);
       await SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, refreshToken);
     }
+  }
+
+  static Future<String> getUniqueDeviceId() async {
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+
+    try {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
+        return androidInfo.id ?? "Unknown Android ID";
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
+        return iosInfo.identifierForVendor ?? "Unknown iOS ID";
+      }
+    } catch (e) {
+      print('Error getting device unique ID: $e');
+    }
+    return "Unknown Device ID";
   }
 
 }
