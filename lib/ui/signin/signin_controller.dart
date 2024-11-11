@@ -155,8 +155,8 @@ class SignInController extends BaseController {
       await _auth.verifyPhoneNumber(
         phoneNumber: contactInputController.text.trim().replaceFirst('0', '+84'),
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential);
           startCountdown();
+          await _auth.signInWithCredential(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
           _showToast(defaultErrorMessage, ToastStatus.error);

@@ -240,15 +240,13 @@ class _TextInputWidgetState extends State<TextInputWidget> {
         widget.errorInput != null && widget.errorInput?.value.isError == true
             ? Padding(
                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Expanded(
-                  child: Text(
-                    widget.errorInput?.value.message ?? "",
-                    style: TextStyle(
-                      fontFamily: ConstantFont.fontLexendDeca,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.red,
-                      fontSize: 11,
-                    ),
+                child: Text(
+                  widget.errorInput?.value.message ?? "",
+                  style: TextStyle(
+                    fontFamily: ConstantFont.fontLexendDeca,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.red,
+                    fontSize: 11,
                   ),
                 ),
               )
