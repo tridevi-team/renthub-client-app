@@ -18,9 +18,11 @@ class UserModel {
   String? createdAt;
   String? updatedBy;
   String? updatedAt;
+  String? accessToken;
+  String? refreshToken;
 
-
-  UserModel({this.id,
+  UserModel({
+    this.id,
     this.roomId,
     this.name,
     this.citizenId,
@@ -36,109 +38,54 @@ class UserModel {
     this.createdBy,
     this.createdAt,
     this.updatedBy,
-    this.updatedAt});
-
-  UserModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    roomId = json['roomId'];
-    name = json['name'];
-    citizenId = json['citizenId'];
-    birthday = json['birthday'];
-    gender = json['gender'];
-    email = json['email'];
-    phoneNumber = json['phoneNumber'];
-    address = Address.fromJson(json['address']);
-    tempReg = json['tempReg'];
-    moveInDate = json['moveInDate'];
-    represent = json['represent'];
-    note = json['note'];
-    createdBy = json['createdBy'];
-    createdAt = json['createdAt'];
-    updatedBy = json['updatedBy'];
-    updatedAt = json['updatedAt'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['roomId'] = roomId;
-    data['name'] = name;
-    data['citizenId'] = citizenId;
-    data['birthday'] = birthday;
-    data['gender'] = gender;
-    data['email'] = email;
-    data['phoneNumber'] = phoneNumber;
-    data['address'] = address;
-    data['tempReg'] = tempReg;
-    data['moveInDate'] = moveInDate;
-    data['represent'] = represent;
-    data['note'] = note;
-    data['createdBy'] = createdBy;
-    data['createdAt'] = createdAt;
-    data['updatedBy'] = updatedBy;
-    data['updatedAt'] = updatedAt;
-    return data;
-  }
-}
-
-class HouseModel {
-  String? id;
-  String? name;
-  Address? address;
-  String? description;
-  int? collectionCycle;
-  int? invoiceDate;
-  int? numCollectDays;
-  int? status;
-  String? createdBy;
-  DateTime? createdAt;
-  String? updatedBy;
-  DateTime? updatedAt;
-
-  HouseModel({
-    this.id,
-    this.name,
-    this.address,
-    this.description,
-    this.collectionCycle,
-    this.invoiceDate,
-    this.numCollectDays,
-    this.status,
-    this.createdBy,
-    this.createdAt,
-    this.updatedBy,
     this.updatedAt,
+    this.accessToken,
+    this.refreshToken,
   });
 
-  HouseModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
+  UserModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'] as String?;
+    roomId = json['roomId'] as String?;
+    name = json['name'] as String?;
+    citizenId = json['citizenId'] as String?;
+    birthday = json['birthday'] as String?;
+    gender = json['gender'] as String?;
+    email = json['email'] as String?;
+    phoneNumber = json['phoneNumber'] as String?;
     address = json['address'] != null ? Address.fromJson(json['address']) : null;
-    description = json['description'];
-    collectionCycle = json['collectionCycle'];
-    invoiceDate = json['invoiceDate'];
-    numCollectDays = json['numCollectDays'];
-    status = json['status'];
-    createdBy = json['createdBy'];
-    createdAt = json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null;
-    updatedBy = json['updatedBy'];
-    updatedAt = json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null;
+    tempReg = json['tempReg'] as int?;
+    moveInDate = json['moveInDate'] as String?;
+    represent = json['represent'] as int?;
+    note = json['note'] as String?;
+    createdBy = json['createdBy'] as String?;
+    createdAt = json['createdAt'] as String?;
+    updatedBy = json['updatedBy'] as String?;
+    updatedAt = json['updatedAt'] as String?;
+    accessToken = json['accessToken'] as String?;
+    refreshToken = json['refreshToken'] as String?;
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'roomId': roomId,
       'name': name,
+      'citizenId': citizenId,
+      'birthday': birthday,
+      'gender': gender,
+      'email': email,
+      'phoneNumber': phoneNumber,
       'address': address?.toJson(),
-      'description': description,
-      'collectionCycle': collectionCycle,
-      'invoiceDate': invoiceDate,
-      'numCollectDays': numCollectDays,
-      'status': status,
+      'tempReg': tempReg,
+      'moveInDate': moveInDate,
+      'represent': represent,
+      'note': note,
       'createdBy': createdBy,
-      'createdAt': createdAt?.toIso8601String(),
+      'createdAt': createdAt,
       'updatedBy': updatedBy,
-      'updatedAt': updatedAt?.toIso8601String(),
+      'updatedAt': updatedAt,
+      'accessToken': accessToken,
+      'refreshToken': refreshToken,
     };
   }
 }

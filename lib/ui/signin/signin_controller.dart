@@ -116,7 +116,7 @@ class SignInController extends BaseController {
     );
 
     if (model.success == true) {
-      //_processLogin(model.data?.token, model.data?.refreshToken, ConstantString.prefTypeServer);
+      _processLogin(model.data?.accessToken, ConstantString.prefTypeServer, refreshToken: model.data?.refreshToken);
     } else {
       _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
     }
@@ -274,7 +274,6 @@ class SignInController extends BaseController {
     final seconds = (remainingSeconds % 60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
   }
-
 
   void _logError(String message, Object e) {
     if (kDebugMode) {
