@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/ui/signin/signin_controller.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
@@ -65,18 +67,12 @@ class SignInScreen extends StatelessWidget {
                         style: ConstantFont.semiBoldText.copyWith(color: const Color(0xFF4B7BE5)),
                       )),
                     ),*/
-                    const SizedBox(height: 18),
-                    CustomElevatedButton(
-                        label: 'Đăng nhập',
-                        onTap: controller.onLogin,
-                        bgColor: const Color(0xFF4B7BE5),
-                        textColor: Colors.white),
-                    const SizedBox(height: 16),
-                    CustomElevatedButton(label: 'Tiếp tục với Google', iconPath: 'assets/icons/ic_google.svg',
-                        onTap: controller.signInWithGoogle,
-                        textColor: Colors.black.withOpacity(0.5)),
-                    const SizedBox(height: 30),
-                    /*Row(
+                      const SizedBox(height: 18),
+                      CustomElevatedButton(label: 'Đăng nhập', onTap: controller.onLogin, bgColor: const Color(0xFF4B7BE5), textColor: Colors.white),
+                      const SizedBox(height: 16),
+                      CustomElevatedButton(label: 'Tiếp tục với Google', iconPath: 'assets/icons/ic_google.svg', onTap: controller.signInWithGoogle, textColor: Colors.black.withOpacity(0.5)),
+                      const SizedBox(height: 30),
+                      /*Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Expanded(child: Divider(height: 1, color: Color(0xFF646464))),
@@ -92,11 +88,11 @@ class SignInScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     CustomElevatedButton(label: 'Tạo tài khoản mới', onTap: () {})*/
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+    );
   }
 }

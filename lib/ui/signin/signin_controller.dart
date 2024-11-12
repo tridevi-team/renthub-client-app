@@ -14,7 +14,9 @@ import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/untils/toast_until.dart';
@@ -105,24 +107,34 @@ class SignInController extends BaseController {
   Future<void> signInWithEmail() async {
     final email = contactInputController.text.trim();
     final otp = otpEditingController.text.trim();
-    final response = await AuthService.verifyEmailByOTP({"email": email, "code": otp});
+    viewState.value = ViewState.loading;
 
-    final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-    if (errorMessage != null) {
-      _showToast(errorMessage, ToastStatus.error);
-      return;
-    }
-
-    final model = ResponseModel<UserModel>.fromJson(
-      jsonDecode(response.body),
-      parseData: (data) => UserModel.fromJson(data),
-    );
-
-    if (model.success == true && model.data != null) {
-      UserSingleton.instance.setUser(model.data!);
-      _processLogin(model.data?.accessToken, ConstantString.prefTypeServer, refreshToken: model.data?.refreshToken);
-    } else {
-      _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+    try {
+      final response = await AuthService.verifyEmailByOTP({
+        "email": email,
+        "code": otp,
+      });
+      final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+      if (errorMessage != null) {
+        viewState.value = ViewState.error;
+        _showToast(errorMessage, ToastStatus.error);
+        return;
+      }
+      final model = ResponseModel<UserModel>.fromJson(
+        jsonDecode(response.body),
+        parseData: (data) => UserModel.fromJson(data),
+      );
+      if (model.success == true && model.data != null) {
+        final user = model.data!;
+        UserSingleton.instance.setUser(user);
+        _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
+      } else {
+        _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+        viewState.value = ViewState.error;
+      }
+    } catch (e) {
+      _showToast(defaultErrorMessage, ToastStatus.error);
+      viewState.value = ViewState.error;
     }
   }
 
@@ -197,13 +209,16 @@ class SignInController extends BaseController {
   }
 
   void _processLogin(String? token, String type, {String? refreshToken}) async {
-    if (type != ConstantString.prefTypeServer) {
-      await Get.find<CustomerController>().getCustomerInfo();
-    }
-    if (token != null && UserSingleton.instance.getUser().id != null) {
+    if (token != null) {
       accessToken = token;
       this.refreshToken = refreshToken ?? '';
       saveToken(type);
+      if (type != ConstantString.prefTypeServer) {
+        await Get.find<CustomerController>().getCustomerInfo();
+      }
+      if (Get.isRegistered<BottomNavBarController>()) {
+        Get.find<BottomNavBarController>().checkIsLogin();
+      }
       moveToNextPage();
     }
   }
@@ -217,10 +232,10 @@ class SignInController extends BaseController {
   }
 
   void moveToNextPage() {
-    Get.off(() => BottomNavigationBarView());
+    Get.offAll(() => BottomNavigationBarView());
   }
 
-  void _showToast(String message, ToastStatus status) {
+  void _showToast(String message, ToastStatus status) async {
     ToastUntil.toastNotification(description: message, status: status);
   }
 

@@ -30,7 +30,7 @@ class CustomerInfo extends StatelessWidget {
       backgroundColor: AppColors.white,
       appBar: const CustomAppBar(label: "Thông tin cá nhân"),
       body: Obx(
-        () => Visibility(
+            () => Visibility(
           visible: controller.isVisible.value,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -45,7 +45,7 @@ class CustomerInfo extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildCustomerInfo(
                   name: user.name ?? '',
-                  address: "${user.address?.street}, ${user.address?.ward}, ${user.address?.district}, ${user.address?.city}",
+                  address: user.address?.toString() ?? '',
                   citizenId: user.citizenId ?? '',
                   dob: user.birthday ?? '',
                 ),
@@ -56,35 +56,47 @@ class CustomerInfo extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Material(
-        elevation: 10,
-        child: Container(
-          width: Get.width,
-          padding: const EdgeInsets.all(10),
-          color: AppColors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: CustomElevatedButton(
-                    label: 'Hủy',
-                    onTap: () {
-                      Get.back();
-                    }),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: CustomElevatedButton(
-                    label: 'Xác nhận',
-                    textColor: AppColors.white,
-                    bgColor: AppColors.primary600,
-                    onTap: () {
-                      DialogUtil.showDialogConfirm(onConfirm: () {});
-                    }),
-              )
-            ],
-          ),
+      bottomNavigationBar: _buildBottomNavBar(),
+    );
+  }
+
+  Widget _buildBottomNavBar() {
+    return Material(
+      elevation: 10,
+      child: Container(
+        width: Get.width,
+        padding: const EdgeInsets.all(10),
+        color: AppColors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildCancelButton(),
+            const SizedBox(width: 10),
+            _buildConfirmButton(),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCancelButton() {
+    return Expanded(
+      child: CustomElevatedButton(
+        label: 'Hủy',
+        onTap: () => Get.back(),
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    return Expanded(
+      child: CustomElevatedButton(
+        label: 'Xác nhận',
+        textColor: AppColors.white,
+        bgColor: AppColors.primary600,
+        onTap: () {
+          DialogUtil.showDialogConfirm(onConfirm: () {});
+        },
       ),
     );
   }
@@ -160,7 +172,6 @@ class CustomerInfo extends StatelessWidget {
   }
 
   Widget _buildCustomerInfo({required String name, required String citizenId, required String address, required String dob}) {
-    log("kgkgk $dob");
     return Column(
       children: [
         const TitleInputWidget(title: 'Nhập thông tin cá nhân'),
@@ -169,52 +180,38 @@ class CustomerInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             InkWell(
-                onTap: controller.useScanQR,
-                child: Text(
-                  "Use QR Scan",
-                  style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
-                )),
-            InkWell(onTap: controller.useNFC, child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600))),
+              onTap: controller.useScanQR,
+              child: Text(
+                "Use QR Scan",
+                style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
+              ),
+            ),
+            InkWell(
+              onTap: controller.useNFC,
+              child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600)),
+            ),
           ],
         ),
         const SizedBox(height: 10),
-        const TitleInputWidget(title: 'Họ tên'),
+        _buildTextField('Họ tên', controller.fullName ?? name),
+        _buildTextField('Số định danh cá nhân', controller.citizenId ?? citizenId),
+        _buildTextField('Ngày sinh', controller.dateOfBirth ?? dob),
+        _buildTextField('Địa chỉ', controller.address ?? address, maxLines: 2),
+      ],
+    );
+  }
+
+  Widget _buildTextField(String title, String value, {int maxLines = 1}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TitleInputWidget(title: title),
         const SizedBox(height: 6),
         TextInputWidget(
           enable: false,
-          label: controller.fullName ?? name,
+          label: value,
+          maxLines: maxLines,
           height: 48,
-          backgroundColor: AppColors.neutralE5E5E3,
-          colorBorder: AppColors.white,
-        ),
-        const SizedBox(height: 10),
-        const TitleInputWidget(title: 'Số định danh cá nhân'),
-        const SizedBox(height: 6),
-        TextInputWidget(
-          enable: false,
-          label: controller.citizenId ?? citizenId,
-          height: 48,
-          backgroundColor: AppColors.neutralE5E5E3,
-          colorBorder: AppColors.white,
-        ),
-        const SizedBox(height: 10),
-        const TitleInputWidget(title: 'Ngày sinh'),
-        const SizedBox(height: 6),
-        TextInputWidget(
-          enable: false,
-          label: controller.dateOfBirth != null ? FormatUtil.formatDateOfBirth(controller.dateOfBirth) : FormatUtil.formatToDayMonthYear(dob),
-          height: 48,
-          backgroundColor: AppColors.neutralE5E5E3,
-          colorBorder: AppColors.white,
-        ),
-        const SizedBox(height: 10),
-        const TitleInputWidget(title: 'Địa chỉ'),
-        const SizedBox(height: 6),
-        TextInputWidget(
-          enable: false,
-          label: controller.address ?? address,
-          maxLines: 2,
-          height: 60,
           backgroundColor: AppColors.neutralE5E5E3,
           colorBorder: AppColors.white,
         ),
@@ -228,15 +225,7 @@ class CustomerInfo extends StatelessWidget {
       children: [
         Text('Thông tin khác', style: ConstantFont.mediumText.copyWith(fontSize: 18)),
         const SizedBox(height: 10),
-        const TitleInputWidget(title: 'Ngày chuyển vào'),
-        const SizedBox(height: 6),
-        TextInputWidget(
-          enable: false,
-          label: FormatUtil.formatToDayMonthYearTime(moveInDate),
-          height: 48,
-          backgroundColor: AppColors.neutralE5E5E3,
-          colorBorder: AppColors.white,
-        ),
+        _buildTextField('Ngày chuyển vào', FormatUtil.formatToDayMonthYearTime(moveInDate)),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -248,10 +237,8 @@ class CustomerInfo extends StatelessWidget {
             const SizedBox(width: 4),
             Expanded(
               child: Text(
-                tempReg == 1 ? 'Đã đăng ký tạm trú.' : 'Chưa đăng ký tạm trú.',
-                style: ConstantFont.regularText.copyWith(
-                  color: tempReg == 1 ? AppColors.green900 : AppColors.red,
-                ),
+                tempReg == 1 ? "Đăng ký tạm trú" : "Chưa đăng ký tạm trú",
+                style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
               ),
             ),
           ],

@@ -33,7 +33,6 @@ class BottomNavBarController extends FullLifeCycleController {
   NotificationController notificationController = Get.put(NotificationController());
 
   RxInt selectedIndex = 0.obs;
-  final homeController = Get.put(HomeController());
   Timer? forceSetFirebaseBackgroundTimer;
   int forceSetFirebaseBackgroundTimerCount = 60;
   List<City> provinces = <City>[];
@@ -64,7 +63,6 @@ class BottomNavBarController extends FullLifeCycleController {
     filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       initData();
-
       if (Get.isRegistered<CustomerController>()) {
         final currentCustomerController = Get.find<CustomerController>();
         currentCustomerController.user.value = UserSingleton.instance.getUser();
@@ -79,6 +77,7 @@ class BottomNavBarController extends FullLifeCycleController {
   void onItemTapped(int value) {
     if (!isLogin.value) {
       redirectToLogin();
+      return;
     }
     selectedIndex.value = value;
     pageController.jumpToPage(value);
@@ -119,8 +118,7 @@ class BottomNavBarController extends FullLifeCycleController {
   }
 
   bool _isPermissionGranted(NotificationSettings settings) {
-    return settings.authorizationStatus == AuthorizationStatus.authorized ||
-        settings.authorizationStatus == AuthorizationStatus.provisional;
+    return settings.authorizationStatus == AuthorizationStatus.authorized || settings.authorizationStatus == AuthorizationStatus.provisional;
   }
 
   void _startPermissionCheckTimer() {
@@ -179,14 +177,11 @@ class BottomNavBarController extends FullLifeCycleController {
             location.name ?? "",
             style: TextStyle(
               color: const Color(0xff1C1D1F),
-              fontWeight:
-                  selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
+              fontWeight: selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
               fontSize: 14,
             ),
           ),
-          trailing: selectedLocation?.name == location.name
-              ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1)
-              : const SizedBox.shrink(),
+          trailing: selectedLocation?.name == location.name ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1) : const SizedBox.shrink(),
         ),
       ));
     }
@@ -294,10 +289,8 @@ class BottomNavBarController extends FullLifeCycleController {
                           setSelectedCity();
                         }
                       },
-                      style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
-                      child: Text('Xác nhận',
-                          style: ConstantFont.regularText.copyWith(color: AppColors.white)),
+                      style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
+                      child: Text('Xác nhận', style: ConstantFont.regularText.copyWith(color: AppColors.white)),
                     ),
                   ),
                 ],
@@ -339,35 +332,30 @@ class BottomNavBarController extends FullLifeCycleController {
   void onFilterCity(String searchValue, {bool isDistrict = false}) {
     if (isDistrict) {
       filteredDistricts.clear();
-      filteredDistricts.addAll(citySelected.value?.districts?.where((district) =>
-              district.name?.toLowerCase().contains(searchValue.toLowerCase()) ?? false) ??
-          []);
+      filteredDistricts.addAll(citySelected.value?.districts?.where((district) => district.name?.toLowerCase().contains(searchValue.toLowerCase()) ?? false) ?? []);
     } else {
       filteredCities.clear();
-      filteredCities.addAll(provinces.where((city) =>
-          city.name != null && city.name!.toLowerCase().contains(searchValue.toLowerCase())));
+      filteredCities.addAll(provinces.where((city) => city.name != null && city.name!.toLowerCase().contains(searchValue.toLowerCase())));
     }
   }
 
   void initData() {
     checkIsLogin();
     if (isLogin.value) {
-      Future.wait([
-        notificationController.getNotificationsCount()
-      ]);
+      Future.wait([notificationController.getNotificationsCount()]);
     }
   }
 
   void checkIsLogin() {
-    String accessToken = UserSingleton.instance.getUser().accessToken ?? '';
-    if (UserSingleton.instance.getUser().id != null && JwtDecoder.isExpired(accessToken) == false) {
+    if (UserSingleton.instance.getUser().id != null) {
       isLogin.value = true;
+    } else {
+      isLogin.value = false;
     }
   }
 
   void redirectToLogin() {
     ToastUntil.toastNotification(description: 'Bạn cần đăng nhập để sử dụng chức năng này.', status: ToastStatus.warning);
     Get.to(() => SignInScreen());
-    return;
   }
 }

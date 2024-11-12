@@ -12,4 +12,6 @@ class UserSingleton{
   UserModel getUser() => _user;
 
   void setUser(UserModel value) => _user = value;
+
+  void resetUser() => _user = UserModel();
 }

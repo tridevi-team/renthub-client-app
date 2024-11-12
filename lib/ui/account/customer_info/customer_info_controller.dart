@@ -5,21 +5,19 @@ import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class CustomerInfoController extends BaseController {
-
   String? citizenId, fullName, dateOfBirth, address;
   RxBool isVisible = true.obs;
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
   }
 
-  void useNFC () {
+  void useNFC() {
     Get.to(() => const NfcScreen());
   }
 
-  void useScanQR() async {
+  Future<void> useScanQR() async {
     final scannedData = await Get.to(() => QrScanScreen());
 
     if (scannedData == null) {
@@ -39,8 +37,8 @@ class CustomerInfoController extends BaseController {
     fullName = infoParts.isNotEmpty ? infoParts[0] : "Tên không rõ";
     dateOfBirth = infoParts.length > 1 ? infoParts[1] : "Ngày sinh không rõ";
     address = infoParts.length > 2 ? infoParts[2] : "Địa chỉ không xác định";
+
     isVisible.value = false;
     isVisible.value = true;
-
   }
 }

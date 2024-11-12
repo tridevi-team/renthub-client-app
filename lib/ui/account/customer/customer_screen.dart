@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/ui/account/customer_issue/customer_issue_screen.dart';
@@ -15,6 +17,7 @@ class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
   final customerController = Get.find<CustomerController>();
+  final UserModel user = UserSingleton.instance.getUser();
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +38,10 @@ class CustomerScreen extends StatelessWidget {
                   imageUrl: 'imageUrl',
                   height: 60,
                   width: 60,
-                  errorWidget: (context, url, error) => const AvatarWidget(lastName: 'Hoa'),
+                  errorWidget: (context, url, error) => AvatarWidget(lastName: '${user.name?.split(' ').last}'),
                 ),
                 title: Text(
-                  'Lê Hòa',
+                  '${user.name}',
                   style: ConstantFont.boldText.copyWith(fontSize: 18),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

@@ -9,6 +9,7 @@ import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/onboarding/onboarding_screen.dart';
 import 'package:rent_house/untils/app_util.dart';
@@ -26,7 +27,6 @@ class SplashController extends BaseController {
 
   Future<void> startAnimation() async {
     await getListProvince();
-    await Future.delayed(const Duration(seconds: 1));
     String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
     if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
       TokenSingleton.instance.setAccessToken(token);
@@ -38,9 +38,11 @@ class SplashController extends BaseController {
     }
   }
 
-  Future<void> initData() async{
+  Future<void> initData() async {
     CustomerController customerController = Get.put(CustomerController());
-    customerController.getCustomerInfo();
+    await customerController.getCustomerInfo();
+    final bottomNavController = Get.put(BottomNavBarController());
+    bottomNavController.checkIsLogin();
   }
 
   Future<void> getListProvince() async {

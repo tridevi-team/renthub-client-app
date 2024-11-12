@@ -66,23 +66,6 @@ class HomeAppBar extends AppBar {
                       color: AppColors.primary1,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () {
-                      if (!Get.find<BottomNavBarController>().isLogin.value) {
-                        Get.find<BottomNavBarController>().redirectToLogin();
-                      }
-                      Get.to(() => const NotificationScreen());
-                    },
-                    child: Badge(
-                      label: Text('${Get.find<NotificationController>().notificationsCount}'),
-                        child: SvgPicture.asset(
-                      AssetSvg.iconNotification,
-                      height: 28,
-                      width: 28,
-                      color: AppColors.primary1,
-                    )),
-                  )
                 ],
               ),
             ));

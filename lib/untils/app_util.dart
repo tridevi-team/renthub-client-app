@@ -18,24 +18,48 @@ class AppUtil {
 
   static Future<void> logout() async {
     try {
-      await FirebaseAuth.instance.signOut();
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      if (await googleSignIn.isSignedIn()) {
-        await googleSignIn.signOut();
-        await googleSignIn.disconnect();
-      }
       await Future.wait([
-        SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken),
-        SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
+        signOutWithGoogle(),
+        _clearLocalStorage(),
       ]);
+
       TokenSingleton.instance.setAccessToken('');
       TokenSingleton.instance.setRefreshToken('');
-      UserSingleton.instance.setUser(UserModel());
+      UserSingleton.instance.resetUser();
+
       Get.offAll(() => SignInScreen());
     } catch (e) {
       print("Error during logout: $e");
     }
   }
+
+  static Future<void> signOutWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+
+        await googleSignIn.disconnect().catchError((e) => print('Error during disconnect: $e'));
+      }
+
+      await FirebaseAuth.instance.signOut();
+    } catch (e) {
+      print("Error during Google Sign Out: $e");
+    }
+  }
+
+  static Future<void> _clearLocalStorage() async {
+    try {
+      await Future.wait([
+        SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken),
+        SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
+      ]);
+    } catch (e) {
+      print("Error clearing local storage: $e");
+    }
+  }
+
 
   static Future<void> autoRefreshToken() async {
     final appTypeToken = SharedPrefHelper.instance.getString(ConstantString.prefAppType);

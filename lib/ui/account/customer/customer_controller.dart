@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class CustomerController extends BaseController {
@@ -33,6 +35,8 @@ class CustomerController extends BaseController {
           description: "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.",
           status: ToastStatus.error,
         );
+        UserSingleton.instance.resetUser();
+        AppUtil.signOutWithGoogle();
         return;
       }
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;

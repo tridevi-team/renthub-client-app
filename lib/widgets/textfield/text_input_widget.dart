@@ -157,7 +157,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                     fontSize: 14,
                                     fontFamily: ConstantFont.fontLexendDeca,
                                     fontWeight: FontWeight.w400),
-                                contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                contentPadding:  EdgeInsets.fromLTRB(10, widget.maxLines != null ? 6 : 0, 10, widget.maxLines != null ? 6 : 0),
                                 focusedBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
