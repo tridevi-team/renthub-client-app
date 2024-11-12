@@ -19,7 +19,6 @@ import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
-import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';

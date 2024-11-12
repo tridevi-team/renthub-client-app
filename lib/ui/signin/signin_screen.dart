@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:rent_house/base/base_controller.dart';
-import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/ui/signin/signin_controller.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';

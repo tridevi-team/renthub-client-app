@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
-import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';

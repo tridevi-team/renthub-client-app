@@ -5,8 +5,6 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
-import 'package:rent_house/ui/notification/notification_controller.dart';
-import 'package:rent_house/ui/notification/notification_screen.dart';
 import 'package:rent_house/ui/search/search_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 

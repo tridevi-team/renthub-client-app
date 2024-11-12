@@ -16,7 +16,6 @@ import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
-import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/untils/toast_until.dart';
