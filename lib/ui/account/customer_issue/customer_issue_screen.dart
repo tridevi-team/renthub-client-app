@@ -10,6 +10,8 @@ import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class CustomerIssueScreen extends StatelessWidget {
+
+  CustomerIssueScreen({super.key});
   final CustomerIssueController controller = Get.put(CustomerIssueController());
 
   @override

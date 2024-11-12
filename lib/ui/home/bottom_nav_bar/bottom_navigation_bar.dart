@@ -29,7 +29,7 @@ class BottomNavigationBarView extends StatelessWidget {
           bottomNavController.selectedIndex.value = value;
         },
         children: [
-          true ? HomeScreen() : const HouseRenterScreen(),
+          bottomNavController.isLogin.value ? const HouseRenterScreen() : HomeScreen(),
           const StatisticScreen(),
           CustomerScreen(),
           CustomerScreen(),

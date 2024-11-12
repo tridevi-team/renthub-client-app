@@ -42,7 +42,7 @@ class ToastUntil {
       primaryColor: const Color(0xFF242C32),
       alignment: Alignment.bottomCenter,
       closeButtonShowType: CloseButtonShowType.none,
-      showProgressBar: false,
+      showProgressBar: true,
       autoCloseDuration: const Duration(seconds: 5),
       icon: Container(
         padding: const EdgeInsets.all(6),

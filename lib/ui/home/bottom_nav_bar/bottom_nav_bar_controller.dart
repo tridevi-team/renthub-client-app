@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -13,17 +14,24 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/services/notification_service.dart';
+import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/ui/notification/notification_controller.dart';
+import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
+import 'package:rent_house/untils/toast_until.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class BottomNavBarController extends FullLifeCycleController {
   late PageController pageController;
+  NotificationController notificationController = Get.put(NotificationController());
+
   RxInt selectedIndex = 0.obs;
   final homeController = Get.put(HomeController());
   Timer? forceSetFirebaseBackgroundTimer;
@@ -40,6 +48,8 @@ class BottomNavBarController extends FullLifeCycleController {
   Rxn<District> districtSelected = Rxn<District>();
   District districtTemp = District();
 
+  RxBool isLogin = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -53,6 +63,13 @@ class BottomNavBarController extends FullLifeCycleController {
     cityTemp = provinces[0];
     filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      initData();
+
+      if (Get.isRegistered<CustomerController>()) {
+        final currentCustomerController = Get.find<CustomerController>();
+        currentCustomerController.user.value = UserSingleton.instance.getUser();
+      }
+
       await DialogUtil.showDialogSelectLocation(onLocationTap: (bool isDistrict) {
         onTapOpenCityList(isDistrict: isDistrict);
       });
@@ -60,6 +77,9 @@ class BottomNavBarController extends FullLifeCycleController {
   }
 
   void onItemTapped(int value) {
+    if (!isLogin.value) {
+      redirectToLogin();
+    }
     selectedIndex.value = value;
     pageController.jumpToPage(value);
   }
@@ -327,5 +347,27 @@ class BottomNavBarController extends FullLifeCycleController {
       filteredCities.addAll(provinces.where((city) =>
           city.name != null && city.name!.toLowerCase().contains(searchValue.toLowerCase())));
     }
+  }
+
+  void initData() {
+    checkIsLogin();
+    if (isLogin.value) {
+      Future.wait([
+        notificationController.getNotificationsCount()
+      ]);
+    }
+  }
+
+  void checkIsLogin() {
+    String accessToken = UserSingleton.instance.getUser().accessToken ?? '';
+    if (UserSingleton.instance.getUser().id != null && JwtDecoder.isExpired(accessToken) == false) {
+      isLogin.value = true;
+    }
+  }
+
+  void redirectToLogin() {
+    ToastUntil.toastNotification(description: 'Bạn cần đăng nhập để sử dụng chức năng này.', status: ToastStatus.warning);
+    Get.to(() => SignInScreen());
+    return;
   }
 }

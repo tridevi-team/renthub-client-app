@@ -13,6 +13,7 @@ import 'package:rent_house/models/error_input_model.dart';
 import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
+import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
@@ -20,6 +21,7 @@ import 'package:rent_house/untils/toast_until.dart';
 import 'package:rent_house/untils/validate_util.dart';
 
 class SignInController extends BaseController {
+  final CustomerController customerController = Get.put(CustomerController());
   final TextEditingController contactInputController = TextEditingController();
   final TextEditingController otpEditingController = TextEditingController();
   final Rx<ErrorInputModel> contactErrorInputObject = ErrorInputModel().obs;
@@ -145,6 +147,9 @@ class SignInController extends BaseController {
   }
 
   void sendOTP() async {
+    if (isSendOTP.isTrue) {
+      return;
+    }
     if (contactInputController.text.isPhoneNumber) {
       await _sendOTPByPhone();
     } else {
@@ -191,8 +196,11 @@ class SignInController extends BaseController {
     }
   }
 
-  void _processLogin(String? token, String type, {String? refreshToken}) {
-    if (token != null) {
+  void _processLogin(String? token, String type, {String? refreshToken}) async {
+    if (type != ConstantString.prefTypeServer) {
+      await Get.find<CustomerController>().getCustomerInfo();
+    }
+    if (token != null && UserSingleton.instance.getUser().id != null) {
       accessToken = token;
       this.refreshToken = refreshToken ?? '';
       saveToken(type);

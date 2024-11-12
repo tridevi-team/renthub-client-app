@@ -2,6 +2,7 @@ import 'package:rent_house/base/base_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 
 class OnboardingController extends BaseController {
@@ -17,7 +18,7 @@ class OnboardingController extends BaseController {
 
   void nextPage() {
     if (currentPageIndex.value == 2) {
-      Get.off(() => SignInScreen());
+      Get.off(() => BottomNavigationBarView());
     } else {
       int page = currentPageIndex.value + 1;
       pageController.jumpToPage(page);

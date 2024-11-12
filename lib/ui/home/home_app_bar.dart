@@ -69,9 +69,13 @@ class HomeAppBar extends AppBar {
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () {
+                      if (!Get.find<BottomNavBarController>().isLogin.value) {
+                        Get.find<BottomNavBarController>().redirectToLogin();
+                      }
                       Get.to(() => const NotificationScreen());
                     },
                     child: Badge(
+                      label: Text('${Get.find<NotificationController>().notificationsCount}'),
                         child: SvgPicture.asset(
                       AssetSvg.iconNotification,
                       height: 28,
@@ -83,5 +87,4 @@ class HomeAppBar extends AppBar {
               ),
             ));
 
-  final notificationController = Get.find<NotificationController>();
 }

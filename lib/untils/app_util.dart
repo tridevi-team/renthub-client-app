@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
@@ -14,12 +17,24 @@ class AppUtil {
   AppUtil._();
 
   static Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
-    Get.offAll(() => SignInScreen());
-    await SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken);
-    await SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken);
-    TokenSingleton.instance.setAccessToken('');
-    TokenSingleton.instance.setRefreshToken('');
+    try {
+      await FirebaseAuth.instance.signOut();
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+        await googleSignIn.disconnect();
+      }
+      await Future.wait([
+        SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken),
+        SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
+      ]);
+      TokenSingleton.instance.setAccessToken('');
+      TokenSingleton.instance.setRefreshToken('');
+      UserSingleton.instance.setUser(UserModel());
+      Get.offAll(() => SignInScreen());
+    } catch (e) {
+      print("Error during logout: $e");
+    }
   }
 
   static Future<void> autoRefreshToken() async {
@@ -39,7 +54,6 @@ class AppUtil {
         accessToken = decodedResponse["accessToken"] ?? '';
       } catch (e) {
         print("Lỗi khi refresh token: $e");
-
       }
     }
 
@@ -60,7 +74,7 @@ class AppUtil {
     try {
       if (Platform.isAndroid) {
         AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
-        return androidInfo.id ?? "Unknown Android ID";
+        return androidInfo.id;
       } else if (Platform.isIOS) {
         IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
         return iosInfo.identifierForVendor ?? "Unknown iOS ID";
@@ -70,5 +84,4 @@ class AppUtil {
     }
     return "Unknown Device ID";
   }
-
 }

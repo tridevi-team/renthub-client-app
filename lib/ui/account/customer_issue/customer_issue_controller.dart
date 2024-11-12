@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:rent_house/base/base_controller.dart';
 
 import 'dart:io';
@@ -130,7 +128,7 @@ class CustomerIssueController extends BaseController {
 
     final chunkSize = (totalBytes / 10).round(); // Upload in chunks
     for (int i = 0; i < 10; i++) {
-      await Future.delayed(Duration(milliseconds: 500)); // Simulate network delay
+      await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
       uploadedBytes += chunkSize;
     }
 

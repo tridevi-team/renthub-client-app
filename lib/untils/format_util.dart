@@ -22,13 +22,15 @@ class FormatUtil {
     return phoneNumber;
   }
 
-  static String formatToDayMonthYearTime(String isoTime) {
-    DateTime dateTime = DateTime.parse(isoTime).toLocal();
+  static String formatToDayMonthYearTime(String? isoTime) {
+    if (isoTime?.isEmpty ?? true) return "";
+    DateTime dateTime = DateTime.parse(isoTime!).toLocal();
     return DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   }
 
-  static String formatToDayMonthYear(String isoTime) {
-    DateTime dateTime = DateTime.parse(isoTime).toLocal();
+  static String formatToDayMonthYear(String? isoTime) {
+    if (isoTime?.isEmpty ?? true) return "";
+    DateTime dateTime = DateTime.parse(isoTime!).toLocal();
     return DateFormat('dd/MM/yyyy').format(dateTime);
   }
 

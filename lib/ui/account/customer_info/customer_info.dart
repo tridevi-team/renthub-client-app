@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,7 +22,7 @@ class CustomerInfo extends StatelessWidget {
   CustomerInfo({super.key});
 
   final controller = Get.put(CustomerInfoController());
-  UserModel user = UserSingleton.instance.getUser();
+  final UserModel user = UserSingleton.instance.getUser();
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +160,7 @@ class CustomerInfo extends StatelessWidget {
   }
 
   Widget _buildCustomerInfo({required String name, required String citizenId, required String address, required String dob}) {
+    log("kgkgk $dob");
     return Column(
       children: [
         const TitleInputWidget(title: 'Nhập thông tin cá nhân'),

@@ -14,7 +14,7 @@ import 'package:rent_house/widgets/avatar/avatar.dart';
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
-  final customerController = Get.put(CustomerController());
+  final customerController = Get.find<CustomerController>();
 
   @override
   Widget build(BuildContext context) {
@@ -79,18 +79,16 @@ class CustomerScreen extends StatelessWidget {
                 titleText: 'Báo cáo vấn đề',
                 onTap: () {
                   Get.to(() => CustomerIssueScreen());
-                }
-            ),
+                }),
             const SizedBox(height: 20),
             Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),
             const SizedBox(height: 10),
             _buildListTile(
-              leadingAsset: AssetSvg.iconLogout,
-              titleText: 'Đăng xuất',
-              onTap: () async {
-                AppUtil.logout();
-              }
-            ),
+                leadingAsset: AssetSvg.iconLogout,
+                titleText: 'Đăng xuất',
+                onTap: () async {
+                  AppUtil.logout();
+                }),
             const Spacer(),
             Align(
                 alignment: Alignment.center,
