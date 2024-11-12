@@ -16,7 +16,7 @@ import 'package:rent_house/widgets/avatar/avatar.dart';
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
-  final customerController = Get.find<CustomerController>();
+  final customerController = Get.put(CustomerController());
   final UserModel user = UserSingleton.instance.getUser();
 
   @override

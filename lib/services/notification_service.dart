@@ -53,7 +53,7 @@ class NotificationService {
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
 
-  static Future<http.Response> getAllNotifications(String sort, String filters, int page, {int pageSize = 10}) {
+  static Future<http.Response> getAllNotifications({required String sort, int page = 1, String? filters, int pageSize = 10}) {
     String endpoint = '/notifications/list?$filters$sort&page=$page&pageSize=$pageSize';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }

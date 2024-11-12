@@ -7,6 +7,7 @@ import 'package:rent_house/untils/toast_until.dart';
 
 class NotificationController extends BaseController {
   RxInt notificationsCount = 0.obs;
+  int currentPage = 1;
 
   Future<void> getNotificationsCount() async {
     try {
@@ -24,4 +25,26 @@ class NotificationController extends BaseController {
       ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
     }
   }
+
+  Future<void> getAllNotifications() async {
+    try {
+      viewState.value = ViewState.loading;
+      String sort = '''{
+       "field": "notifications.createdAt",
+          "direction": "asc"
+        }''';
+      final response = await NotificationService.getAllNotifications(sort: sort, page: currentPage);
+      if (response.statusCode != 200) {
+        viewState.value = ViewState.error;
+        return;
+      }
+      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      notificationsCount.value = decodedResponse["data"]['unread'];
+      viewState.value = ViewState.complete;
+    } catch (e) {
+      viewState.value = ViewState.error;
+      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+    }
+  }
+
 }

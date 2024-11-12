@@ -213,7 +213,7 @@ class SignInController extends BaseController {
       this.refreshToken = refreshToken ?? '';
       saveToken(type);
       if (type != ConstantString.prefTypeServer) {
-        await Get.find<CustomerController>().getCustomerInfo();
+        await customerController.getCustomerInfo();
       }
       if (Get.isRegistered<BottomNavBarController>()) {
         Get.find<BottomNavBarController>().checkIsLogin();
