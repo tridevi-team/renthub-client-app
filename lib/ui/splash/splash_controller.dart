@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rent_house/base/base_controller.dart';
@@ -21,46 +20,62 @@ class SplashController extends BaseController {
 
   @override
   void onInit() {
-    startAnimation();
     super.onInit();
+    _initializeApp();
   }
 
-  Future<void> startAnimation() async {
-    await getListProvince();
-    String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
-    if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
-      TokenSingleton.instance.setAccessToken(token);
-      await initData();
-      Get.off(() => BottomNavigationBarView());
-    } else {
-      await AppUtil.logout();
-      Get.off(() => const OnboardingScreen());
+  Future<void> _initializeApp() async {
+    try {
+      await _fetchProvinces();
+
+      Get.lazyPut(() => BottomNavBarController());
+      Get.lazyPut(() => CustomerController());
+
+      String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
+
+      if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
+        TokenSingleton.instance.setAccessToken(token);
+        await _initializeUserData();
+        Get.off(() => BottomNavigationBarView());
+      } else {
+        await AppUtil.logout();
+        Get.off(() => const OnboardingScreen());
+      }
+    } catch (e) {
+      ToastUntil.toastNotification(description: "Error during initialization: $e", status: ToastStatus.error);
     }
   }
 
-  Future<void> initData() async {
-    CustomerController customerController = Get.put(CustomerController());
-    await customerController.getCustomerInfo();
-    final bottomNavController = Get.put(BottomNavBarController());
-    bottomNavController.checkIsLogin();
+  Future<void> _initializeUserData() async {
+    try {
+      final CustomerController customerController = Get.find();
+      final BottomNavBarController bottomNavController = Get.find();
+
+      await customerController.getCustomerInfo();
+      bottomNavController.checkIsLogin();
+    } catch (e) {
+      ToastUntil.toastNotification(description: "Error initializing user data: $e", status: ToastStatus.error);
+    }
   }
 
-  Future<void> getListProvince() async {
+  Future<void> _fetchProvinces() async {
     try {
       final response = await HomeService.fetchProvinces();
-      String? message = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+
+      final message = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
       if (message?.isNotEmpty ?? false) {
-        ToastUntil.toastNotification(description: '$message', status: ToastStatus.error);
+        ToastUntil.toastNotification(description: message!, status: ToastStatus.error);
         return;
       }
-      final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+
+      final List<dynamic> decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
+
       if (decodedResponse.isNotEmpty) {
         final provinces = decodedResponse.map((json) => City.fromJson(json)).toList();
         ProvinceSingleton.instance.setProvinces(provinces);
       }
     } catch (e) {
-      ToastUntil.toastNotification(description: e.toString(), status: ToastStatus.error);
-      print("Error fetching provinces: $e");
+      ToastUntil.toastNotification(description: "Error fetching provinces: $e", status: ToastStatus.error);
     }
   }
 }
