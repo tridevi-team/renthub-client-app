@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
+import 'package:rent_house/untils/response_error_util.dart';
+import 'package:rent_house/untils/toast_until.dart';
 
 class HouseDetailController extends BaseController {
-
   String houseId = '';
   House currentHouse = House();
-
 
   @override
   void onInit() {
@@ -19,11 +19,40 @@ class HouseDetailController extends BaseController {
   }
 
   Future<void> fetchHouseInformation() async {
-    viewState.value = ViewState.loading;
-    final response = await HomeService.fetchHouseInformation(houseId);
-    final json = jsonDecode(response.body) as Map<String, dynamic>;
-    currentHouse = House.fromJson(json['data']);
-    viewState.value = ViewState.complete;
+    try {
+      viewState.value = ViewState.loading;
+      final response = await HomeService.fetchHouseInformation(houseId);
+      final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
+      if (errorMessage != null) {
+        ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.error);
+        return;
+      }
+
+      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      currentHouse = House.fromJson(decodedResponse['data']);
+      sortHouseDetails();
+      viewState.value = ViewState.complete;
+    } catch (e) {
+      viewState.value = ViewState.error;
+    }
   }
 
+  void sortHouseDetails() {
+    currentHouse.floors?.sort((floor1, floor2) {
+      return _compareNames(floor1.name, floor2.name);
+    });
+
+    for (var floor in currentHouse.floors ?? []) {
+      floor.rooms.sort((room1, room2) {
+        return _compareNames(room1.name, room2.name);
+      });
+    }
+  }
+
+  int _compareNames(String? name1, String? name2) {
+    if (name1 == null && name2 == null) return 0;
+    if (name1 == null) return -1;
+    if (name2 == null) return 1;
+    return name1.compareTo(name2);
+  }
 }
