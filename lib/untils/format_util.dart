@@ -10,7 +10,7 @@ class FormatUtil {
 
   static String formatCurrency(int amount) {
     final NumberFormat formatter = NumberFormat('#,##0', 'vi_VN');
-    return '${formatter.format(amount)} đ';
+    return '${formatter.format(amount)}đ';
   }
 
   static String formatPhoneNumber(String phoneNumber) {
