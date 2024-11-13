@@ -100,14 +100,17 @@ class NotificationItemWidget extends StatelessWidget {
                     )
                   ],
                 ),
-                Positioned(
+                if (!notification.isRead) ...[
+                  Positioned(
                     right: 2,
                     top: 0,
                     child: Container(
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(color: AppColors.red, borderRadius: BorderRadius.circular(50)),
-                    ))
+                    ),
+                  )
+                ]
               ],
             ),
           )),

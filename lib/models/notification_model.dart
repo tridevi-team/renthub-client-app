@@ -47,6 +47,7 @@ class NotificationItem {
   Map<String, dynamic>? data;
   String? createdBy;
   DateTime? createdAt;
+  String? status;
 
   NotificationItem({
     this.id,
@@ -57,6 +58,7 @@ class NotificationItem {
     this.data,
     this.createdBy,
     this.createdAt,
+    this.status
   });
 
   NotificationItem.fromJson(Map<String, dynamic> json) {
@@ -70,6 +72,7 @@ class NotificationItem {
     createdAt = json['createdAt'] != null
         ? DateTime.parse(json['createdAt'])
         : null;
+    status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +85,9 @@ class NotificationItem {
       'data': data,
       'createdBy': createdBy,
       'createdAt': createdAt?.toIso8601String(),
+      'status': status
     };
   }
+
+  bool get isRead => status?.toLowerCase() == 'read';
 }

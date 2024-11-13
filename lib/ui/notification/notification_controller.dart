@@ -56,6 +56,7 @@ class NotificationController extends BaseController {
       NotificationModel notificationModel = NotificationModel.fromJson(decodedResponse["data"]);
       totalPage = notificationModel.page ?? 1;
       notifications.addAll(notificationModel.results ?? []);
+      notificationsCount.value = notifications.length;
       viewState.value = ViewState.complete;
     } catch (e) {
       viewState.value = ViewState.error;
