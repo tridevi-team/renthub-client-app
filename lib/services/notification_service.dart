@@ -11,25 +11,19 @@ class NotificationService {
     try {
       String? fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken == null) {
-        if (kDebugMode) {
-          print("Failed to retrieve FCM token.");
-        }
+        AppUtil.printDebugMode(type: "Error retrieve FCM", message: "Failed to retrieve FCM token.");
         return;
       }
 
       String? uuid = UserSingleton.instance.getUser().id;
       if (uuid == null) {
-        if (kDebugMode) {
-          print("User ID is null, cannot save FCM token.");
-        }
+        AppUtil.printDebugMode(type: "Error save FCM", message: "User ID is null");
         return;
       }
 
       String? device = await AppUtil.getUniqueDeviceId();
       if (device.isEmpty) {
-        if (kDebugMode) {
-          print("Device ID is null or empty, cannot save FCM token.");
-        }
+        AppUtil.printDebugMode(type: "Error Device ID", message: "Device ID is null or empty, cannot save FCM token.");
         return;
       }
 
@@ -37,14 +31,9 @@ class NotificationService {
       Map<String, dynamic> data = {"FCM": fcmToken};
 
       await db.collection("users").doc(uuid).collection("devices").doc(device).set(data, SetOptions(merge: true));
-
-      if (kDebugMode) {
-        print("FCM token saved successfully for device: $device");
-      }
+      AppUtil.printDebugMode(type: "FCM save success", message: "FCM token saved successfully for device: $device");
     } catch (e) {
-      if (kDebugMode) {
-        print("Error saving FCM token to Firestore: $e");
-      }
+      AppUtil.printDebugMode(type: "Error saving FCM to Firestore", message: "FCM token saved successfully for device: $e");
     }
   }
 

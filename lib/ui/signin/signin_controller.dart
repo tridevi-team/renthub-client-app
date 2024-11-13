@@ -16,6 +16,7 @@ import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/untils/toast_until.dart';
@@ -75,7 +76,7 @@ class SignInController extends BaseController {
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
-      _logError('Đăng nhập thất bại', e);
+      AppUtil.printDebugMode(type: "Đăng nhập thất bại", message: "$e");
       _showToast('Đã xảy ra lỗi không xác định.', ToastStatus.warning);
     }
   }
@@ -216,7 +217,7 @@ class SignInController extends BaseController {
         await customerController.getCustomerInfo();
       }
       if (Get.isRegistered<BottomNavBarController>()) {
-        Get.find<BottomNavBarController>().checkIsLogin();
+        Get.find<BottomNavBarController>().initData();
       }
       moveToNextPage();
     }
@@ -297,11 +298,5 @@ class SignInController extends BaseController {
     final minutes = (remainingSeconds ~/ 60).toString().padLeft(2, '0');
     final seconds = (remainingSeconds % 60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
-  }
-
-  void _logError(String message, Object e) {
-    if (kDebugMode) {
-      print('$message: $e');
-    }
   }
 }
