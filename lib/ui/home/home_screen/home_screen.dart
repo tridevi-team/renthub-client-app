@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/ui/home/home_app_bar.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
-
-import '../../../base/base_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});

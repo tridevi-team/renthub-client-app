@@ -125,9 +125,7 @@ class RoomDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
             const SizedBox(height: 20),
-            if (controller.selectedRoom.images != null &&
-                controller.selectedRoom.images!.isNotEmpty)
-              _buildImageCarousel()
+            if (controller.selectedRoom.images != null && controller.selectedRoom.images!.isNotEmpty) _buildImageCarousel()
           ],
         ),
       ),
@@ -142,8 +140,7 @@ class RoomDetailScreen extends StatelessWidget {
           AnimatedSize(
               duration: const Duration(milliseconds: 200),
               child: ConstrainedBox(
-                  constraints:
-                      isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 70),
+                  constraints: isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 70),
                   child: Text(
                     controller.selectedRoom.description ?? '',
                     style: const TextStyle(fontSize: 16),
@@ -155,23 +152,13 @@ class RoomDetailScreen extends StatelessWidget {
                   onTap: controller.toggleExpanded,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Thu gọn',
-                          style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)),
-                      const SizedBox(width: 4),
-                      SvgPicture.asset(AssetSvg.iconChevronUp, color: AppColors.primary1)
-                    ],
+                    children: [Text('Thu gọn', style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)), const SizedBox(width: 4), SvgPicture.asset(AssetSvg.iconChevronUp, color: AppColors.primary1)],
                   ))
               : InkWell(
                   onTap: controller.toggleExpanded,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Xem thêm',
-                          style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)),
-                      const SizedBox(width: 4),
-                      SvgPicture.asset(AssetSvg.iconChevronDown, color: AppColors.primary1)
-                    ],
+                    children: [Text('Xem thêm', style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)), const SizedBox(width: 4), SvgPicture.asset(AssetSvg.iconChevronDown, color: AppColors.primary1)],
                   ),
                 )
         ]);
@@ -210,7 +197,7 @@ class RoomDetailScreen extends StatelessWidget {
                     ),
                     if (service.unitPrice != null && service.unitPrice! > 0)
                       Text(
-                        FormatUtil.formatCurrency(service.unitPrice!),
+                        controller.formatServiceUnit(service.unitPrice!, service.type ?? ''),
                         style: ConstantFont.regularText,
                       ),
                   ],

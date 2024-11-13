@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-enum ViewState { init, loading, complete, error, none, end }
+import 'package:rent_house/constants/enums/enums.dart';
 
 abstract class BaseController extends GetxController {
   ScrollController scrollController = ScrollController();

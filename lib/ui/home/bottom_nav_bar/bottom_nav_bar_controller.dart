@@ -51,17 +51,15 @@ class BottomNavBarController extends FullLifeCycleController {
   @override
   void onInit() {
     super.onInit();
-    checkAndRegisterNotification();
     pageController = PageController(initialPage: selectedIndex.value);
     provinces = ProvinceSingleton.instance.provinces;
-
+    initData();
     currentLabelCity.value = '${provinces[0].name}';
     citySelected.value = provinces[0];
     filteredCities.addAll([...provinces]);
     cityTemp = provinces[0];
     filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      initData();
       if (Get.isRegistered<CustomerController>()) {
         final currentCustomerController = Get.find<CustomerController>();
         currentCustomerController.user.value = UserSingleton.instance.getUser();
@@ -340,10 +338,11 @@ class BottomNavBarController extends FullLifeCycleController {
     }
   }
 
-  void initData() {
+  void initData() async {
     checkIsLogin();
     if (isLogin.value) {
-      Future.wait([notificationController.getNotificationsCount()]);
+      Future.wait([notificationController.getAllNotifications()]);
+      await checkAndRegisterNotification();
     }
   }
 

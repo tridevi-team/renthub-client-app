@@ -12,4 +12,8 @@ class ConstantString {
 
   static const String titleTempReg = "Đăng ký tạm trú";
   static const String descriptionTempReg = "Bạn xác nhận những thông tin này là đúng sự thật. Nếu có bất cứ vấn đề gì bạn sẽ phải chịu hoàn toàn mọi trách nhiệm?";
+  static const String serviceTypeWater = 'WATER_CONSUMPTION';
+  static const String serviceTypeElectric = 'ELECTRICITY_CONSUMPTION';
+  static const String serviceTypeRoom = 'ROOM';
+  static const String serviceTypePeople = 'PEOPLE';
 }

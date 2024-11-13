@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/untils/app_util.dart';
@@ -40,8 +42,12 @@ class NotificationController extends BaseController {
     }
   }
 
-  Future<void> getAllNotifications() async {
+  Future<void> getAllNotifications({bool isLoadMore = false}) async {
     try {
+      if (!isLoadMore) {
+        currentPage = 1;
+        notifications.clear();
+      }
       viewState.value = ViewState.loading;
       String sort = '''{
        "field": "notifications.createdAt",
@@ -106,8 +112,6 @@ class NotificationController extends BaseController {
   }
 
   void refreshData() {
-    currentPage = 1;
-    notifications.clear();
     getAllNotifications();
     refreshCtrl.requestRefresh();
   }
@@ -115,7 +119,7 @@ class NotificationController extends BaseController {
   void loadMoreData() {
     if (currentPage < totalPage) {
       currentPage++;
-      getAllNotifications();
+      getAllNotifications(isLoadMore: true);
     }
   }
 }

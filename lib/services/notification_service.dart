@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_service.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/untils/app_util.dart';
-import 'package:http/http.dart' as http;
 
 class NotificationService {
   static Future<void> saveFcmTokenToFirestore() async {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/untils/response_error_util.dart';
