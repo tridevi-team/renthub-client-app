@@ -6,7 +6,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -30,7 +29,7 @@ import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class BottomNavBarController extends FullLifeCycleController {
   late PageController pageController;
-  NotificationController notificationController = Get.put(NotificationController());
+  NotificationController notificationController = Get.put(NotificationController(), permanent: true);
 
   RxInt selectedIndex = 0.obs;
   Timer? forceSetFirebaseBackgroundTimer;

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/local_notification_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:toastification/toastification.dart';
@@ -41,7 +42,7 @@ Future<void> mainApp() async {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   String? fcmToken = await FirebaseMessaging.instance.getToken();
-  print("FCM token: $fcmToken");
+  AppUtil.printDebugMode(type: "FCM Token", message: '$fcmToken');
   await SharedPrefHelper().init();
   runApp(const MyApp());
 }

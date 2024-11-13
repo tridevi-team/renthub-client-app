@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/untils/app_util.dart';
 
 
 class LocalNotificationUtil {
@@ -30,7 +31,7 @@ class LocalNotificationUtil {
           largeIcon: ByteArrayAndroidBitmap.fromBase64String(base64Encode(response.bodyBytes)),
         );
       } catch (e) {
-        print("Failed to download notification image: $e");
+        AppUtil.printDebugMode(type: 'Failed to download notification image', message: "$e");
       }
     }
 
@@ -57,13 +58,13 @@ class LocalNotificationUtil {
 
   static void onDidReceiveBackgroundNotificationResponse(NotificationResponse notificationResponse) {
     if (notificationResponse.payload != null) {
-        print('Background notification response: $notificationResponse');
+      AppUtil.printDebugMode(type: 'Background notification response', message: "$notificationResponse");
     }
   }
 
   static void onDidReceiveNotificationResponse(NotificationResponse notificationResponse) {
     if (notificationResponse.payload != null) {
-      print('Background notification response: $notificationResponse');
+      AppUtil.printDebugMode(type: 'Background notification response', message: "$notificationResponse");
 
     }
   }

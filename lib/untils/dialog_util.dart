@@ -163,21 +163,35 @@ class DialogUtil {
     );
   }
 
-  static showDialogConfirm({VoidCallback? onClose, required VoidCallback onConfirm}) {
+  static showDialogConfirm({VoidCallback? onClose, required VoidCallback onConfirm, required String text, String title = ''}) {
     return Get.dialog(
       barrierDismissible: false,
       Dialog(
-        insetPadding: const EdgeInsets.symmetric(horizontal: 14),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         backgroundColor: AppColors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Container(
-          height: 200,
-          padding: const EdgeInsets.all(14),
+          height: 220,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (title != '') ...[
+                Text(
+                  title,
+                  style: ConstantFont.semiBoldText.copyWith(fontSize: 16, color: AppColors.primary1),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                const Divider(
+                  height: 1,
+                  color: AppColors.neutralE9e9e9,
+                ),
+                const SizedBox(height: 10),
+              ],
               Text(
-                "Bạn xác nhận những thông tin này là đúng sự thật. Nếu có bất cứ vấn đề gì bạn sẽ phải chịu hoàn toàn mọi trách nhiệm?",
+                text,
                 style: ConstantFont.mediumText,
                 textAlign: TextAlign.center,
               ),
@@ -280,15 +294,14 @@ class DialogUtil {
                 style: ConstantFont.mediumText.copyWith(fontSize: 16),
               ),
               RangeSlider(
-                  values: currentRange.value,
-                  min: minPrice,
-                  max: maxPrice,
-                  divisions: ((maxPrice - minPrice) ~/ 100000),
-                  inactiveColor: AppColors.neutralCCCAC6,
-                  activeColor: AppColors.primary1,
-
-                  onChanged: onChanged,
-                ),
+                values: currentRange.value,
+                min: minPrice,
+                max: maxPrice,
+                divisions: ((maxPrice - minPrice) ~/ 100000),
+                inactiveColor: AppColors.neutralCCCAC6,
+                activeColor: AppColors.primary1,
+                onChanged: onChanged,
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

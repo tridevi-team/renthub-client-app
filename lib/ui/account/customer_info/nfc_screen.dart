@@ -5,10 +5,10 @@ class NfcScreen extends StatefulWidget {
   const NfcScreen({super.key});
 
   @override
-  _NfcScreenState createState() => _NfcScreenState();
+  NfcScreenState createState() => NfcScreenState();
 }
 
-class _NfcScreenState extends State<NfcScreen> {
+class NfcScreenState extends State<NfcScreen> {
   final NfcService _nfcService = NfcService();
   String _nfcData = 'NFC data will appear here';
 

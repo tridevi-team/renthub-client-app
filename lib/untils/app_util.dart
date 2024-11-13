@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -28,7 +29,7 @@ class AppUtil {
 
       Get.offAll(() => SignInScreen());
     } catch (e) {
-      print("Error during logout: $e");
+      AppUtil.printDebugMode(type: "Error Logout", message: '$e');
     }
   }
 
@@ -39,14 +40,18 @@ class AppUtil {
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.signOut();
 
-        await googleSignIn.disconnect().catchError((e) => print('Error during disconnect: $e'));
+        await googleSignIn.disconnect().catchError((e) {
+          printDebugMode(type: 'Error Google disconnect', message: e);
+          return null;
+        });
       }
 
       await FirebaseAuth.instance.signOut();
     } catch (e) {
-      print("Error during Google Sign Out: $e");
+      printDebugMode(type: 'Error Google SignOut', message: '$e');
     }
   }
+
 
   static Future<void> _clearLocalStorage() async {
     try {
@@ -55,7 +60,7 @@ class AppUtil {
         SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
       ]);
     } catch (e) {
-      print("Error clearing local storage: $e");
+      AppUtil.printDebugMode(type: 'Error clear Local Storage', message: "$e");
     }
   }
 
@@ -76,7 +81,7 @@ class AppUtil {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         accessToken = decodedResponse["accessToken"] ?? '';
       } catch (e) {
-        print("Lỗi khi refresh token: $e");
+        AppUtil.printDebugMode(type: 'Error Refresh Token', message: "$e");
       }
     }
 
@@ -103,8 +108,14 @@ class AppUtil {
         return iosInfo.identifierForVendor ?? "Unknown iOS ID";
       }
     } catch (e) {
-      print('Error getting device unique ID: $e');
+      AppUtil.printDebugMode(type: 'Error getting device unique ID', message: '$e');
     }
     return "Unknown Device ID";
+  }
+
+  static void printDebugMode ({required String type, required String message}) {
+    if (kDebugMode) {
+      print("[$type] $message");
+    }
   }
 }

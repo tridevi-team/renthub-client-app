@@ -20,7 +20,6 @@ class CustomerInfo extends StatelessWidget {
   CustomerInfo({super.key});
 
   final controller = Get.put(CustomerInfoController());
-  final UserModel user = UserSingleton.instance.getUser();
 
   @override
   Widget build(BuildContext context) {
@@ -28,27 +27,27 @@ class CustomerInfo extends StatelessWidget {
       backgroundColor: AppColors.white,
       appBar: const CustomAppBar(label: "Thông tin cá nhân"),
       body: Obx(
-            () => Visibility(
+        () => Visibility(
           visible: controller.isVisible.value,
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProfileImage(user.name ?? ''),
+                _buildProfileImage(controller.user.name ?? ''),
                 const SizedBox(height: 10),
-                _buildProfileName(user.name ?? ''),
+                _buildProfileName(controller.user.name ?? ''),
                 const SizedBox(height: 20),
-                _buildAccountInfo(email: user.email ?? '', phone: user.phoneNumber ?? ''),
+                _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
                 const SizedBox(height: 20),
                 _buildCustomerInfo(
-                  name: user.name ?? '',
-                  address: user.address?.toString() ?? '',
-                  citizenId: user.citizenId ?? '',
-                  dob: user.birthday ?? '',
+                  name: controller.user.name ?? '',
+                  address: controller.user.address?.toString() ?? '',
+                  citizenId: controller.user.citizenId ?? '',
+                  dob: controller.user.birthday ?? '',
                 ),
                 const SizedBox(height: 20),
-                _buildOtherInfo(moveInDate: user.moveInDate ?? '', tempReg: user.tempReg ?? 0),
+                _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.user.tempReg ?? 0),
               ],
             ),
           ),
@@ -92,9 +91,7 @@ class CustomerInfo extends StatelessWidget {
         label: 'Xác nhận',
         textColor: AppColors.white,
         bgColor: AppColors.primary600,
-        onTap: () {
-          DialogUtil.showDialogConfirm(onConfirm: () {});
-        },
+        onTap: controller.confirmResidenceRegistration,
       ),
     );
   }
@@ -193,7 +190,7 @@ class CustomerInfo extends StatelessWidget {
         const SizedBox(height: 10),
         _buildTextField('Họ tên', controller.fullName ?? name),
         _buildTextField('Số định danh cá nhân', controller.citizenId ?? citizenId),
-        _buildTextField('Ngày sinh', controller.dateOfBirth ?? dob),
+        _buildTextField('Ngày sinh', controller.dateOfBirth ?? FormatUtil.formatToDayMonthYear(dob)),
         _buildTextField('Địa chỉ', controller.address ?? address, maxLines: 2),
       ],
     );
@@ -223,7 +220,7 @@ class CustomerInfo extends StatelessWidget {
       children: [
         Text('Thông tin khác', style: ConstantFont.mediumText.copyWith(fontSize: 18)),
         const SizedBox(height: 10),
-        _buildTextField('Ngày chuyển vào', FormatUtil.formatToDayMonthYearTime(moveInDate)),
+        _buildTextField('Ngày chuyển vào', FormatUtil.formatToDayMonthYear(moveInDate)),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -265,14 +262,7 @@ class CustomerInfo extends StatelessWidget {
           Align(
             alignment: Alignment.bottomRight,
             child: InkWell(
-              onTap: () {
-                DialogUtil.showDialogConfirm(onConfirm: () {
-                  tempReg = 1;
-                  controller.isVisible.value = false;
-                  controller.isVisible.value = true;
-                  Get.close(1);
-                });
-              },
+              onTap: controller.confirmResidenceRegistration,
               child: Text(
                 'Bỏ qua',
                 style: ConstantFont.mediumText.copyWith(color: AppColors.primary400, fontSize: 12),

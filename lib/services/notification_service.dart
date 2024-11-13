@@ -68,8 +68,8 @@ class NotificationService {
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.put, params: data, auth: true);
   }
 
-  static Future<http.Response> removeNotification() {
+  static Future<http.Response> removeNotification(Map<String, dynamic> params) {
     String endpoint = '/notifications/delete';
-    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.delete, auth: true);
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.delete, params: params, auth: true);
   }
 }

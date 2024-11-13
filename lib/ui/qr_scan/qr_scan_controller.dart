@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/untils/app_util.dart';
 
 class QrScanController extends BaseController with WidgetsBindingObserver {
 
@@ -39,7 +40,7 @@ class QrScanController extends BaseController with WidgetsBindingObserver {
   Future<void> openSettings() async {
     bool isOpened = await openAppSettings();
     if (!isOpened) {
-      print("Failed to open app settings.");
+      AppUtil.printDebugMode(type: "Error OpenSettings", message: 'Failed to open app settings.');
     }
   }
 }

@@ -77,7 +77,6 @@ class CustomerIssueController extends BaseController {
 
   Future<void> uploadFiles() async {
     Get.focusScope!.unfocus();
-    print("kgkkg");
     if (selectedImages.isEmpty) {
       ToastUntil.toastNotification(description: "Vui lòng chọn ít nhất một hình ảnh.", status: ToastStatus.warning);
       return;
