@@ -28,7 +28,7 @@ class SplashController extends BaseController {
     try {
       await _fetchProvinces();
 
-      Get.lazyPut(() => BottomNavBarController());
+      Get.put(BottomNavBarController());
       Get.lazyPut(() => CustomerController());
 
       String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';

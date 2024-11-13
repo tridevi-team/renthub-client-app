@@ -122,4 +122,6 @@ class NotificationController extends BaseController {
       getAllNotifications(isLoadMore: true);
     }
   }
+
+  void resetNotificationCount() => notificationsCount.value = 0;
 }
