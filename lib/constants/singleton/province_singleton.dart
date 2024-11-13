@@ -13,4 +13,5 @@ class ProvinceSingleton {
   get provinces => _provinces;
   void setProvinces(List<City> provinces) => _provinces = provinces;
 
+  bool get isProvincesEmpty => _provinces.isEmpty;
 }
