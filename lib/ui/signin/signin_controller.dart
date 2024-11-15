@@ -88,17 +88,15 @@ class SignInController extends BaseController {
     final email = contactInputController.text.trim();
     final response = await AuthService.generateOTPByEmail({"email": email});
 
-    final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-    if (errorMessage != null) {
-      _showToast(errorMessage, ToastStatus.error);
-      return;
-    }
-    final model = ResponseModel.fromJson(jsonDecode(response.body));
-    if (model.success != true) {
-      _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
-    } else {
-      _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
-      startCountdown();
+    ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+    if (response.statusCode < 300) {
+      final model = ResponseModel.fromJson(jsonDecode(response.body));
+      if (model.success != true) {
+        _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+      } else {
+        _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
+        startCountdown();
+      }
     }
   }
 
@@ -117,27 +115,24 @@ class SignInController extends BaseController {
         "email": email,
         "code": otp,
       });
-      final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-      if (errorMessage != null) {
-        viewState.value = ViewState.error;
-        _showToast(errorMessage, ToastStatus.error);
-        return;
-      }
-      final model = ResponseModel<UserModel>.fromJson(
-        jsonDecode(response.body),
-        parseData: (data) => UserModel.fromJson(data),
-      );
-      if (model.success == true && model.data != null) {
-        final user = model.data!;
-        UserSingleton.instance.setUser(user);
-        _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
-      } else {
-        _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
-        viewState.value = ViewState.error;
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      if (response.statusCode < 300) {
+        final model = ResponseModel<UserModel>.fromJson(
+          jsonDecode(response.body),
+          parseData: (data) => UserModel.fromJson(data),
+        );
+        if (model.success == true && model.data != null) {
+          final user = model.data!;
+          UserSingleton.instance.setUser(user);
+          _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
+        } else {
+          _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+          viewState.value = ViewState.complete;
+        }
       }
     } catch (e) {
       _showToast(defaultErrorMessage, ToastStatus.error);
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.complete;
     }
   }
 

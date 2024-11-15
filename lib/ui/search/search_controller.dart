@@ -11,6 +11,7 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/untils/dialog_util.dart';
+import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class SearchXController extends BaseController {
@@ -116,33 +117,30 @@ class SearchXController extends BaseController {
       String filters = 'filter[]={"field": "${sorts[sortBySelected]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
-
-      if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
-        log("Failed to fetch house list, status code: ${response.statusCode}");
-        return;
-      }
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
-      viewState.value = ViewState.complete;
-      final houses = houseDataModel.results ?? [];
-      if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
-        for (var house in houses) {
-          if (house.minPrice != null && minPrice > house.minPrice!) {
-            minPrice = house.minPrice!.toDouble();
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
+        viewState.value = ViewState.complete;
+        final houses = houseDataModel.results ?? [];
+        if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
+          for (var house in houses) {
+            if (house.minPrice != null && minPrice > house.minPrice!) {
+              minPrice = house.minPrice!.toDouble();
+            }
+            if (house.maxPrice != null && maxPrice < house.maxPrice!) {
+              maxPrice = house.maxPrice!.toDouble();
+            }
           }
-          if (house.maxPrice != null && maxPrice < house.maxPrice!) {
-            maxPrice = house.maxPrice!.toDouble();
-          }
+          currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
+          houseList.addAll(houses);
+          refreshController.loadComplete();
+        } else {
+          houseList.clear();
         }
-        currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
-        houseList.addAll(houses);
-        refreshController.loadComplete();
-      } else {
-        houseList.clear();
       }
     } catch (e) {
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.notFound;
       houseList.clear();
       log("Error fetch: $e");
     }

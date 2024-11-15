@@ -1,15 +1,24 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/enums/enums.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
+import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/rss_model.dart';
+import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/untils/response_error_util.dart';
+import 'package:rent_house/untils/toast_until.dart';
 import 'package:xml/xml.dart';
 import 'package:html/parser.dart' as html;
 
 class HouseRenterController extends BaseController {
   RxBool isVisible = true.obs;
   List<RssModel> rssList = [];
+  Room room = Room();
 
   Future<void> fetchNews() async {
     try {
@@ -24,10 +33,7 @@ class HouseRenterController extends BaseController {
           final description = _getElementText(element, 'description');
           final link = _getElementText(element, 'link');
           final pubDate = _getElementText(element, 'pubDate');
-          final imageUrl = element
-              .findElements('enclosure')
-              .map((e) => e.getAttribute('url'))
-              .firstOrNull ?? '';
+          final imageUrl = element.findElements('enclosure').map((e) => e.getAttribute('url')).firstOrNull ?? '';
 
           return RssModel(
             title: title,
@@ -62,9 +68,32 @@ class HouseRenterController extends BaseController {
     return document.body?.text.trim() ?? '';
   }
 
-
   void _notifyChange() {
     isVisible.value = false;
     isVisible.value = true;
+  }
+
+  Future<void> getRoomInfo() async {
+    try {
+      viewState.value = ViewState.loading;
+      final roomId = UserSingleton.instance.getUser().roomId;
+      if (roomId?.isEmpty ?? true) return;
+      final response = await CustomerService.fetchRoomDetails(roomId: roomId ?? '');
+      if (response.statusCode == 500) {
+        viewState.value = ViewState.noInternetConnection;
+      } else if (response.statusCode == 408) {
+        viewState.value = ViewState.timeout;
+      } else if (response.statusCode == 1000 || response.statusCode > 500) {
+        viewState.value = ViewState.serverError;
+      } else if (response.statusCode >= 300) {
+        viewState.value = ViewState.notFound;
+      } else {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        room = Room.fromJson(decodedResponse["data"]);
+        viewState.value = ViewState.complete;
+      }
+    } catch (e) {
+      AppUtil.printDebugMode(type: "Error in getRoomInfo", message: "$e");
+    }
   }
 }

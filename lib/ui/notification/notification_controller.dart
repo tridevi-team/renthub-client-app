@@ -8,6 +8,7 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class NotificationController extends BaseController {
@@ -24,20 +25,18 @@ class NotificationController extends BaseController {
     super.onInit();
   }
 
-
   Future<void> getNotificationsCount() async {
     try {
       viewState.value = ViewState.loading;
       final response = await NotificationService.fetchNotificationCount();
-      if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
-        return;
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        notificationsCount.value = decodedResponse["data"]['unread'];
+        viewState.value = ViewState.complete;
       }
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      notificationsCount.value = decodedResponse["data"]['unread'];
-      viewState.value = ViewState.complete;
     } catch (e) {
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.notFound;
       ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
     }
   }
@@ -54,18 +53,18 @@ class NotificationController extends BaseController {
           "direction": "asc"
         }''';
       final response = await NotificationService.getAllNotifications(sort: sort, page: currentPage);
-      if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
-        return;
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        NotificationModel notificationModel = NotificationModel.fromJson(decodedResponse["data"]);
+        totalPage = notificationModel.page ?? 1;
+        notifications.addAll(notificationModel.results ?? []);
+        notificationsCount.value = notifications.length;
+        viewState.value = ViewState.complete;
       }
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      NotificationModel notificationModel = NotificationModel.fromJson(decodedResponse["data"]);
-      totalPage = notificationModel.page ?? 1;
-      notifications.addAll(notificationModel.results ?? []);
-      notificationsCount.value = notifications.length;
-      viewState.value = ViewState.complete;
     } catch (e) {
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.notFound;
       ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
     }
   }
@@ -78,7 +77,7 @@ class NotificationController extends BaseController {
       };
       final response = await NotificationService.removeNotification(params);
       if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
+        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
         return;
       }
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -101,11 +100,9 @@ class NotificationController extends BaseController {
       };
       final response = await NotificationService.removeNotification(params);
       if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
         return;
       }
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      
     } catch (e) {
       AppUtil.printDebugMode(type: "MarkAsReadNotification", message: '$e');
     }

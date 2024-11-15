@@ -23,18 +23,15 @@ class HouseDetailController extends BaseController {
     try {
       viewState.value = ViewState.loading;
       final response = await HomeService.fetchHouseInformation(houseId);
-      final errorMessage = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-      if (errorMessage != null) {
-        ToastUntil.toastNotification(description: errorMessage, status: ToastStatus.error);
-        return;
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        currentHouse = House.fromJson(decodedResponse['data']);
+        sortHouseDetails();
+        viewState.value = ViewState.complete;
       }
-
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      currentHouse = House.fromJson(decodedResponse['data']);
-      sortHouseDetails();
-      viewState.value = ViewState.complete;
     } catch (e) {
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.notFound;
     }
   }
 

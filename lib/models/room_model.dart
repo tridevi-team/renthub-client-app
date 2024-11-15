@@ -8,6 +8,11 @@ class Room {
   String? description;
   List<ImageModel>? images;
   List<ServiceModel>? services;
+  String? createdBy;
+  String? createdAt;
+  String? updatedBy;
+  String? updatedAt;
+  _HouseModel? house;
 
   Room({
     this.id,
@@ -19,24 +24,28 @@ class Room {
     this.description,
     this.images,
     this.services,
+    this.house,
+    this.createdBy,
+    this.createdAt,
+    this.updatedBy,
+    this.updatedAt,
   });
 
   Room.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? '';
-    name = json['name'] ?? '';
-    price = json['price'] ?? 0;
-    area = json['roomArea'] ?? 0;
-    maxRenters = json['maxRenters'] ?? 1;
-    status = json['status'] ?? '';
-    description = json['description'] ?? '';
+    id = json['id'];
+    name = json['name'];
+    price = json['price'];
+    area = json['roomArea'];
+    maxRenters = json['maxRenters'];
+    status = json['status'];
+    description = json['description'];
+    createdBy = json['createdBy'];
+    createdAt = json['createdAt'];
+    updatedBy = json['updatedBy'];
+    updatedAt = json['updatedAt'];
+    house = json['house'] != null ? _HouseModel.fromJson(json['house']) : null;
     images = (json['images'] as List?)?.map((i) => ImageModel.fromJson(i)).toList() ?? [];
-    if (json['services'] != null) {
-      services = (json['services'] as List)
-          .map((i) => ServiceModel.fromJson(i))
-          .toList();
-    } else {
-      services = [];
-    }
+    services = (json['services'] as List?)?.map((i) => ServiceModel.fromJson(i)).toList() ?? [];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +59,11 @@ class Room {
       'description': description,
       'images': images?.map((image) => image.toJson()).toList(),
       'services': services?.map((service) => service.toJson()).toList(),
+      'house': house?.toJson(),
+      'createdBy': createdBy,
+      'createdAt': createdAt,
+      'updatedBy': updatedBy,
+      'updatedAt': updatedAt,
     };
   }
 }
@@ -66,9 +80,9 @@ class ImageModel {
   });
 
   ImageModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? '';
-    imageUrl = json['imageUrl'] ?? '';
-    description = json['description'] ?? '';
+    id = json['id'];
+    imageUrl = json['imageUrl'];
+    description = json['description'];
   }
 
   Map<String, dynamic> toJson() {
@@ -89,7 +103,7 @@ class ServiceModel {
   int? quantity;
 
   ServiceModel({
-    required this.id,
+    this.id,
     this.name,
     this.unitPrice,
     this.description,
@@ -98,7 +112,7 @@ class ServiceModel {
   });
 
   ServiceModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'] ?? '';
+    id = json['id'];
     name = json['name'];
     unitPrice = json['unitPrice'];
     description = json['description'];
@@ -114,6 +128,62 @@ class ServiceModel {
       'description': description,
       'type': type,
       'quantity': quantity,
+    };
+  }
+}
+
+class _HouseModel {
+  String? id;
+  String? name;
+  String? description;
+  _FloorModel? floor;
+
+  _HouseModel({
+    this.id,
+    this.name,
+    this.description,
+    this.floor,
+  });
+
+  _HouseModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    description = json['description'];
+    floor = json['floor'] != null ? _FloorModel.fromJson(json['floor']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'floor': floor?.toJson(),
+    };
+  }
+}
+
+class _FloorModel {
+  String? id;
+  String? name;
+  String? description;
+
+  _FloorModel({
+    this.id,
+    this.name,
+    this.description,
+  });
+
+  _FloorModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    description = json['description'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
     };
   }
 }

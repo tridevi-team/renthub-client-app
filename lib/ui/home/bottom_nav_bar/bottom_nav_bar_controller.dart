@@ -347,6 +347,7 @@ class BottomNavBarController extends FullLifeCycleController {
         notificationController.getAllNotifications(),
         houseRenterController.fetchNews(),
       ]);
+      print("kgkgkk ${UserSingleton.instance.getUser().roomId}");
       await checkAndRegisterNotification();
     }
   }

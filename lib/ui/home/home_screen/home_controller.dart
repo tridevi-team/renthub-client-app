@@ -10,6 +10,7 @@ import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';
+import 'package:rent_house/untils/response_error_util.dart';
 
 class HomeController extends BaseController {
   //controller
@@ -76,26 +77,23 @@ class HomeController extends BaseController {
         ''';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
-
-      if (response.statusCode != 200) {
-        viewState.value = ViewState.error;
-        log("Failed to fetch house list, status code: ${response.statusCode}");
-        return;
-      }
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
-      viewState.value = ViewState.complete;
-      if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
-        if (!isLoadMore) {
-          houseList.clear();
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
+        viewState.value = ViewState.complete;
+        if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
+          if (!isLoadMore) {
+            houseList.clear();
+          }
+          houseList.addAll(houseDataModel.results!);
+          refreshController.loadComplete();
+        } else {
+          refreshController.loadNoData();
         }
-        houseList.addAll(houseDataModel.results!);
-        refreshController.loadComplete();
-      } else {
-        refreshController.loadNoData();
       }
     } catch (e) {
-      viewState.value = ViewState.error;
+      viewState.value = ViewState.notFound;
       refreshController.loadNoData();
       log("Error fetch: $e");
     }

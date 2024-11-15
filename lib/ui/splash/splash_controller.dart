@@ -62,9 +62,10 @@ class SplashController extends BaseController {
     try {
       final response = await HomeService.fetchProvinces();
 
-      final message = ResponseErrorUtil.handleErrorResponse(response.statusCode, response.body);
-      if (message?.isNotEmpty ?? false) {
-        ToastUntil.toastNotification(description: message!, status: ToastStatus.error);
+      if ([500, 408, 502].contains(response.statusCode)) {
+        ToastUntil.toastNotification(description: response.body, status: ToastStatus.error);
+      } else if (response.statusCode >= 300) {
+        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
         return;
       }
 
@@ -75,7 +76,7 @@ class SplashController extends BaseController {
         ProvinceSingleton.instance.setProvinces(provinces);
       }
     } catch (e) {
-      ToastUntil.toastNotification(description: "Error fetching provinces: $e", status: ToastStatus.error);
+      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
     }
   }
 }
