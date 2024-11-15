@@ -186,8 +186,11 @@ class CustomerInfo extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         _buildTextField('Họ tên', controller.fullName ?? name),
+        const SizedBox(height: 10),
         _buildTextField('Số định danh cá nhân', controller.citizenId ?? citizenId),
+        const SizedBox(height: 10),
         _buildTextField('Ngày sinh', controller.dateOfBirth ?? FormatUtil.formatToDayMonthYear(dob)),
+        const SizedBox(height: 10),
         _buildTextField('Địa chỉ', controller.address ?? address, maxLines: 2),
       ],
     );

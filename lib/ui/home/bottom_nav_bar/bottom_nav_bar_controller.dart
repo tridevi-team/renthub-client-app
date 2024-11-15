@@ -19,6 +19,7 @@ import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/services/notification_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/ui/house_renter/house_renter_controller.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';
@@ -30,6 +31,7 @@ import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 class BottomNavBarController extends FullLifeCycleController {
   late PageController pageController;
   NotificationController notificationController = Get.put(NotificationController(), permanent: true);
+  HouseRenterController houseRenterController = Get.put(HouseRenterController());
 
   RxInt selectedIndex = 0.obs;
   Timer? forceSetFirebaseBackgroundTimer;
@@ -53,13 +55,13 @@ class BottomNavBarController extends FullLifeCycleController {
     super.onInit();
     pageController = PageController(initialPage: selectedIndex.value);
     provinces = ProvinceSingleton.instance.provinces;
-    initData();
     currentLabelCity.value = '${provinces[0].name}';
     citySelected.value = provinces[0];
     filteredCities.addAll([...provinces]);
     cityTemp = provinces[0];
     filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      initData();
       if (Get.isRegistered<CustomerController>()) {
         final currentCustomerController = Get.find<CustomerController>();
         currentCustomerController.user.value = UserSingleton.instance.getUser();
@@ -341,7 +343,10 @@ class BottomNavBarController extends FullLifeCycleController {
   void initData() async {
     checkIsLogin();
     if (isLogin.value) {
-      Future.wait([notificationController.getAllNotifications()]);
+      Future.wait([
+        notificationController.getAllNotifications(),
+        houseRenterController.fetchNews(),
+      ]);
       await checkAndRegisterNotification();
     }
   }

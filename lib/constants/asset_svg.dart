@@ -41,5 +41,6 @@ class AssetSvg {
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";
+  static const String imgNotAvailable = "assets/images/img_not_available.png";
 
 }

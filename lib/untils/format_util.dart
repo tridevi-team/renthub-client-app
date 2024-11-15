@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:rent_house/untils/app_util.dart';
+
 class FormatUtil {
   FormatUtil._();
 
@@ -51,4 +53,41 @@ class FormatUtil {
       return "Invalid date format";
     }
   }
+
+  static String formatVietnameseDate(String dateString) {
+    try {
+      DateFormat inputFormat = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
+      DateTime dateTime = inputFormat.parse(dateString);
+
+      String vietnameseWeekday = _getVietnameseWeekday(dateTime.weekday);
+      String formattedDate = DateFormat('dd/MM/yyyy').format(dateTime);
+
+      return '$vietnameseWeekday, $formattedDate';
+    } catch (e) {
+      AppUtil.printDebugMode(type: 'Format date', message: "$e");
+      return '';
+    }
+  }
+
+  static String _getVietnameseWeekday(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Thứ 2';
+      case DateTime.tuesday:
+        return 'Thứ 3';
+      case DateTime.wednesday:
+        return 'Thứ 4';
+      case DateTime.thursday:
+        return 'Thứ 5';
+      case DateTime.friday:
+        return 'Thứ 6';
+      case DateTime.saturday:
+        return 'Thứ 7';
+      case DateTime.sunday:
+        return 'Chủ Nhật';
+      default:
+        return '';
+    }
+  }
+
 }

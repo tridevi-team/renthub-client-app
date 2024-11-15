@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
-import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class OnboardingController extends BaseController {

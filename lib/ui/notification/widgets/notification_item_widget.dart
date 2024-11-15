@@ -7,6 +7,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/untils/dialog_util.dart';
 import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 
 class NotificationItemWidget extends StatelessWidget {
   const NotificationItemWidget({super.key, required this.notification, required this.removeNotification});
@@ -54,21 +55,7 @@ class NotificationItemWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.network(
-                        notification.imageUrl ?? '',
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Image.asset(
-                          AssetSvg.imgLogoApp,
-                          height: 60,
-                          width: 60,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    CommonNetworkImage(imageUrl: notification.imageUrl),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
