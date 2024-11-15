@@ -96,4 +96,11 @@ class HouseRenterController extends BaseController {
       AppUtil.printDebugMode(type: "Error in getRoomInfo", message: "$e");
     }
   }
+
+  Future<void> onRefreshData() async {
+    Future.wait([
+      fetchNews(),
+      getRoomInfo(),
+    ]);
+  }
 }

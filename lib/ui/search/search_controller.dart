@@ -151,6 +151,7 @@ class SearchXController extends BaseController {
   }
 
   void onRefreshData() async {
+    searchEdtCtrl.text = '';
     await fetchHouseList();
     refreshController.requestRefresh();
   }
