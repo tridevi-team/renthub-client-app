@@ -42,8 +42,8 @@ class AssetSvg {
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";
   static const String imgNotAvailable = "assets/images/img_not_available.png";
-  static const String imgNoInternet = "assets/images/img_no_internet.svg";
-  static const String imgServerNotFound = "assets/images/img_not_found.svg";
-  static const String imgServerInternal = "assets/images/img_server_internal.svg";
+  static const String imgNoInternet = "assets/images/img_no_internet.png";
+  static const String imgServerNotFound = "assets/images/img_not_found.png";
+  static const String imgServerInternal = "assets/images/img_server_internal.png";
 
 }

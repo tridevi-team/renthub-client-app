@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
+import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 
 class NetworkErrorWidget extends StatelessWidget {
-  NetworkErrorWidget({super.key, required this.viewState});
+  NetworkErrorWidget({super.key, required this.viewState, this.onRefresh});
 
   final ViewState viewState;
+  final void Function()? onRefresh;
 
   final List<Map<String, String>> statusWidgets = [
     {
@@ -48,13 +50,25 @@ class NetworkErrorWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(image, width: Get.width,),
+            Image.asset(
+              image,
+              width: Get.width,
+            ),
             const SizedBox(height: 20),
             Text(
               content,
               style: ConstantFont.mediumText.copyWith(fontSize: 16),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 10),
+            if (onRefresh != null) ...[
+              CustomElevatedButton(
+                label: 'Thử lại',
+                onTap: onRefresh!.call,
+                width: Get.width / 2,
+                isReverse: true,
+              )
+            ]
           ],
         ),
       ),

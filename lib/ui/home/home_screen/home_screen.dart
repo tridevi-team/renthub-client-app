@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
             ],
           );
         } else {
-          return NetworkErrorWidget(viewState: homeController.viewState.value);
+          return NetworkErrorWidget(viewState: homeController.viewState.value, onRefresh: homeController.onRefreshData,);
         }
       } ),
     );
