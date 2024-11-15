@@ -208,22 +208,12 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                             GestureDetector(
                               onTap: widget.onSendOTP,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                child: Container(
-                                  width: Get.width / 4,
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: widget.isSendOTP
-                                          ? AppColors.neutral9E9E9E
-                                          : AppColors.primary1,
-                                      borderRadius: BorderRadius.circular(6)),
-                                  child: Text(
-                                    widget.isSendOTP ? '${widget.timeCountdown}' : 'Gửi mã xác nhận',
-                                    style: ConstantFont.mediumText
-                                        .copyWith(color: AppColors.white, fontSize: 12),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                padding: const EdgeInsets.all(4),
+                                child: Text(
+                                  widget.isSendOTP ? '${widget.timeCountdown}' : 'Nhận mã',
+                                  style: ConstantFont.mediumText
+                                      .copyWith(color: AppColors.black, fontSize: 12),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             )

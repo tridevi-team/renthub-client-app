@@ -37,7 +37,8 @@ class SignInController extends BaseController {
   String accessToken = '';
   String refreshToken = '';
   Timer? _timer;
-  RxInt remainingSeconds = 90.obs;
+  int initialSeconds = 90;
+  RxInt remainingSeconds = 0.obs;
 
   static const String defaultErrorMessage = "Có lỗi xảy ra. Vui lòng thử lại.";
 
@@ -161,6 +162,9 @@ class SignInController extends BaseController {
   }
 
   void sendOTP() async {
+    if (contactErrorInputObject.value.isError) {
+      return;
+    }
     if (isSendOTP.isTrue) {
       return;
     }
@@ -282,6 +286,9 @@ class SignInController extends BaseController {
   }
 
   void startCountdown() {
+    if (remainingSeconds.value == 0) {
+      remainingSeconds.value = initialSeconds;
+    }
     if (_timer == null || !_timer!.isActive) {
       isSendOTP.value = true;
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
