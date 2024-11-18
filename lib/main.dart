@@ -41,10 +41,11 @@ Future<void> mainApp() async {
 
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  String? fcmToken = await FirebaseMessaging.instance.getToken();
-  AppUtil.printDebugMode(type: "FCM Token", message: '$fcmToken');
+
   await SharedPrefHelper().init();
   runApp(const MyApp());
+  String? fcmToken = await FirebaseMessaging.instance.getToken();
+  AppUtil.printDebugMode(type: "FCM Token", message: '$fcmToken');
 }
 void initFirebaseMessagingBackground() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackground);

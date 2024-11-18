@@ -1,6 +1,8 @@
 class ConstantString {
   ConstantString._();
 
+  static const String prefFirstLogin = 'first_login';
+
   static const String prefAccessToken = 'pref_access_token';
   static const String prefRefreshToken = 'pref_refresh_token';
   static const String prefAppType = 'pref_app'; // dùng để phân biệt token của firebase hay của server

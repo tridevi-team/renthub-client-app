@@ -39,7 +39,13 @@ class SplashController extends BaseController {
         Get.off(() => BottomNavigationBarView());
       } else {
         await AppUtil.logout();
-        Get.off(() => const OnboardingScreen());
+        bool isFirstLogin = SharedPrefHelper.instance.getInt(ConstantString.prefFirstLogin) != 1;
+        if (isFirstLogin) {
+          SharedPrefHelper.instance.saveInt(ConstantString.prefFirstLogin, 1);
+          Get.off(() => const OnboardingScreen());
+          return;
+        }
+        Get.off(() => BottomNavigationBarView());
       }
     } catch (e) {
       ToastUntil.toastNotification(description: "Error during initialization: $e", status: ToastStatus.error);
