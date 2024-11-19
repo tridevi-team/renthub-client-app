@@ -11,6 +11,7 @@ import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/house_renter/house_renter_controller.dart';
 import 'package:rent_house/ui/house_renter/widgets/rss_item.dart';
+import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/images/common_network_image.dart';
@@ -148,7 +149,9 @@ class HouseRenterScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SvgPicture.asset(AssetSvg.iconPerson),
+              SvgPicture.asset(
+                controller.getIconForServiceType(service.type ?? ''),
+              ),
               const SizedBox(width: 4),
               Expanded(
                 child: Column(
@@ -164,7 +167,7 @@ class HouseRenterScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "${service.unitPrice}",
+                      FormatUtil.formatCurrency(service.unitPrice ?? 0),
                       style: ConstantFont.regularText.copyWith(fontSize: 12),
                     ),
                   ],
@@ -176,7 +179,6 @@ class HouseRenterScreen extends StatelessWidget {
       },
     );
   }
-
 
   Widget _buildMemberList() {
     return GridView.builder(

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/asset_svg.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
@@ -93,6 +95,26 @@ class HouseRenterController extends BaseController {
     }
   }
 
+  Future<void> fetchEquipmentByHouseId() async {
+    try {
+      viewState.value = ViewState.loading;
+      final houseId ='';
+      if (houseId.isEmpty) return;
+      final response = await CustomerService.fetchRoomMembers(roomId: houseId);
+      if (response.statusCode < 300) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        final results = decodedResponse["data"] as List<dynamic>? ?? [];
+        memberList.addAll(results.map((data) => UserModel.fromJson(data)));
+        viewState.value = ViewState.complete;
+      } else {
+        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      }
+    } catch (e) {
+      AppUtil.printDebugMode(type: "Error in getRoomMember", message: "$e");
+      viewState.value = ViewState.notFound;
+    }
+  }
+
   Future<void> onRefreshData() async {
     try {
       await Future.wait([
@@ -114,5 +136,19 @@ class HouseRenterController extends BaseController {
     final cleanedHtml = htmlString.replaceAll(RegExp(r'<!\[CDATA\[(.*?)\]\]>'), '\$1');
     final document = html.parse(cleanedHtml);
     return document.body?.text.trim() ?? '';
+  }
+
+  String getIconForServiceType(String serviceType) {
+    String path = AssetSvg.iconBed;
+    if (serviceType == ConstantString.serviceTypeElectric) {
+      path = AssetSvg.iconPlug;
+    } else if (serviceType == ConstantString.serviceTypeWater) {
+      path = AssetSvg.iconWater;
+    } else if (serviceType == ConstantString.serviceTypePeople) {
+      path = AssetSvg.iconPerson;
+    } else {
+      path = AssetSvg.iconBed;
+    }
+    return path;
   }
 }

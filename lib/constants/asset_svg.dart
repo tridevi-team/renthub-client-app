@@ -39,6 +39,9 @@ class AssetSvg {
   static const String iconNoResult = "assets/icons/ic_no_result.svg";
   static const String iconTrash = "assets/icons/ic_trash.svg";
   static const String iconVerify = "assets/icons/ic_verify.svg";
+  static const String iconBed = "assets/icons/ic_bed.svg";
+  static const String iconPlug = "assets/icons/ic_plug.svg";
+  static const String iconWater = "assets/icons/ic_water.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";
