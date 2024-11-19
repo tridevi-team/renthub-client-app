@@ -12,9 +12,11 @@ import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 
 class RoomDetailScreen extends StatelessWidget {
-  RoomDetailScreen({super.key});
+  RoomDetailScreen({super.key, required this.selectedRoom, this.address = ''});
 
-  final RoomDetailController controller = Get.find<RoomDetailController>();
+  final controller = Get.put(RoomDetailController());
+  final Room selectedRoom;
+  final String? address;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class RoomDetailScreen extends StatelessWidget {
   Widget _buildRoomImage() {
     return SliverToBoxAdapter(
       child: CachedNetworkImage(
-        imageUrl: controller.selectedRoom.images?.first.imageUrl ?? '',
+        imageUrl: selectedRoom.images?.first.imageUrl ?? '',
         width: Get.width,
         height: 300,
         fit: BoxFit.cover,
@@ -59,19 +61,19 @@ class RoomDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              controller.selectedRoom.name!,
+              selectedRoom.name!,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: ConstantFont.boldText.copyWith(fontSize: 18),
             ),
             const SizedBox(height: 10),
             Text(
-              FormatUtil.formatCurrency(controller.selectedRoom.price ?? 0),
+              FormatUtil.formatCurrency(selectedRoom.price ?? 0),
               style: ConstantFont.mediumText.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 4),
             Text(
-              controller.address ?? '',
+              address ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: ConstantFont.lightText,
@@ -125,7 +127,7 @@ class RoomDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
             const SizedBox(height: 20),
-            if (controller.selectedRoom.images != null && controller.selectedRoom.images!.isNotEmpty) _buildImageCarousel()
+            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) _buildImageCarousel()
           ],
         ),
       ),
@@ -142,7 +144,7 @@ class RoomDetailScreen extends StatelessWidget {
               child: ConstrainedBox(
                   constraints: isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 70),
                   child: Text(
-                    controller.selectedRoom.description ?? '',
+                    selectedRoom.description ?? '',
                     style: const TextStyle(fontSize: 16),
                     softWrap: true,
                     overflow: TextOverflow.fade,
@@ -167,7 +169,7 @@ class RoomDetailScreen extends StatelessWidget {
   }
 
   Widget _buildService() {
-    List<ServiceModel> services = controller.selectedRoom.services ?? [];
+    List<ServiceModel> services = selectedRoom.services ?? [];
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +222,7 @@ class RoomDetailScreen extends StatelessWidget {
 
   Widget _buildImageCarousel() {
     return CarouselSlider(
-      items: controller.selectedRoom.images?.map((image) {
+      items: selectedRoom.images?.map((image) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: CachedNetworkImage(

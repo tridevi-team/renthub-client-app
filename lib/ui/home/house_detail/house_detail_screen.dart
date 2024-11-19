@@ -47,8 +47,7 @@ class HouseDetailScreen extends StatelessWidget {
                                 room: floor.rooms![roomIndex],
                                 onTap: () {
                                   final address = houseDetailController.currentHouse.address.toString();
-                                  Get.put(RoomDetailController(selectedRoom: floor.rooms![roomIndex], address: address));
-                                  Get.to(() => RoomDetailScreen());
+                                  Get.to(() => RoomDetailScreen(selectedRoom: floor.rooms![roomIndex], address: address));
                                 },
                               ),
                             );

@@ -6,11 +6,7 @@ import 'package:rent_house/untils/format_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RoomDetailController extends BaseController {
-  late Room selectedRoom;
-  String? address = '';
   RxBool isExpanded = false.obs;
-
-  RoomDetailController({required this.selectedRoom, required this.address});
 
   void toggleExpanded() {
     isExpanded.value =!isExpanded.value;
