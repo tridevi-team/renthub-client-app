@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "914117044001-81s9v10cmtgg1epkg0f19ldtbruk6cig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tridevi.rent_house",
+            "certificate_hash": "6a5ed57459d0c84e857e52a777582e2d55a43a57"
+          }
+        },
+        {
           "client_id": "914117044001-ek7bbbv20i4ubfl1e31hl0c127usnrk5.apps.googleusercontent.com",
           "client_type": 3
         }
