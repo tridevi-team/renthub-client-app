@@ -66,10 +66,9 @@ class SignInController extends BaseController {
   }
 
   Future<void> signInWithGoogle() async {
-    final googleAuth = await _authenticateWithGoogle();
-    if (googleAuth == null) return;
-
     try {
+      final googleAuth = await _authenticateWithGoogle();
+      if (googleAuth == null) return;
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
