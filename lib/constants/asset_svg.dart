@@ -38,6 +38,7 @@ class AssetSvg {
   static const String iconCrop = "assets/icons/ic_crop.svg";
   static const String iconNoResult = "assets/icons/ic_no_result.svg";
   static const String iconTrash = "assets/icons/ic_trash.svg";
+  static const String iconVerify = "assets/icons/ic_verify.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";

@@ -4,14 +4,17 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 
 class AvatarWidget extends StatelessWidget {
-  final String lastName;
-  const AvatarWidget({super.key, required this.lastName});
+  final String name;
+  final double height;
+  final double width;
+  const AvatarWidget({super.key, required this.name, this.height = 60, this.width = 60});
 
   @override
   Widget build(BuildContext context) {
+    String lastName = name.split(' ').last;
     return Container(
-      height: 60,
-      width: 60,
+      height: height,
+      width: width,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),

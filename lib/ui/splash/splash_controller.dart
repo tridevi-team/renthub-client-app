@@ -45,6 +45,7 @@ class SplashController extends BaseController {
           Get.off(() => const OnboardingScreen());
           return;
         }
+        await _initializeUserData();
         Get.off(() => BottomNavigationBarView());
       }
     } catch (e) {

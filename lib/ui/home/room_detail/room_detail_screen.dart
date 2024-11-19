@@ -193,7 +193,7 @@ class RoomDetailScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${service.description}',
+                        '${service.name}',
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),

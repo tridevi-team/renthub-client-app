@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
                 ),
               );
-        } else if (homeController.viewState.value == ViewState.complete) {
+        } else if (homeController.viewState.value == ViewState.complete || homeController.viewState.value == ViewState.init) {
           return Column(
             children: [
               Expanded(
@@ -61,8 +61,10 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           );
-        } else {
+        } else if (homeController.viewState.value == ViewState.noInternetConnection) {
           return NetworkErrorWidget(viewState: homeController.viewState.value, onRefresh: homeController.onRefreshData,);
+        } else {
+          return const SizedBox();
         }
       } ),
     );

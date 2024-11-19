@@ -39,7 +39,7 @@ class CustomerScreen extends StatelessWidget {
                   imageUrl: 'imageUrl',
                   height: 60,
                   width: 60,
-                  errorWidget: (context, url, error) => AvatarWidget(lastName: '${user.name?.split(' ').last}'),
+                  errorWidget: (context, url, error) => AvatarWidget(name: '${user.name}'),
                 ),
                 title: Text(
                   '${user.name}',

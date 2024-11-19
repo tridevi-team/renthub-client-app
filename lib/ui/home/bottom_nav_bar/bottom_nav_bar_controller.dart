@@ -343,11 +343,8 @@ class BottomNavBarController extends FullLifeCycleController {
   void initData() async {
     checkIsLogin();
     if (isLogin.value) {
-      Future.wait([
-        notificationController.getAllNotifications(),
-        houseRenterController.fetchNews(),
-      ]);
-      print("kgkgkk ${UserSingleton.instance.getUser().roomId}");
+      await notificationController.getAllNotifications();
+      houseRenterController.onRefreshData();
       await checkAndRegisterNotification();
     }
   }

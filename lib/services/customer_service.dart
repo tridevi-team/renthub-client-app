@@ -17,4 +17,9 @@ class CustomerService {
     String endpoint = '/rooms/$roomId/details';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
+
+  static Future<http.Response> fetchRoomMembers({required String roomId}) async {
+    String endpoint = '/renters/rooms/$roomId/search';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
+  }
 }

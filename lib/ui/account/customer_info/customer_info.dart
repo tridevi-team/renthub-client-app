@@ -94,14 +94,13 @@ class CustomerInfo extends StatelessWidget {
   }
 
   Widget _buildProfileImage(String name) {
-    String lastName = name.split(' ').last;
     return Align(
       alignment: Alignment.topCenter,
       child: CachedNetworkImage(
         imageUrl: 'imageUrl',
         height: 80,
         width: 80,
-        errorWidget: (context, url, error) => AvatarWidget(lastName: lastName),
+        errorWidget: (context, url, error) => AvatarWidget(name: name),
       ),
     );
   }
