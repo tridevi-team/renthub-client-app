@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -29,9 +28,8 @@ class HouseRenterController extends BaseController {
     super.onInit();
   }
 
-  Future<void> fetchNews() async {
+  Future<ViewState> fetchNews() async {
     try {
-      viewState.value = ViewState.loading;
       final response = await http.get(Uri.parse(WebService.rssUrl));
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
@@ -46,79 +44,99 @@ class HouseRenterController extends BaseController {
             imageUrl: element.findElements('enclosure').map((e) => e.getAttribute('url')).firstOrNull ?? '',
           );
         }));
-        viewState.value = ViewState.complete;
+        return ViewState.complete;
+      } else {
+        return ViewState.notFound;
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in fetchNews", message: "$e");
-      viewState.value = ViewState.notFound;
+      return ViewState.serverError;
     }
   }
 
-  Future<void> getRoomInfo() async {
+  Future<ViewState> getRoomInfo() async {
     try {
-      viewState.value = ViewState.loading;
       final roomId = UserSingleton.instance.getUser().roomId;
-      if (roomId?.isEmpty ?? true) return;
+      if (roomId?.isEmpty ?? true) return ViewState.notFound;
+
       final response = await CustomerService.fetchRoomDetails(roomId: roomId!);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         room = Room.fromJson(decodedResponse["data"]);
-        viewState.value = ViewState.complete;
+        return ViewState.complete;
+      } else {
+        return viewState.value;
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in getRoomInfo", message: "$e");
-      viewState.value = ViewState.notFound;
+      return ViewState.serverError;
     }
   }
 
-  Future<void> getRoomMember() async {
+  Future<ViewState> getRoomMember() async {
     try {
       memberList.clear();
-      viewState.value = ViewState.loading;
       final roomId = UserSingleton.instance.getUser().roomId;
-      if (roomId?.isEmpty ?? true) return;
+      if (roomId?.isEmpty ?? true) return ViewState.notFound;
+
       final response = await CustomerService.fetchRoomMembers(roomId: roomId!);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final results = decodedResponse["data"]['results'] as List<dynamic>? ?? [];
         memberList.addAll(results.map((data) => UserModel.fromJson(data)));
-        viewState.value = ViewState.complete;
+        return ViewState.complete;
+      } else {
+        return viewState.value;
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in getRoomMember", message: "$e");
-      viewState.value = ViewState.notFound;
+      return ViewState.serverError;
     }
   }
 
-  Future<void> fetchEquipmentByHouseId() async {
+  Future<ViewState> fetchEquipmentByHouseId() async {
     try {
-      viewState.value = ViewState.loading;
       String houseId = UserSingleton.instance.getUser().houseId ?? '';
-      if (houseId.isEmpty) return;
+      if (houseId.isEmpty) return ViewState.notFound;
+
       final response = await CustomerService.fetchRoomMembers(roomId: houseId);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final results = decodedResponse["data"] as List<dynamic>? ?? [];
         memberList.addAll(results.map((data) => UserModel.fromJson(data)));
-        viewState.value = ViewState.complete;
+        return ViewState.complete;
+      } else {
+        return viewState.value;
       }
     } catch (e) {
-      AppUtil.printDebugMode(type: "Error in getRoomMember", message: "$e");
-      viewState.value = ViewState.notFound;
+      AppUtil.printDebugMode(type: "Error in fetchEquipmentByHouseId", message: "$e");
+      return ViewState.serverError;
     }
   }
 
+
   Future<void> onRefreshData() async {
-    await Future.wait([
-      getRoomMember(),
-      fetchNews(),
-      getRoomInfo(),
-    ]);
-    isVisible.value = false;
-    isVisible.value = true;
+    try {
+      viewState.value = ViewState.loading;
+
+      final List<Future<ViewState>> apiCalls = [
+        getRoomMember(),
+        fetchNews(),
+        getRoomInfo(),
+      ];
+
+      final List<ViewState> results = await Future.wait(apiCalls);
+
+      viewState.value = ViewState.init;
+      viewState.value = results.last;
+
+    } catch (e) {
+      AppUtil.printDebugMode(type: "Error in onRefreshData", message: "$e");
+      viewState.value = ViewState.notFound;
+    }
   }
 
   String _getElementText(XmlElement element, String tag) {
@@ -139,8 +157,6 @@ class HouseRenterController extends BaseController {
       path = AssetSvg.iconWater;
     } else if (serviceType == ConstantString.serviceTypePeople) {
       path = AssetSvg.iconPerson;
-    } else {
-      path = AssetSvg.iconBed;
     }
     return path;
   }
