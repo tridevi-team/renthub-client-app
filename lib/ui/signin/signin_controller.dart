@@ -16,7 +16,6 @@ import 'package:rent_house/models/response_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
-import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/response_error_util.dart';
@@ -200,7 +199,8 @@ class SignInController extends BaseController {
         smsCode: otpEditingController.text,
       );
       await _auth.signInWithCredential(credential);
-      _processLogin(await _auth.currentUser?.getIdToken(), ConstantString.prefTypePhone);
+      String token = await _auth.currentUser?.getIdToken() ?? '';
+      _processLogin(token, ConstantString.prefTypePhone);
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
@@ -209,21 +209,20 @@ class SignInController extends BaseController {
   }
 
   void _processLogin(String? token, String type, {String? refreshToken}) async {
-    if (token != null) {
+    if (token != null && token != '') {
       accessToken = token;
       this.refreshToken = refreshToken ?? '';
       saveToken(type);
       if (type != ConstantString.prefTypeServer) {
         await customerController.getCustomerInfo();
       }
-      if (Get.isRegistered<BottomNavBarController>()) {
-        Get.find<BottomNavBarController>().initData();
-      }
-      moveToNextPage();
+      moveToNextPage(true);
+    } else {
+      moveToNextPage(false);
     }
   }
 
-  void saveToken(String type) {
+  void saveToken(String type) async {
     TokenSingleton.instance.setAccessToken(accessToken);
     TokenSingleton.instance.setRefreshToken(refreshToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefAccessToken, accessToken);
@@ -231,8 +230,8 @@ class SignInController extends BaseController {
     SharedPrefHelper.instance.saveString(ConstantString.prefAppType, type);
   }
 
-  void moveToNextPage() {
-    Get.offAll(() => BottomNavigationBarView());
+  void moveToNextPage(bool isCustomer) {
+    Get.offAll(() => BottomNavigationBarView(isCustomer: isCustomer));
   }
 
   void _showToast(String message, ToastStatus status) async {

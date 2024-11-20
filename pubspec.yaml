@@ -57,7 +57,7 @@ dependencies:
   expandable: ^5.0.1
   carousel_slider: ^5.0.0
   fl_chart: ^0.69.0
-  google_sign_in: 6.2.2
+  google_sign_in: 6.2.1
   jwt_decoder: ^2.0.1
   package_info_plus: ^8.1.0
   device_info_plus: ^11.1.1

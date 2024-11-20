@@ -13,13 +13,15 @@ import 'package:rent_house/ui/notification/notification_screen.dart';
 import 'package:rent_house/ui/statistic/statistic_screen.dart';
 
 class BottomNavigationBarView extends StatelessWidget {
-  BottomNavigationBarView({super.key});
+  BottomNavigationBarView({super.key, this.isCustomer = false});
 
+  final bool isCustomer;
   //controller
-  final bottomNavController = Get.find<BottomNavBarController>();
+  final bottomNavController = Get.put(BottomNavBarController());
 
   @override
   Widget build(BuildContext context) {
+    bottomNavController.setCustomerLoginStatus(isCustomer);
     return Obx(
           () =>
           Scaffold(

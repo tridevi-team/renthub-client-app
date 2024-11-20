@@ -5,7 +5,10 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
+import 'package:rent_house/models/user_model.dart';
+import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
@@ -18,6 +21,8 @@ import 'package:rent_house/untils/toast_until.dart';
 
 class SplashController extends BaseController {
 
+  bool isCustomer = false;
+
   @override
   void onInit() {
     super.onInit();
@@ -28,15 +33,12 @@ class SplashController extends BaseController {
     try {
       await _fetchProvinces();
 
-      Get.put(BottomNavBarController());
-      Get.lazyPut(() => CustomerController());
-
       String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
 
       if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
         TokenSingleton.instance.setAccessToken(token);
         await _initializeUserData();
-        Get.off(() => BottomNavigationBarView());
+        Get.offAll(() => BottomNavigationBarView(isCustomer: isCustomer));
       } else {
         await AppUtil.logout();
         bool isFirstLogin = SharedPrefHelper.instance.getInt(ConstantString.prefFirstLogin) != 1;
@@ -45,7 +47,7 @@ class SplashController extends BaseController {
           Get.off(() => const OnboardingScreen());
           return;
         }
-        await _initializeUserData();
+        ToastUntil.toastNotification(description: "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.", status: ToastStatus.error);
         Get.off(() => BottomNavigationBarView());
       }
     } catch (e) {
@@ -55,13 +57,32 @@ class SplashController extends BaseController {
 
   Future<void> _initializeUserData() async {
     try {
-      final CustomerController customerController = Get.find();
-      final BottomNavBarController bottomNavController = Get.find();
-
-      await customerController.getCustomerInfo();
-      bottomNavController.checkIsLogin();
+      isCustomer = await fetchCustomerInfo();
     } catch (e) {
       ToastUntil.toastNotification(description: "Error initializing user data: $e", status: ToastStatus.error);
+    }
+  }
+
+  Future<bool> fetchCustomerInfo() async {
+    try {
+      final response = await CustomerService.getCustomerInfo();
+      if (response.statusCode != 200) {
+        ToastUntil.toastNotification(
+          description: "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.",
+          status: ToastStatus.error,
+        );
+        UserSingleton.instance.resetUser();
+        AppUtil.signOutWithGoogle();
+        return false;
+      }
+      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      UserModel userModel = UserModel.fromJson(decodedResponse['data']);
+      UserSingleton.instance.setUser(userModel);
+      return true;
+    } catch (e) {
+      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
+      AppUtil.printDebugMode(type: 'Error fetchCustomerInfo', message: '$e');
+      return false;
     }
   }
 

@@ -61,7 +61,7 @@ class BottomNavBarController extends FullLifeCycleController {
     cityTemp = provinces[0];
     filteredDistricts.addAll([...citySelected.value?.districts ?? []]);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      initData();
+      refreshData();
       if (Get.isRegistered<CustomerController>()) {
         final currentCustomerController = Get.find<CustomerController>();
         currentCustomerController.user.value = UserSingleton.instance.getUser();
@@ -340,12 +340,14 @@ class BottomNavBarController extends FullLifeCycleController {
     }
   }
 
-  void initData() async {
+  void refreshData() async {
     checkIsLogin();
     if (isLogin.value) {
       await notificationController.getAllNotifications();
-      houseRenterController.onRefreshData();
       await checkAndRegisterNotification();
+      houseRenterController.onRefreshData();
+    } else {
+      ///TODO: unsubscribe notifications
     }
   }
 
@@ -363,5 +365,10 @@ class BottomNavBarController extends FullLifeCycleController {
     if (index != 2) {
       Get.to(() => SignInScreen());
     }
+  }
+
+  void setCustomerLoginStatus(bool isCustomer) {
+    isLogin.value = isCustomer;
+    update();
   }
 }
