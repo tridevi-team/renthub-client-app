@@ -43,7 +43,7 @@ class NotificationController extends BaseController {
 
   Future<void> getAllNotifications({bool isLoadMore = false}) async {
     try {
-      if (!isLoadMore) {
+      if (isLoadMore == false) {
         currentPage = 1;
         notifications.clear();
       }

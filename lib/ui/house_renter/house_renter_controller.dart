@@ -33,6 +33,7 @@ class HouseRenterController extends BaseController {
     try {
       viewState.value = ViewState.loading;
       final response = await http.get(Uri.parse(WebService.rssUrl));
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final xmlDoc = XmlDocument.parse(response.body);
         rssList.clear();
@@ -46,8 +47,6 @@ class HouseRenterController extends BaseController {
           );
         }));
         viewState.value = ViewState.complete;
-      } else {
-        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in fetchNews", message: "$e");
@@ -61,12 +60,11 @@ class HouseRenterController extends BaseController {
       final roomId = UserSingleton.instance.getUser().roomId;
       if (roomId?.isEmpty ?? true) return;
       final response = await CustomerService.fetchRoomDetails(roomId: roomId!);
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         room = Room.fromJson(decodedResponse["data"]);
         viewState.value = ViewState.complete;
-      } else {
-        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in getRoomInfo", message: "$e");
@@ -81,13 +79,12 @@ class HouseRenterController extends BaseController {
       final roomId = UserSingleton.instance.getUser().roomId;
       if (roomId?.isEmpty ?? true) return;
       final response = await CustomerService.fetchRoomMembers(roomId: roomId!);
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final results = decodedResponse["data"]['results'] as List<dynamic>? ?? [];
         memberList.addAll(results.map((data) => UserModel.fromJson(data)));
         viewState.value = ViewState.complete;
-      } else {
-        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in getRoomMember", message: "$e");
@@ -98,16 +95,15 @@ class HouseRenterController extends BaseController {
   Future<void> fetchEquipmentByHouseId() async {
     try {
       viewState.value = ViewState.loading;
-      final houseId ='';
+      String houseId = UserSingleton.instance.getUser().houseId ?? '';
       if (houseId.isEmpty) return;
       final response = await CustomerService.fetchRoomMembers(roomId: houseId);
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final results = decodedResponse["data"] as List<dynamic>? ?? [];
         memberList.addAll(results.map((data) => UserModel.fromJson(data)));
         viewState.value = ViewState.complete;
-      } else {
-        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in getRoomMember", message: "$e");
@@ -116,16 +112,13 @@ class HouseRenterController extends BaseController {
   }
 
   Future<void> onRefreshData() async {
-    try {
-      await Future.wait([
-        getRoomMember(),
-        fetchNews(),
-        getRoomInfo(),
-      ]);
-    } catch (e) {
-      AppUtil.printDebugMode(type: "Error in onRefreshData", message: "$e");
-      viewState.value = ViewState.notFound;
-    }
+    await Future.wait([
+      getRoomMember(),
+      fetchNews(),
+      getRoomInfo(),
+    ]);
+    isVisible.value = false;
+    isVisible.value = true;
   }
 
   String _getElementText(XmlElement element, String tag) {

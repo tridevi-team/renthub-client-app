@@ -20,53 +20,65 @@ class HomeScreen extends StatelessWidget {
       appBar: HomeAppBar(),
       backgroundColor: AppColors.white,
       body: Obx(() {
+        // Handling the loading state
         if (homeController.viewState.value == ViewState.loading) {
           return const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 4,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
-                ),
-              );
-        } else if (homeController.viewState.value == ViewState.complete || homeController.viewState.value == ViewState.init) {
-          return Column(
-            children: [
-              Expanded(
-                child: SmartRefreshWidget(
-                  controller: homeController.refreshController,
-                  scrollController: homeController.scrollCtrl,
-                  onRefresh: homeController.onRefreshData,
-                  onLoadingMore: homeController.onLoadMoreHouse,
-                  child: homeController.widgets.isEmpty
-                      ? const Center(child: SizedBox.shrink())
-                      : CustomScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-
-                      SliverList(
-                          delegate: SliverChildListDelegate(
-                            [...homeController.widgets],
-                            addAutomaticKeepAlives: false,
-                            addRepaintBoundaries: false,
-                            addSemanticIndexes: false,
-                          )),
-                      SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14),
-                          sliver: SliverToBoxAdapter(
-                              child: Text('Danh sách nhà',
-                                  style: ConstantFont.boldText.copyWith(fontSize: 16)))),
-                      HomeList(houseList: homeController.houseList)
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            child: CircularProgressIndicator(
+              strokeWidth: 4,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
+            ),
           );
-        } else if (homeController.viewState.value == ViewState.noInternetConnection) {
-          return NetworkErrorWidget(viewState: homeController.viewState.value, onRefresh: homeController.onRefreshData,);
-        } else {
-          return const SizedBox();
         }
-      } ),
+
+        // Handling completed or initial state
+        if (homeController.viewState.value == ViewState.complete || homeController.viewState.value == ViewState.init) {
+          return _buildHomeContent();
+        }
+
+        // Handling error states
+        return _buildErrorState();
+      }),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return SmartRefreshWidget(
+      controller: homeController.refreshController,
+      scrollController: homeController.scrollCtrl,
+      onRefresh: homeController.onRefreshData,
+      onLoadingMore: homeController.onLoadMoreHouse,
+      child: homeController.widgets.isEmpty
+          ? const Center(child: SizedBox.shrink())
+          : CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [...homeController.widgets],
+              addAutomaticKeepAlives: false,
+              addRepaintBoundaries: false,
+              addSemanticIndexes: false,
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Danh sách nhà',
+                style: ConstantFont.boldText.copyWith(fontSize: 16),
+              ),
+            ),
+          ),
+          HomeList(houseList: homeController.houseList),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return NetworkErrorWidget(
+      viewState: homeController.viewState.value,
+      onRefresh: homeController.onRefreshData,
     );
   }
 }

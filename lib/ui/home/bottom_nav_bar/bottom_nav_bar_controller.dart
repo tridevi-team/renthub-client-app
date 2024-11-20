@@ -30,7 +30,7 @@ import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class BottomNavBarController extends FullLifeCycleController {
   late PageController pageController;
-  NotificationController notificationController = Get.put(NotificationController(), permanent: true);
+  NotificationController notificationController = Get.put(NotificationController());
   HouseRenterController houseRenterController = Get.put(HouseRenterController());
 
   RxInt selectedIndex = 0.obs;
@@ -343,7 +343,6 @@ class BottomNavBarController extends FullLifeCycleController {
   void refreshData() async {
     checkIsLogin();
     if (isLogin.value) {
-      await notificationController.getAllNotifications();
       await checkAndRegisterNotification();
       houseRenterController.onRefreshData();
     } else {

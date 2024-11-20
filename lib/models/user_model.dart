@@ -20,6 +20,8 @@ class UserModel {
   String? updatedAt;
   String? accessToken;
   String? refreshToken;
+  String? houseId;
+  String? floorId;
 
   UserModel({
     this.id,
@@ -41,6 +43,8 @@ class UserModel {
     this.updatedAt,
     this.accessToken,
     this.refreshToken,
+    this.houseId,
+    this.floorId
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -63,6 +67,8 @@ class UserModel {
     updatedAt = json['updatedAt'] as String?;
     accessToken = json['accessToken'] as String?;
     refreshToken = json['refreshToken'] as String?;
+    houseId = json['houseId'] as String?;
+    floorId = json['floorId'] as String?;
   }
 
   Map<String, dynamic> toJson() {
@@ -86,6 +92,8 @@ class UserModel {
       'updatedAt': updatedAt,
       'accessToken': accessToken,
       'refreshToken': refreshToken,
+      'houseId': houseId,
+      'floorId': floorId,
     };
   }
 }
