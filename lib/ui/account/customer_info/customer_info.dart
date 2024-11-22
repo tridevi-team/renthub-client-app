@@ -37,12 +37,7 @@ class CustomerInfo extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
                 const SizedBox(height: 20),
-                _buildCustomerInfo(
-                  name: controller.user.name ?? '',
-                  address: controller.user.address?.toString() ?? '',
-                  citizenId: controller.user.citizenId ?? '',
-                  dob: controller.user.birthday ?? '',
-                ),
+                _buildCustomerInfo(),
                 const SizedBox(height: 20),
                 _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.user.tempReg ?? 0),
               ],
@@ -162,7 +157,7 @@ class CustomerInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomerInfo({required String name, required String citizenId, required String address, required String dob}) {
+  Widget _buildCustomerInfo() {
     return Column(
       children: [
         const TitleInputWidget(title: 'Nhập thông tin cá nhân'),
@@ -184,13 +179,13 @@ class CustomerInfo extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        _buildTextField('Họ tên', controller.fullName ?? name),
+        _buildTextField('Họ tên', controller.fullNameCtrl.text),
         const SizedBox(height: 10),
-        _buildTextField('Số định danh cá nhân', controller.citizenId ?? citizenId),
+        _buildTextField('Số định danh cá nhân', controller.citizenIdCtrl.text),
         const SizedBox(height: 10),
-        _buildTextField('Ngày sinh', controller.dateOfBirth ?? FormatUtil.formatToDayMonthYear(dob)),
+        _buildTextField('Ngày sinh', controller.dateOfBirthCtrl.text),
         const SizedBox(height: 10),
-        _buildTextField('Địa chỉ', controller.address ?? address, maxLines: 2),
+        _buildTextField('Địa chỉ', controller.addressCtrl.text, maxLines: 2),
       ],
     );
   }

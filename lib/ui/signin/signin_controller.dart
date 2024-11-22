@@ -209,18 +209,20 @@ class SignInController extends BaseController {
   }
 
   void _processLogin(String? token, String type, {String? refreshToken}) async {
-    if (token != null && token != '') {
-      accessToken = token;
+    if (token?.isNotEmpty ?? false) {
+      accessToken = token!;
       this.refreshToken = refreshToken ?? '';
       saveToken(type);
+
       if (type != ConstantString.prefTypeServer) {
-        await customerController.getCustomerInfo();
+        final isHaveAccount = await customerController.getCustomerInfo();
+        if (!isHaveAccount) return;
+        moveToNextPage(true);
       }
-      moveToNextPage(true);
-    } else {
-      moveToNextPage(false);
     }
+    Get.back();
   }
+
 
   void saveToken(String type) async {
     TokenSingleton.instance.setAccessToken(accessToken);

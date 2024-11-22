@@ -7,6 +7,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/widgets/images/error_image_widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeWidget extends StatelessWidget {
@@ -42,11 +43,9 @@ class HomeWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                errorWidget: (_, __, ___) => Image.asset(
-                  'assets/images/image.png',
+                errorWidget: (_, __, ___) =>ErrorImageWidget(
                   width: imageWidth,
                   height: imageHeight,
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -83,7 +82,9 @@ class HomeWidget extends StatelessWidget {
                       ),
                       _buildFeatureRow(
                         AssetSvg.iconMultiPeople,
-                        '${house.minRenters} - ${house.maxRenters} người',
+                        '${(house.minRenters ?? 1) < 0 ? 1 : house.minRenters} - '
+                            '${(house.maxRenters == -1) ? "Không giới hạn" : "${house.maxRenters} người"}'
+                        ,
                       ),
                     ],
                   ),

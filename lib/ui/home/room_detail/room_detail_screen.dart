@@ -10,6 +10,7 @@ import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
+import 'package:rent_house/widgets/images/error_image_widget.dart';
 
 class RoomDetailScreen extends StatelessWidget {
   RoomDetailScreen({super.key, required this.selectedRoom, this.address = ''});
@@ -43,12 +44,7 @@ class RoomDetailScreen extends StatelessWidget {
         width: Get.width,
         height: 300,
         fit: BoxFit.cover,
-        placeholder: (context, url) => Image.asset(
-          'assets/images/image.png',
-          width: Get.width,
-          height: 300,
-          fit: BoxFit.cover,
-        ),
+         errorWidget: (_, __, ___) => const ErrorImageWidget(),
       ),
     );
   }
@@ -230,6 +226,7 @@ class RoomDetailScreen extends StatelessWidget {
             width: double.infinity,
             height: 150,
             fit: BoxFit.cover,
+            errorWidget: (context, url, error) => const ErrorImageWidget(height: 150,),
           ),
         );
       }).toList(),

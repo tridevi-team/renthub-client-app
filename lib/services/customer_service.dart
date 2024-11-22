@@ -8,10 +8,10 @@ class CustomerService {
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
 
- /* static Future<http.Response> updateCustomerInfo(Map<String, dynamic> body) async {
-    String endpoint = '/renters/info';
-    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.put, auth: true, body: body);
-  }*/
+  static Future<http.Response> updateCustomerInfo(String renterId, Map<String, dynamic> body) async {
+    String endpoint = '/renters/$renterId/update';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.put, auth: true, params: body);
+  }
 
   static Future<http.Response> fetchRoomDetails({required String roomId}) async {
     String endpoint = '/rooms/$roomId/details';

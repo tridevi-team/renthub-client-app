@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -6,15 +7,23 @@ import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/customer_info/nfc_screen.dart';
 import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
 import 'package:rent_house/untils/dialog_util.dart';
+import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
 class CustomerInfoController extends BaseController {
-  String? citizenId, fullName, dateOfBirth, address;
+  TextEditingController citizenIdCtrl = TextEditingController();
+  TextEditingController fullNameCtrl = TextEditingController();
+  TextEditingController dateOfBirthCtrl = TextEditingController();
+  TextEditingController addressCtrl = TextEditingController();
   RxBool isVisible = true.obs;
   UserModel user = UserSingleton.instance.getUser();
 
   @override
   void onInit() {
+    citizenIdCtrl.text = user.citizenId ?? '';
+    fullNameCtrl.text = user.name ?? '';
+    dateOfBirthCtrl.text = FormatUtil.formatToDayMonthYear(user.birthday) ?? '';
+    addressCtrl.text = user.address.toString() ?? '';
     super.onInit();
   }
 
@@ -35,13 +44,13 @@ class CustomerInfoController extends BaseController {
       return;
     }
 
-    citizenId = parts[0];
+    citizenIdCtrl.text = parts[0];
 
     List<String> infoParts = parts[1].split("|");
 
-    fullName = infoParts.isNotEmpty ? infoParts[0] : "Tên không rõ";
-    dateOfBirth = infoParts.length > 1 ? infoParts[1] : "Ngày sinh không rõ";
-    address = infoParts.length > 2 ? infoParts[2] : "Địa chỉ không xác định";
+    fullNameCtrl.text = infoParts.isNotEmpty ? infoParts[0] : "Tên không rõ";
+    dateOfBirthCtrl.text = infoParts.length > 1 ? infoParts[1] : "Ngày sinh không rõ";
+    addressCtrl.text = infoParts.length > 2 ? infoParts[2] : "Địa chỉ không xác định";
 
     isVisible.value = false;
     isVisible.value = true;

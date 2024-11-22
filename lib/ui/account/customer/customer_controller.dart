@@ -7,6 +7,7 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
+import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
@@ -26,7 +27,7 @@ class CustomerController extends BaseController {
     version = packageInfo.version;
   }
 
-  Future<void> getCustomerInfo() async {
+  Future<bool> getCustomerInfo() async {
     try {
       final response = await CustomerService.getCustomerInfo();
       if (response.statusCode != 200) {
@@ -36,14 +37,16 @@ class CustomerController extends BaseController {
         );
         UserSingleton.instance.resetUser();
         AppUtil.signOutWithGoogle();
-        return;
+        return false;
       }
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       UserModel userModel = UserModel.fromJson(decodedResponse['data']);
       UserSingleton.instance.setUser(userModel);
+      return true;
     } catch (e) {
       ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
       log("Error fetch: $e");
+      return false;
     }
   }
 }
