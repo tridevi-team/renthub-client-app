@@ -344,7 +344,6 @@ class BottomNavBarController extends FullLifeCycleController {
     checkIsLogin();
     if (isLogin.value) {
       await checkAndRegisterNotification();
-      houseRenterController.onRefreshData();
     } else {
       ///TODO: unsubscribe notifications
     }

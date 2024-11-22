@@ -83,7 +83,7 @@ class HomeWidget extends StatelessWidget {
                       _buildFeatureRow(
                         AssetSvg.iconMultiPeople,
                         '${(house.minRenters ?? 1) < 0 ? 1 : house.minRenters} - '
-                            '${(house.maxRenters == -1) ? "Không giới hạn" : "${house.maxRenters} người"}'
+                            '${(house.maxRenters ?? -1) < 0 ? "Không giới hạn" : "${house.maxRenters} người"}'
                         ,
                       ),
                     ],

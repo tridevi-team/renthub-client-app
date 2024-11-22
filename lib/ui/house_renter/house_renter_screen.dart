@@ -151,6 +151,8 @@ class HouseRenterScreen extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 controller.getIconForServiceType(service.type ?? ''),
+                width: 24,
+                height: 24,
               ),
               const SizedBox(width: 4),
               Expanded(

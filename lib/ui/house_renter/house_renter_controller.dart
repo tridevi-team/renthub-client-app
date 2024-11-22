@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:rent_house/base/base_controller.dart';
@@ -24,8 +25,8 @@ class HouseRenterController extends BaseController {
 
   @override
   void onInit() {
-    onRefreshData();
     super.onInit();
+    onRefreshData();
   }
 
   Future<ViewState> fetchNews() async {
@@ -130,14 +131,22 @@ class HouseRenterController extends BaseController {
 
       final List<ViewState> results = await Future.wait(apiCalls);
 
-      viewState.value = ViewState.init;
-      viewState.value = results.last;
-
+      if (results.every((state) => state == ViewState.complete)) {
+        viewState.value = ViewState.complete;
+      } else if (results.contains(ViewState.serverError)) {
+        viewState.value = ViewState.serverError;
+      } else if (results.contains(ViewState.notFound)) {
+        viewState.value = ViewState.notFound;
+      } else {
+        viewState.value = ViewState.init;
+      }
+      print("fjfjfj ${viewState.value.toString()}");
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in onRefreshData", message: "$e");
-      viewState.value = ViewState.notFound;
+      viewState.value = ViewState.serverError;
     }
   }
+
 
   String _getElementText(XmlElement element, String tag) {
     return element.findElements(tag).map((e) => e.innerText).firstOrNull ?? '';

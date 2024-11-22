@@ -44,7 +44,18 @@ class Room {
     updatedBy = json['updatedBy'];
     updatedAt = json['updatedAt'];
     house = json['house'] != null ? _HouseModel.fromJson(json['house']) : null;
-    images = (json['images'] as List?)?.map((i) => ImageModel.fromJson(i)).toList() ?? [];
+    images = images = (json['images'] as List?)
+            ?.map((i) {
+              if (i is String) {
+                return ImageModel(imageUrl: i);
+              } else if (i is Map<String, dynamic>) {
+                return ImageModel.fromJson(i);
+              }
+              return null;
+            })
+            .whereType<ImageModel>()
+            .toList() ??
+        [];
     services = (json['services'] as List?)?.map((i) => ServiceModel.fromJson(i)).toList() ?? [];
   }
 
