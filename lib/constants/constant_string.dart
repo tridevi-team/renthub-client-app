@@ -18,4 +18,8 @@ class ConstantString {
   static const String serviceTypeElectric = 'ELECTRICITY_CONSUMPTION';
   static const String serviceTypeRoom = 'ROOM';
   static const String serviceTypePeople = 'PEOPLE';
+  static const String statusMaintain = 'MAINTENANCE';
+  static const String statusExpired = 'EXPIRED';
+  static const String statusPending = 'PENDING';
+  static const String statusAvailable = 'AVAILABLE';
 }

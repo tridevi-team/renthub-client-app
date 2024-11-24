@@ -140,7 +140,6 @@ class HouseRenterController extends BaseController {
       } else {
         viewState.value = ViewState.init;
       }
-      print("fjfjfj ${viewState.value.toString()}");
     } catch (e) {
       AppUtil.printDebugMode(type: "Error in onRefreshData", message: "$e");
       viewState.value = ViewState.serverError;

@@ -27,7 +27,7 @@ class AssetSvg {
   static const String iconHand = "assets/icons/ic_hand.svg";
   static const String iconCheckMark = "assets/icons/ic_checkmark_circle.svg";
   static const String iconGoogle = "assets/icons/ic_google.svg";
-  static const String iconRent = "assets/icons/ic_rent.svg";
+  static const String iconRentHouse = "assets/icons/ic_rent.svg";
   static const String iconQR = "assets/icons/ic_qr.svg";
   static const String iconNFC = "assets/icons/ic_nfc.svg";
   static const String iconMailOpen = "assets/icons/ic_mail_open.svg";
@@ -42,6 +42,10 @@ class AssetSvg {
   static const String iconBed = "assets/icons/ic_bed.svg";
   static const String iconPlug = "assets/icons/ic_plug.svg";
   static const String iconWater = "assets/icons/ic_water.svg";
+  static const String iconMaintain = "assets/icons/ic_maintain.svg";
+  static const String iconOccupied = "assets/icons/ic_occupied.svg";
+  static const String iconRent = "assets/icons/ic_rent.svg";
+  static const String iconNotAvailable = "assets/icons/ic_not_available.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";

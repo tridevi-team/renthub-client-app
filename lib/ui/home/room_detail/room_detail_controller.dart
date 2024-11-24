@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/untils/format_util.dart';
@@ -36,6 +39,30 @@ class RoomDetailController extends BaseController {
       formattedAmount = "$formattedAmount/phòng";
     }
     return formattedAmount;
+  }
+
+  Map<String, dynamic> getRoomStatusIconPath(String status) {
+    String path = AssetSvg.iconOccupied;
+    String description = "Đã cho thuê";
+    Color color = AppColors.green;
+    if (status == ConstantString.statusMaintain || status == ConstantString.statusPending) {
+      path = AssetSvg.iconMaintain;
+      description = "Đang bảo trì";
+      color = AppColors.yellow;
+    } else if (status == ConstantString.statusExpired) {
+      path = AssetSvg.iconNotAvailable;
+      description = "Không có sẵn";
+      color = AppColors.red;
+    } else if (status == ConstantString.statusAvailable) {
+      path = AssetSvg.iconRent;
+      description = "Đang có sẵn";
+      color = AppColors.green;
+    }
+    return {
+      'path': path,
+      'description': description,
+      'color': color,
+    };
   }
 
 }
