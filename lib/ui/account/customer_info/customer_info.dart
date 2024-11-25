@@ -1,4 +1,9 @@
+import 'dart:ffi';
+
+import 'package:bottom_picker/bottom_picker.dart';
+import 'package:bottom_picker/resources/arrays.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,32 +25,34 @@ class CustomerInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: const CustomAppBar(label: "Thông tin cá nhân"),
-      body: Obx(
-        () => Visibility(
-          visible: controller.isVisible.value,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildProfileImage(controller.user.name ?? ''),
-                const SizedBox(height: 10),
-                _buildProfileName(controller.user.name ?? ''),
-                const SizedBox(height: 20),
-                _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
-                const SizedBox(height: 20),
-                _buildCustomerInfo(),
-                const SizedBox(height: 20),
-                _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.user.tempReg ?? 0),
-              ],
+    return Obx(
+      () => Visibility(
+        visible: controller.isVisible.value,
+        child: Scaffold(
+          backgroundColor: AppColors.white,
+          appBar: const CustomAppBar(label: "Thông tin cá nhân"),
+          body: Obx(
+            () => SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildProfileImage(controller.user.name ?? ''),
+                  const SizedBox(height: 10),
+                  _buildProfileName(controller.user.name ?? ''),
+                  const SizedBox(height: 20),
+                  _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
+                  const SizedBox(height: 20),
+                  _buildCustomerInfo(),
+                  const SizedBox(height: 20),
+                  _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.user.tempReg ?? 0),
+                ],
+              ),
             ),
           ),
+          bottomNavigationBar: controller.isEditInfo.value ? _buildBottomNavBar() : const SizedBox.shrink(),
         ),
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -72,7 +79,9 @@ class CustomerInfo extends StatelessWidget {
     return Expanded(
       child: CustomElevatedButton(
         label: 'Hủy',
-        onTap: () => Get.back(),
+        onTap: () {
+          controller.isEditInfo.toggle();
+        },
       ),
     );
   }
@@ -83,7 +92,7 @@ class CustomerInfo extends StatelessWidget {
         label: 'Xác nhận',
         textColor: AppColors.white,
         bgColor: AppColors.primary600,
-        onTap: controller.confirmResidenceRegistration,
+        onTap: controller.updateCustomerInfo,
       ),
     );
   }
@@ -160,49 +169,110 @@ class CustomerInfo extends StatelessWidget {
   Widget _buildCustomerInfo() {
     return Column(
       children: [
-        const TitleInputWidget(title: 'Nhập thông tin cá nhân'),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            InkWell(
-              onTap: controller.useScanQR,
-              child: Text(
-                "Use QR Scan",
-                style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
+        if (!controller.isEditInfo.value) ...[
+          GestureDetector(
+            onTap: () {
+              controller.isEditInfo.toggle();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: AppColors.neutralFAFAFA, borderRadius: BorderRadius.circular(50)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Sửa thông tin",
+                    style: ConstantFont.mediumText.copyWith(fontSize: 16),
+                  ),
+                  const SizedBox(width: 4),
+                  SvgPicture.asset(
+                    AssetSvg.iconEdit,
+                    width: 24,
+                  )
+                ],
               ),
             ),
-            InkWell(
-              onTap: controller.useNFC,
-              child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600)),
-            ),
-          ],
+          ),
+        ],
+        const SizedBox(height: 10),
+        if (controller.isEditInfo.value) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InkWell(
+                onTap: controller.useScanQR,
+                child: Text(
+                  "Use QR Scan",
+                  style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
+                ),
+              ),
+              InkWell(
+                onTap: controller.useNFC,
+                child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600)),
+              ),
+            ],
+          ),
+        ],
+        const SizedBox(height: 10),
+        _buildTextField(
+          textCtrl: controller.fullNameCtrl,
+          'Họ tên',
+          enable: controller.isEditInfo.value,
         ),
         const SizedBox(height: 10),
-        _buildTextField('Họ tên', controller.fullNameCtrl.text),
+        _buildTextField(
+          textCtrl: controller.citizenIdCtrl,
+          'Số định danh cá nhân',
+          enable: controller.isEditInfo.value,
+        ),
         const SizedBox(height: 10),
-        _buildTextField('Số định danh cá nhân', controller.citizenIdCtrl.text),
+        _buildTextField(
+          textCtrl: controller.dateOfBirthCtrl,
+          'Ngày sinh',
+          isCalendar: true,
+          enable: false,
+        ),
         const SizedBox(height: 10),
-        _buildTextField('Ngày sinh', controller.dateOfBirthCtrl.text),
-        const SizedBox(height: 10),
-        _buildTextField('Địa chỉ', controller.addressCtrl.text, maxLines: 2),
+        _buildTextField(
+          textCtrl: controller.addressCtrl,
+          'Địa chỉ',
+          maxLines: 4,
+          height: 100,
+          enable: controller.isEditInfo.value,
+        ),
       ],
     );
   }
 
-  Widget _buildTextField(String title, String value, {int maxLines = 1}) {
+  Widget _buildTextField(
+    String title, {
+    TextEditingController? textCtrl,
+    int maxLines = 1,
+    double height = 48,
+    bool isCalendar = false,
+    bool enable = false,
+    String? label,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleInputWidget(title: title),
         const SizedBox(height: 6),
         TextInputWidget(
-          enable: false,
-          label: value,
+          controller: textCtrl,
+          enable: enable,
+          hintText: label,
           maxLines: maxLines,
-          height: 48,
-          backgroundColor: AppColors.neutralE5E5E3,
+          height: height,
+          backgroundColor: controller.isEditInfo.value ? AppColors.neutralFAFAFA : AppColors.neutralE9e9e9,
           colorBorder: AppColors.white,
+          isCalendar: isCalendar,
+          turnOffClearText: isCalendar ? isCalendar : !controller.isEditInfo.value,
+          onTimePicker: () {
+            openDatePicker();
+          },
         ),
       ],
     );
@@ -214,7 +284,7 @@ class CustomerInfo extends StatelessWidget {
       children: [
         Text('Thông tin khác', style: ConstantFont.mediumText.copyWith(fontSize: 18)),
         const SizedBox(height: 10),
-        _buildTextField('Ngày chuyển vào', FormatUtil.formatToDayMonthYear(moveInDate)),
+        _buildTextField('Ngày chuyển vào', label: FormatUtil.formatToDayMonthYear(moveInDate)),
         const SizedBox(height: 10),
         Row(
           children: [
@@ -226,13 +296,15 @@ class CustomerInfo extends StatelessWidget {
             const SizedBox(width: 4),
             Expanded(
               child: Text(
-                tempReg == 1 ? "Đăng ký tạm trú" : "Chưa đăng ký tạm trú",
+                tempReg == 1 ? "Đã đăng ký tạm trú" : "Chưa đăng ký tạm trú",
                 style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 10),
         if (tempReg != 1) _buildRegistrationNotice(tempReg: tempReg),
+        const SizedBox(height: 20)
       ],
     );
   }
@@ -266,5 +338,26 @@ class CustomerInfo extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void openDatePicker() async {
+    if (!controller.isEditInfo.value) return;
+    Get.focusScope?.unfocus();
+    Get.bottomSheet(BottomPicker.date(
+      pickerTitle: Text(
+        'Chọn ngày sinh',
+        style: ConstantFont.mediumText,
+      ),
+      dateOrder: DatePickerDateOrder.dmy,
+      pickerTextStyle: ConstantFont.mediumText.copyWith(
+        color: AppColors.primary300,
+      ),
+      maxDateTime: DateTime.now(),
+      minDateTime: DateTime(1900, DateTime.january, 1),
+      onSubmit: (time) {
+        controller.onChangeBirthday(time);
+      },
+      bottomPickerTheme: BottomPickerTheme.plumPlate,
+    ));
   }
 }

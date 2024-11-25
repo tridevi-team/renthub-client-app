@@ -70,6 +70,7 @@ dependencies:
   webview_flutter: ^4.8.0
   xml: ^6.5.0
   html: ^0.15.5
+  bottom_picker: ^2.9.0
   video_thumbnail:
     git:
       url: https://github.com/julek-kal/video_thumbnail

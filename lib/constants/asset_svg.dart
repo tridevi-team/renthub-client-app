@@ -46,6 +46,8 @@ class AssetSvg {
   static const String iconOccupied = "assets/icons/ic_occupied.svg";
   static const String iconRent = "assets/icons/ic_rent.svg";
   static const String iconNotAvailable = "assets/icons/ic_not_available.svg";
+  static const String iconEdit = "assets/icons/ic_edit.svg";
+  static const String iconCalendar = "assets/icons/ic_calendar.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";

@@ -96,4 +96,52 @@ class UserModel {
       'floorId': floorId,
     };
   }
+
+  UserModel copyWith({
+    String? id,
+    String? roomId,
+    String? name,
+    String? citizenId,
+    String? birthday,
+    String? gender,
+    String? email,
+    String? phoneNumber,
+    Address? address,
+    int? tempReg,
+    String? moveInDate,
+    int? represent,
+    String? note,
+    String? createdBy,
+    String? createdAt,
+    String? updatedBy,
+    String? updatedAt,
+    String? accessToken,
+    String? refreshToken,
+    String? houseId,
+    String? floorId,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      roomId: roomId ?? this.roomId,
+      name: name ?? this.name,
+      citizenId: citizenId ?? this.citizenId,
+      birthday: birthday ?? this.birthday,
+      gender: gender ?? this.gender,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
+      tempReg: tempReg ?? this.tempReg,
+      moveInDate: moveInDate ?? this.moveInDate,
+      represent: represent ?? this.represent,
+      note: note ?? this.note,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedBy: updatedBy ?? this.updatedBy,
+      updatedAt: updatedAt ?? this.updatedAt,
+      accessToken: accessToken ?? this.accessToken,
+      refreshToken: refreshToken ?? this.refreshToken,
+      houseId: houseId ?? this.houseId,
+      floorId: floorId ?? this.floorId,
+    );
+  }
 }

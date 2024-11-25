@@ -37,8 +37,11 @@ class TextInputWidget extends StatefulWidget {
   final bool sendOTP;
   final bool isSendOTP;
   final String? timeCountdown;
+  final bool isCalendar;
+  final bool turnOffClearText;
   final Function(String?)? onFieldSubmitted;
   final void Function()? onSendOTP;
+  final void Function()? onTimePicker;
 
   const TextInputWidget({
     super.key,
@@ -71,7 +74,7 @@ class TextInputWidget extends StatefulWidget {
     this.sendOTP = false,
     this.isSendOTP = false,
     this.onSendOTP,
-    this.height = 56, this.timeCountdown,
+    this.height = 56, this.timeCountdown, this.isCalendar = false, this.onTimePicker, this.turnOffClearText = false
   });
 
   @override
@@ -139,6 +142,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                   FocusScope.of(context).unfocus();
                                 });
                               },
+
                               autofocus: widget.autoFocus ?? false,
                               controller: widget.controller,
                               onChanged: _onChanged,
@@ -150,7 +154,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                 isDense: true,
                                 counterText: "",
                                 fillColor: Colors.transparent,
-                                hintText: widget.hintText ?? widget.label,
+                                hintText: widget.hintText,
                                 filled: true,
                                 hintStyle: TextStyle(
                                     color: Colors.black,
@@ -171,7 +175,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                                   fontWeight: widget.fontWeight),
                             ),
                           ),
-                          if (widget.controller != null && widget.controller!.text.isNotEmpty) ...[
+                          if (widget.controller != null && widget.controller!.text.isNotEmpty && widget.turnOffClearText == false) ...[
                             InkWell(
                               onTap: () {
                                 if (widget.controller == null) {
@@ -202,6 +206,17 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                           if (widget.postfixIconPath) ...[
                             SvgPicture.asset(
                               'assets/icons/select_down_icon.svg',
+                            ),
+                          ],
+                          if (widget.isCalendar) ...[
+                            InkWell(
+                              onTap: () {
+                                widget.onTimePicker?.call();
+                              },
+                              child: SvgPicture.asset(
+                                AssetSvg.iconCalendar,
+                                width: 24,
+                              ),
                             ),
                           ],
                           if (widget.sendOTP) ...[
