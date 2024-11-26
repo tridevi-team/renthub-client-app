@@ -10,7 +10,7 @@ class ProvinceSingleton {
   ProvinceSingleton._internal();
 
 
-  get provinces => _provinces;
+  List<City> get provinces => _provinces;
   void setProvinces(List<City> provinces) => _provinces = provinces;
 
   bool get isProvincesEmpty => _provinces.isEmpty;

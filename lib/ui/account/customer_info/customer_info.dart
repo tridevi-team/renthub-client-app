@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,8 +8,13 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/singleton/province_singleton.dart';
+import 'package:rent_house/models/province/city.dart';
+import 'package:rent_house/models/province/district.dart';
+import 'package:rent_house/models/province/ward.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info_controller.dart';
 import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/untils/toast_until.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
@@ -234,12 +237,24 @@ class CustomerInfo extends StatelessWidget {
           isCalendar: true,
           enable: false,
         ),
+        const SizedBox(height: 20),
+        const TitleInputWidget(title: 'Tỉnh / Thành phố'),
+        const SizedBox(height: 6),
+        _buildLocationTile(label: "${controller.citySelected.value?.name}", onTap: onTapOpenCityList),
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Quận / huyện'),
+        const SizedBox(height: 6),
+        _buildLocationTile(label: '${controller.districtSelected.value?.name}', onTap: onTapOpenDistrictList),
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Phường / xã'),
+        const SizedBox(height: 6),
+        _buildLocationTile(label: '${controller.wardSelected.value?.name}', onTap: onTapOpenWardList),
         const SizedBox(height: 10),
         _buildTextField(
           textCtrl: controller.addressCtrl,
           'Địa chỉ',
-          maxLines: 4,
-          height: 100,
+          maxLines: 2,
+          height: 60,
           enable: controller.isEditInfo.value,
         ),
       ],
@@ -359,5 +374,142 @@ class CustomerInfo extends StatelessWidget {
       },
       bottomPickerTheme: BottomPickerTheme.plumPlate,
     ));
+  }
+
+  Widget _buildLocationTile({
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(width: 1.5, color: const Color(0xFFF4F4F4)),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(label, style: ConstantFont.regularText),
+              const Spacer(),
+              SvgPicture.asset(
+                AssetSvg.iconChevronDown,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> buildLocationList<T>(List<T> filteredLocations, T selectedLocation, void Function(T) onTap, String Function(T) getName) {
+    return filteredLocations.map((location) {
+      return InkWell(
+        onTap: () {
+          onTap(location);
+        },
+        child: ListTile(
+          title: Text(
+            getName(location),
+            style: TextStyle(
+              color: const Color(0xff1C1D1F),
+              fontWeight: getName(selectedLocation) == getName(location) ? FontWeight.w500 : FontWeight.w400,
+              fontSize: 14,
+            ),
+          ),
+          trailing: getName(selectedLocation) == getName(location)
+              ? SvgPicture.asset(
+                  AssetSvg.iconCheckMark,
+                  color: AppColors.primary1,
+                )
+              : const SizedBox.shrink(),
+        ),
+      );
+    }).toList();
+  }
+
+  void showLocationBottomSheet({
+    required List<Widget> children,
+  }) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+        height: Get.height - 200,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: children,
+          ),
+        ),
+      ),
+      enableDrag: false,
+      ignoreSafeArea: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  void onTapOpenCityList() {
+    if (!controller.isEditInfo.value) return;
+    showLocationBottomSheet(
+      children: buildLocationList<City>(
+        ProvinceSingleton.instance.provinces,
+        controller.citySelected.value!,
+        controller.onCitySelected,
+        (city) => city.name ?? "",
+      ),
+    );
+  }
+
+  void onTapOpenDistrictList() {
+    if (!controller.isEditInfo.value) return;
+    if (controller.citySelected.value != null) {
+      var districts = controller.citySelected.value?.districts;
+      if (districts != null) {
+        showLocationBottomSheet(
+          children: buildLocationList<District>(
+            districts,
+            controller.districtSelected.value!,
+            controller.onDistrictSelected,
+            (district) => district.name ?? "",
+          ),
+        );
+      } else {
+        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+      }
+    } else {
+      ToastUntil.toastNotification(description: 'Vui lòng chọn Tỉnh / Thành phố trước.', status: ToastStatus.error);
+    }
+  }
+
+  void onTapOpenWardList() {
+    if (!controller.isEditInfo.value) return;
+    if (controller.districtSelected.value != null) {
+      var wards = controller.districtSelected.value?.wards;
+      if (wards != null) {
+        showLocationBottomSheet(
+          children: buildLocationList<Ward>(
+            wards,
+            controller.wardSelected.value!,
+            controller.onWardSelected,
+            (wards) => wards.name ?? "",
+          ),
+        );
+      } else {
+        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+      }
+    } else {
+      ToastUntil.toastNotification(description: 'Vui lòng chọn Quận / huyện trước.', status: ToastStatus.error);
+    }
   }
 }

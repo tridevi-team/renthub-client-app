@@ -121,8 +121,6 @@ class UserModel {
     String? floorId,
   }) {
     return UserModel(
-      id: id ?? this.id,
-      roomId: roomId ?? this.roomId,
       name: name ?? this.name,
       citizenId: citizenId ?? this.citizenId,
       birthday: birthday ?? this.birthday,
@@ -133,15 +131,6 @@ class UserModel {
       tempReg: tempReg ?? this.tempReg,
       moveInDate: moveInDate ?? this.moveInDate,
       represent: represent ?? this.represent,
-      note: note ?? this.note,
-      createdBy: createdBy ?? this.createdBy,
-      createdAt: createdAt ?? this.createdAt,
-      updatedBy: updatedBy ?? this.updatedBy,
-      updatedAt: updatedAt ?? this.updatedAt,
-      accessToken: accessToken ?? this.accessToken,
-      refreshToken: refreshToken ?? this.refreshToken,
-      houseId: houseId ?? this.houseId,
-      floorId: floorId ?? this.floorId,
     );
   }
 }

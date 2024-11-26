@@ -54,6 +54,11 @@ class FormatUtil {
     }
   }
 
+  static DateTime formatYYYYMMdd(String time) {
+    DateTime parsedDate = DateTime.parse(time);
+    return parsedDate;
+  }
+
   static String formatVietnameseDate(String dateString) {
     try {
       DateFormat inputFormat = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z');
