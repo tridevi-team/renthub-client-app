@@ -217,8 +217,8 @@ class SignInController extends BaseController {
       if (type != ConstantString.prefTypeServer) {
         final isHaveAccount = await customerController.getCustomerInfo();
         if (!isHaveAccount) return;
-        moveToNextPage(true);
       }
+      moveToNextPage(true);
     }
     Get.back();
   }
