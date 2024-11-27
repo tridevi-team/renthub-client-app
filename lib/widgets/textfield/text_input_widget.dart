@@ -219,9 +219,11 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                               ),
                             ),
                           ],
-                          if (widget.sendOTP) ...[
-                            GestureDetector(
+                          if (widget.sendOTP && widget.controller != null && widget.controller!.text.isNotEmpty) ...[
+                            InkWell(
                               onTap: widget.onSendOTP,
+                              splashColor: AppColors.primary1.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(4),
                               child: Padding(
                                 padding: const EdgeInsets.all(4),
                                 child: Text(

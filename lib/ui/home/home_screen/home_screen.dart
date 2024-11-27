@@ -7,6 +7,7 @@ import 'package:rent_house/ui/home/home_app_bar.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
+import 'package:rent_house/widgets/loading/loading_widget.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,12 +23,7 @@ class HomeScreen extends StatelessWidget {
       body: Obx(() {
         // Handling the loading state
         if (homeController.viewState.value == ViewState.loading) {
-          return const Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 4,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary1),
-            ),
-          );
+          return const LoadingWidget();
         }
 
         // Handling completed or initial state

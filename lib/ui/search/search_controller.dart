@@ -52,6 +52,7 @@ class SearchXController extends BaseController {
   void onInit() {
     super.onInit();
     initScrollController();
+    fetchHouseList();
   }
 
   @override

@@ -22,100 +22,107 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-            surfaceTintColor: Colors.white,
-            automaticallyImplyLeading: false,
-            elevation: 3,
-            shadowColor: AppColors.neutralCCCAC6,
-            title: Row(
-              children: [
-                GestureDetector(onTap: Get.back, child: SvgPicture.asset(AssetSvg.iconChevronBack, height: 30)),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: TextInputWidget(
-                          controller: searchController.searchEdtCtrl,
-                          isSearch: true,
-                          height: 40,
-                          colorBorder: Colors.transparent,
-                          backgroundColor: AppColors.neutralF5F5F5,
-                          onChanged: (value) {
-                            searchController.onSearchChanged();
-                          },
-                        ))),
-              ],
-            ),
-            bottom: searchController.showFilters.value
-                ? PreferredSize(
-                    preferredSize: const Size.fromHeight(56.0),
-                    child: AnimatedOpacity(
-                      opacity: searchController.showFilters.value ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: AppBar(
-                          automaticallyImplyLeading: false,
-                          forceMaterialTransparency: true,
-                          title: Row(
-                            children: [
-                              _buildFilterOption(
-                                title: "Lọc theo",
-                                index: 0,
-                                icon: AssetSvg.iconChevronDown,
-                                controller: searchController,
-                              ),
-                              Container(
-                                width: 1,
-                                height: 28,
-                                color: AppColors.neutral9E9E9E,
-                              ),
-                              _buildFilterOption(
-                                title: "Xếp theo",
-                                index: 1,
-                                icon: AssetSvg.iconTrendingDown,
-                                icon2: AssetSvg.iconTrendingUp,
-                                controller: searchController,
-                              ),
-                              Container(
-                                width: 1,
-                                height: 28,
-                                color: AppColors.neutral9E9E9E,
-                              ),
-                              _buildFilterOption(
-                                index: 2,
-                                icon: AssetSvg.iconFilter,
-                                controller: searchController,
-                              ),
-                            ],
-                          )),
-                    ),
-                  )
-                : null),
-        body: Obx(() {
-          if (searchController.viewState.value == ViewState.loading && searchController.houseList.isEmpty) {
-            return const LoadingWidget();
-          } else if (searchController.viewState.value == ViewState.complete) {
-            if (searchController.houseList.isNotEmpty) {
-              return SmartRefreshWidget(
-                controller: searchController.refreshController,
-                scrollController: searchController.scrollCtrl,
-                onRefresh: searchController.onRefreshData,
-                onLoadingMore: searchController.onLoadMoreHouse,
-                child: CustomScrollView(
-                  slivers: [HomeList(houseList: searchController.houseList)],
-                ),
-              );
-            } else {
-              return const NotFoundWidget();
-            }
-          } else {
-            return NetworkErrorWidget(
-              viewState: searchController.viewState.value,
-              onRefresh: searchController.onRefreshData,
-            );
-          }
-        }),
-      ),
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+              surfaceTintColor: Colors.white,
+              automaticallyImplyLeading: false,
+              elevation: 3,
+              shadowColor: AppColors.neutralCCCAC6,
+              title: Row(
+                children: [
+                  GestureDetector(onTap: Get.back, child: SvgPicture.asset(AssetSvg.iconChevronBack, height: 30)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: TextInputWidget(
+                            controller: searchController.searchEdtCtrl,
+                            isSearch: true,
+                            height: 40,
+                            colorBorder: Colors.transparent,
+                            backgroundColor: AppColors.neutralF5F5F5,
+                            onChanged: (value) {
+                              searchController.onSearchChanged();
+                            },
+                          ))),
+                ],
+              ),
+              bottom: searchController.showFilters.value
+                  ? PreferredSize(
+                      preferredSize: const Size.fromHeight(56.0),
+                      child: AnimatedOpacity(
+                        opacity: searchController.showFilters.value ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        child: AppBar(
+                            automaticallyImplyLeading: false,
+                            forceMaterialTransparency: true,
+                            title: Row(
+                              children: [
+                                _buildFilterOption(
+                                  title: "Lọc theo",
+                                  index: 0,
+                                  icon: AssetSvg.iconChevronDown,
+                                  controller: searchController,
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 28,
+                                  color: AppColors.neutral9E9E9E,
+                                ),
+                                _buildFilterOption(
+                                  title: "Xếp theo",
+                                  index: 1,
+                                  icon: AssetSvg.iconTrendingDown,
+                                  icon2: AssetSvg.iconTrendingUp,
+                                  controller: searchController,
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 28,
+                                  color: AppColors.neutral9E9E9E,
+                                ),
+                                _buildFilterOption(
+                                  index: 2,
+                                  icon: AssetSvg.iconFilter,
+                                  controller: searchController,
+                                ),
+                              ],
+                            )),
+                      ),
+                    )
+                  : null),
+          body: buildContent()),
+    );
+  }
+
+  Widget buildContent() {
+    if (searchController.viewState.value == ViewState.loading && searchController.houseList.isEmpty) {
+      return const LoadingWidget();
+    }
+
+    if (searchController.viewState.value == ViewState.complete || searchController.viewState.value == ViewState.init) {
+      if (searchController.houseList.isNotEmpty) {
+        return SmartRefreshWidget(
+          controller: searchController.refreshController,
+          scrollController: searchController.scrollCtrl,
+          onRefresh: searchController.onRefreshData,
+          onLoadingMore: searchController.onLoadMoreHouse,
+          child: CustomScrollView(
+            slivers: [HomeList(houseList: searchController.houseList)],
+          ),
+        );
+      } else {
+        return _buildErrorState();
+      }
+    }
+
+    return _buildErrorState();
+  }
+
+  Widget _buildErrorState() {
+    return NetworkErrorWidget(
+      viewState: searchController.viewState.value,
+      onRefresh: searchController.onRefreshData,
     );
   }
 
