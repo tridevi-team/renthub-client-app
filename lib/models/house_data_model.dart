@@ -50,7 +50,9 @@ class House {
   int? minRoomArea;
   int? maxRoomArea;
   String? thumbnail;
+  ContactModel? contact;
   List<Floor>? floors;
+
 
   House({
     this.id,
@@ -67,6 +69,7 @@ class House {
     this.maxRoomArea,
     this.thumbnail,
     this.floors,
+    this.contact,
   });
 
   House.fromJson(Map<String, dynamic> json) {
@@ -85,7 +88,9 @@ class House {
     minRoomArea = json['minRoomArea'] ?? 0;
     maxRoomArea = json['maxRoomArea'] ?? 0;
     thumbnail = json['thumbnail'] ?? '';
-
+    contact = json.containsKey('contact') && json['contact'] != null
+        ? ContactModel.fromJson(json['contact'])
+        : null;
     if (json['floors'] != null) {
       var floorList = json['floors'] as List;
       floors = floorList.map((i) => Floor.fromJson(i)).toList();
@@ -109,7 +114,34 @@ class House {
       'minRoomArea': minRoomArea,
       'maxRoomArea': maxRoomArea,
       'thumbnail': thumbnail,
+      'contact': contact?.toJson(),
       'floors': floors?.map((floor) => floor.toJson()).toList(),
+    };
+  }
+}
+
+class ContactModel {
+  String? fullName;
+  String? phoneNumber;
+  String? email;
+
+  ContactModel({
+    this.fullName,
+    this.phoneNumber,
+    this.email,
+  });
+
+  ContactModel.fromJson(Map<String, dynamic> json) {
+    fullName = json['fullName'];
+    phoneNumber = json['phoneNumber'];
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'fullName': fullName,
+      'phoneNumber': phoneNumber,
+      'email': email,
     };
   }
 }

@@ -4,6 +4,8 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
+import 'package:rent_house/models/house_data_model.dart';
+import 'package:rent_house/untils/extensions/string_extension.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,13 +13,13 @@ class RoomDetailController extends BaseController {
   RxBool isExpanded = false.obs;
 
   void toggleExpanded() {
-    isExpanded.value =!isExpanded.value;
+    isExpanded.value = !isExpanded.value;
   }
 
-  void makePhoneCall() async {
+  void makePhoneCall(String phone) async {
     final Uri launchUri = Uri(
       scheme: 'tel',
-      path: '0123456789',
+      path: phone,
     );
     if (await canLaunchUrl(launchUri)) {
       await launchUrl(launchUri);
@@ -63,5 +65,4 @@ class RoomDetailController extends BaseController {
       'color': color,
     };
   }
-
 }

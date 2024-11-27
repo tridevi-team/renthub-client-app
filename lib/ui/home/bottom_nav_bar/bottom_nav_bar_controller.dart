@@ -31,7 +31,6 @@ import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 class BottomNavBarController extends FullLifeCycleController {
   late PageController pageController;
   NotificationController notificationController = Get.put(NotificationController());
-  HouseRenterController houseRenterController = Get.put(HouseRenterController());
 
   RxInt selectedIndex = 0.obs;
   Timer? forceSetFirebaseBackgroundTimer;

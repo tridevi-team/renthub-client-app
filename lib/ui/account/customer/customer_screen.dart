@@ -61,6 +61,11 @@ class CustomerScreen extends StatelessWidget {
             const SizedBox(height: 10),
             _buildListTile(
               leadingAsset: AssetSvg.iconPerson,
+              titleText: 'Hợp đồng phòng',
+              trailingAsset: AssetSvg.iconChevronForward,
+            ),
+            _buildListTile(
+              leadingAsset: AssetSvg.iconPerson,
               titleText: 'Phương thức thanh toán',
               trailingAsset: AssetSvg.iconChevronForward,
             ),

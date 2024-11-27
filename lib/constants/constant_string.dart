@@ -22,6 +22,7 @@ class ConstantString {
   static const String statusExpired = 'EXPIRED';
   static const String statusPending = 'PENDING';
   static const String statusAvailable = 'AVAILABLE';
+  static const String statusRented = 'RENTED';
 
   //message
   static const String messageNoInternet = 'Không có kết nối mạng.';

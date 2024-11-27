@@ -48,6 +48,12 @@ class AssetSvg {
   static const String iconNotAvailable = "assets/icons/ic_not_available.svg";
   static const String iconEdit = "assets/icons/ic_edit.svg";
   static const String iconCalendar = "assets/icons/ic_calendar.svg";
+  static const String iconFan = "assets/icons/ic_fan.svg";
+  static const String iconAirConditioner = "assets/icons/ic_air_conditioner.svg";
+  static const String iconCloset = "assets/icons/ic_closet.svg";
+  static const String iconHeat = "assets/icons/ic_heat.svg";
+  static const String iconBulb = "assets/icons/ic_idea.svg";
+  static const String iconWaterHeater = "assets/icons/ic_water_heater.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";

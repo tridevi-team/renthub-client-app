@@ -6,11 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
+import 'package:rent_house/untils/extensions/string_extension.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 
 class AppUtil {
@@ -117,5 +119,26 @@ class AppUtil {
     if (kDebugMode) {
       print("[$type] $message");
     }
+  }
+
+  static String getEquipmentIconPath(String name) {
+    String formatName = name.removeSign().toLowerCase();
+
+    Map<String, String> equipmentIcons = {
+      "giuong": AssetSvg.iconBed,
+      "dieu hoa": AssetSvg.iconAirConditioner,
+      "quat": AssetSvg.iconFan,
+      "nong lanh": AssetSvg.iconWaterHeater,
+      "den": AssetSvg.iconBulb,
+      "bep": AssetSvg.iconHeat,
+      "tu": AssetSvg.iconCloset,
+    };
+
+    return equipmentIcons.entries
+        .firstWhere(
+          (entry) => formatName.contains(entry.key),
+          orElse: () => const MapEntry('', AssetSvg.iconPerson),
+        )
+        .value;
   }
 }

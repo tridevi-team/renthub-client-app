@@ -21,7 +21,7 @@ import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 class HouseRenterScreen extends StatelessWidget {
   HouseRenterScreen({super.key});
 
-  final HouseRenterController controller = Get.find();
+  final controller = Get.put(HouseRenterController());
 
   @override
   Widget build(BuildContext context) {

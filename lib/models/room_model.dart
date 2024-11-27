@@ -8,6 +8,7 @@ class Room {
   String? description;
   List<ImageModel>? images;
   List<ServiceModel>? services;
+  List<EquipmentModel>? equipments;
   String? createdBy;
   String? createdAt;
   String? updatedBy;
@@ -56,6 +57,7 @@ class Room {
             .whereType<ImageModel>()
             .toList() ??
         [];
+    equipments  = (json['equipment'] as List?)?.map((i) => EquipmentModel.fromJson(i)).toList() ?? [];
     services = (json['services'] as List?)?.map((i) => ServiceModel.fromJson(i)).toList() ?? [];
   }
 
@@ -69,6 +71,7 @@ class Room {
       'status': status,
       'description': description,
       'images': images?.map((image) => image.toJson()).toList(),
+      'equipment': equipments?.map((equipment) => equipment.toJson()).toList(),
       'services': services?.map((service) => service.toJson()).toList(),
       'house': house?.toJson(),
       'createdBy': createdBy,
@@ -143,18 +146,66 @@ class ServiceModel {
   }
 }
 
+class EquipmentModel {
+  String? id;
+  String? houseId;
+  String? floorId;
+  String? roomId;
+  String? code;
+  String? name;
+  String? status;
+  String? sharedType;
+  String? description;
+
+  EquipmentModel({
+    this.id,
+    this.houseId,
+    this.floorId,
+    this.roomId,
+    this.code,
+    this.name,
+    this.status,
+    this.sharedType,
+    this.description,
+  });
+
+  factory EquipmentModel.fromJson(Map<String, dynamic> json) {
+    return EquipmentModel(
+      id: json['id'],
+      houseId: json['houseId'],
+      floorId: json['floorId'],
+      roomId: json['roomId'],
+      code: json['code'],
+      name: json['name'],
+      status: json['status'],
+      sharedType: json['sharedType'],
+      description: json['description'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'houseId': houseId,
+      'floorId': floorId,
+      'roomId': roomId,
+      'code': code,
+      'name': name,
+      'status': status,
+      'sharedType': sharedType,
+      'description': description,
+    };
+  }
+}
+
+
 class _HouseModel {
   String? id;
   String? name;
   String? description;
   _FloorModel? floor;
 
-  _HouseModel({
-    this.id,
-    this.name,
-    this.description,
-    this.floor,
-  });
+  _HouseModel();
 
   _HouseModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -178,11 +229,7 @@ class _FloorModel {
   String? name;
   String? description;
 
-  _FloorModel({
-    this.id,
-    this.name,
-    this.description,
-  });
+  _FloorModel();
 
   _FloorModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

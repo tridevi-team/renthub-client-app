@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -7,18 +8,21 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
+import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 
 class RoomDetailScreen extends StatelessWidget {
-  RoomDetailScreen({super.key, required this.selectedRoom, this.address = ''});
+  RoomDetailScreen({super.key, required this.selectedRoom, this.address = '', this.contactModel});
 
   final controller = Get.put(RoomDetailController());
   final Room selectedRoom;
   final String? address;
+  final ContactModel? contactModel;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +38,7 @@ class RoomDetailScreen extends StatelessWidget {
           _buildRoomInfo(),
         ],
       ),
-      bottomNavigationBar:
-          selectedRoom.status == ConstantString.statusExpired ? const SizedBox() : _buildBottomAppBar(),
+      bottomNavigationBar: selectedRoom.status == ConstantString.statusExpired || selectedRoom.status == ConstantString.statusRented ? const SizedBox() : _buildBottomAppBar(),
     );
   }
 
@@ -94,19 +97,10 @@ class RoomDetailScreen extends StatelessWidget {
               style: ConstantFont.mediumText.copyWith(fontSize: 16),
             ),
             const SizedBox(height: 4),
-            Wrap(
-                crossAxisAlignment: WrapCrossAlignment.start,
-                spacing: 10,
-                runSpacing: 10,
-                children: [
-                  _buildFeatureRow(
-                      AssetSvg.iconMultiPeople,
-                      (selectedRoom.maxRenters ?? -1) < 0
-                          ? "Không giới hạn"
-                          : "${selectedRoom.maxRenters} người"),
-                  _buildFeatureRow(AssetSvg.iconCrop, "${selectedRoom.area} m",
-                      hasSuperscript: true),
-                ]),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.start, spacing: 10, runSpacing: 10, children: [
+              _buildFeatureRow(AssetSvg.iconMultiPeople, (selectedRoom.maxRenters ?? -1) < 0 ? "Không giới hạn" : "${selectedRoom.maxRenters} người"),
+              _buildFeatureRow(AssetSvg.iconCrop, "${selectedRoom.area} m", hasSuperscript: true),
+            ]),
             const SizedBox(height: 10),
             Text(
               address ?? '',
@@ -158,11 +152,12 @@ class RoomDetailScreen extends StatelessWidget {
             const Divider(height: 1, color: AppColors.neutralF5F5F5),
             const SizedBox(height: 20),
             _buildService(),
+            const SizedBox(height: 20),
+            _buildEquipment(),
             const SizedBox(height: 10),
             Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
             const SizedBox(height: 20),
-            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty)
-              _buildImageCarousel()
+            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) _buildImageCarousel()
           ],
         ),
       ),
@@ -177,8 +172,7 @@ class RoomDetailScreen extends StatelessWidget {
           AnimatedSize(
               duration: const Duration(milliseconds: 200),
               child: ConstrainedBox(
-                  constraints:
-                      isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 70),
+                  constraints: isExpanded ? const BoxConstraints() : const BoxConstraints(maxHeight: 70),
                   child: Text(
                     selectedRoom.description ?? '',
                     style: const TextStyle(fontSize: 16),
@@ -190,27 +184,91 @@ class RoomDetailScreen extends StatelessWidget {
                   onTap: controller.toggleExpanded,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Thu gọn',
-                          style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)),
-                      const SizedBox(width: 4),
-                      SvgPicture.asset(AssetSvg.iconChevronUp, color: AppColors.primary1)
-                    ],
+                    children: [Text('Thu gọn', style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)), const SizedBox(width: 4), SvgPicture.asset(AssetSvg.iconChevronUp, color: AppColors.primary1)],
                   ))
               : InkWell(
                   onTap: controller.toggleExpanded,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Xem thêm',
-                          style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)),
-                      const SizedBox(width: 4),
-                      SvgPicture.asset(AssetSvg.iconChevronDown, color: AppColors.primary1)
-                    ],
+                    children: [Text('Xem thêm', style: ConstantFont.mediumText.copyWith(color: AppColors.primary1)), const SizedBox(width: 4), SvgPicture.asset(AssetSvg.iconChevronDown, color: AppColors.primary1)],
                   ),
                 )
         ]);
       },
+    );
+  }
+
+  Widget _buildEquipment() {
+    List<EquipmentModel> equipments = selectedRoom.equipments ?? [];
+    if (equipments.isEmpty) return const SizedBox();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Danh sách thiết bị',
+          style: ConstantFont.semiBoldText.copyWith(fontSize: 16),
+        ),
+        const SizedBox(height: 10),
+        GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 3,
+          ),
+          padding: const EdgeInsets.all(0),
+          itemCount: equipments.length,
+          itemBuilder: (context, index) {
+            EquipmentModel equipment = equipments[index];
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.neutralFAFAFA,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SvgPicture.asset(
+                    AppUtil.getEquipmentIconPath(equipment.name ?? ''),
+                    width: 24,
+                    height: 24,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "${equipment.name}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: ConstantFont.regularText.copyWith(fontSize: 12),
+                  )
+                  /*Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            "${equipment.name}",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ConstantFont.regularText.copyWith(fontSize: 12),
+                          ),
+                        ),
+                        Text(
+                          FormatUtil.formatCurrency(equipment ?? 0),
+                          style: ConstantFont.regularText.copyWith(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),*/
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -306,8 +364,10 @@ class RoomDetailScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildCallButton(),
-            const SizedBox(width: 10),
+            if (contactModel?.phoneNumber?.isNotEmpty ?? false) ...[
+              _buildCallButton(),
+              const SizedBox(width: 10),
+            ],
             _buildRegisterButton(),
           ],
         ),
@@ -317,7 +377,9 @@ class RoomDetailScreen extends StatelessWidget {
 
   Widget _buildCallButton() {
     return InkWell(
-      onTap: controller.makePhoneCall,
+      onTap: () {
+        controller.makePhoneCall(contactModel!.phoneNumber!);
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
