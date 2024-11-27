@@ -2,6 +2,7 @@ import 'package:rent_house/base/base_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/untils/toast_until.dart';
@@ -39,7 +40,7 @@ class OnboardingController extends BaseController {
     if (!ProvinceSingleton.instance.isProvincesEmpty) {
       Get.off(() => BottomNavigationBarView());
     } else {
-      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.", status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
     }
   }
 

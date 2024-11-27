@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:toastification/toastification.dart';
 
 enum ToastStatus{warning, success, error}
@@ -12,17 +13,17 @@ class ToastUntil {
       ToastStatus.error: {
         'iconPath': 'assets/icons/ic_close.svg',
         'color': AppColors.red,
-        'defaultTitle': 'Lỗi',
+        'defaultTitle': ConstantString.messageSuccess,
       },
       ToastStatus.success: {
         'iconPath': 'assets/icons/ic_checkmark_circle.svg',
         'color': AppColors.green,
-        'defaultTitle': 'Thành công',
+        'defaultTitle': ConstantString.messageSuccess,
       },
       ToastStatus.warning: {
         'iconPath': 'assets/icons/ic_alert_circle.svg',
         'color': AppColors.yellow,
-        'defaultTitle': 'Cảnh báo',
+        'defaultTitle': ConstantString.messageWarning,
       },
     };
 

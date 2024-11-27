@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
@@ -485,7 +486,7 @@ class CustomerInfo extends StatelessWidget {
           ),
         );
       } else {
-        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+        ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
       }
     } else {
       ToastUntil.toastNotification(description: 'Vui lòng chọn Tỉnh / Thành phố trước.', status: ToastStatus.error);
@@ -506,7 +507,7 @@ class CustomerInfo extends StatelessWidget {
           ),
         );
       } else {
-        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+        ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
       }
     } else {
       ToastUntil.toastNotification(description: 'Vui lòng chọn Quận / huyện trước.', status: ToastStatus.error);

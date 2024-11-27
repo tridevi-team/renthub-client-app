@@ -4,7 +4,6 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
-import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 

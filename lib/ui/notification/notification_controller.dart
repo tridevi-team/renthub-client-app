@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
@@ -37,7 +38,7 @@ class NotificationController extends BaseController {
       }
     } catch (e) {
       viewState.value = ViewState.notFound;
-      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
     }
   }
 
@@ -65,7 +66,7 @@ class NotificationController extends BaseController {
       }
     } catch (e) {
       viewState.value = ViewState.notFound;
-      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
     }
   }
 
@@ -77,7 +78,7 @@ class NotificationController extends BaseController {
       };
       final response = await NotificationService.removeNotification(params);
       if (response.statusCode != 200) {
-        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+        ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
         return;
       }
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -88,7 +89,7 @@ class NotificationController extends BaseController {
         ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Xóa thông báo thất bại.', status: ToastStatus.error);
       }
     } catch (e) {
-      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng thử lại.', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
     }
   }
 

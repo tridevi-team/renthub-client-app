@@ -22,4 +22,19 @@ class ConstantString {
   static const String statusExpired = 'EXPIRED';
   static const String statusPending = 'PENDING';
   static const String statusAvailable = 'AVAILABLE';
+
+  //message
+  static const String messageNoInternet = 'Không có kết nối mạng.';
+  static const String messageNoData = 'Không có dữ liệu.';
+  static const String dataInvalidMessage = 'Dữ liệu không hợp lệ';
+  static const String messageSuccess = 'Thành công';
+  static const String messageError = 'Lỗi';
+  static const String messageWarning = 'Cảnh báo';
+  static const String messageConfirm = 'Xác nhận.';
+  static const String loginRequiredMessage = "Bạn cần đăng nhập để sử dụng chức năng này.";
+  static const String tryAgainMessage = "Có lỗi xảy ra. Vui lòng thử lại.";
+  static const String restartAppMessage = "Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.";
+  static const String sessionTimeoutMessage = "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.";
+  static const String accountNotFoundMessage = "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.";
+
 }

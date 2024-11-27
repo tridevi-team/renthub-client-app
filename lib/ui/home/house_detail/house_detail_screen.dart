@@ -4,7 +4,6 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/ui/home/home_widget/room_widget.dart';
 import 'package:rent_house/ui/home/house_detail/house_detail_controller.dart';
-import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_screen.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/divider/divider_custom.dart';

@@ -10,12 +10,9 @@ import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/services/home_service.dart';
-import 'package:rent_house/ui/account/customer/customer_controller.dart';
-import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/onboarding/onboarding_screen.dart';
 import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
@@ -32,7 +29,10 @@ class SplashController extends BaseController {
   Future<void> _initializeApp() async {
     try {
       await _fetchProvinces();
-
+      if (ProvinceSingleton.instance.isProvincesEmpty) {
+        ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
+        return;
+      }
       String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
 
       if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
@@ -47,7 +47,7 @@ class SplashController extends BaseController {
           Get.off(() => const OnboardingScreen());
           return;
         }
-        ToastUntil.toastNotification(description: "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.", status: ToastStatus.error);
+        ToastUntil.toastNotification(description: ConstantString.sessionTimeoutMessage, status: ToastStatus.error);
         Get.off(() => BottomNavigationBarView());
       }
     } catch (e) {
@@ -68,7 +68,7 @@ class SplashController extends BaseController {
       final response = await CustomerService.getCustomerInfo();
       if (response.statusCode != 200) {
         ToastUntil.toastNotification(
-          description: "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.",
+          description: ConstantString.accountNotFoundMessage,
           status: ToastStatus.error,
         );
         UserSingleton.instance.resetUser();
@@ -80,7 +80,7 @@ class SplashController extends BaseController {
       UserSingleton.instance.setUser(userModel);
       return true;
     } catch (e) {
-      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
       AppUtil.printDebugMode(type: 'Error fetchCustomerInfo', message: '$e');
       return false;
     }
@@ -93,7 +93,7 @@ class SplashController extends BaseController {
       if ([500, 408, 502].contains(response.statusCode)) {
         ToastUntil.toastNotification(description: response.body, status: ToastStatus.error);
       } else if (response.statusCode >= 300) {
-        ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+        ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
         return;
       }
 
@@ -104,7 +104,7 @@ class SplashController extends BaseController {
         ProvinceSingleton.instance.setProvinces(provinces);
       }
     } catch (e) {
-      ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Vui lòng khởi động lại ứng dụng.', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
     }
   }
 }

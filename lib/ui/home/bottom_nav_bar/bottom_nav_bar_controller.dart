@@ -359,7 +359,7 @@ class BottomNavBarController extends FullLifeCycleController {
 
   void redirectToLogin(int index) {
     if (index == 0) return;
-    ToastUntil.toastNotification(description: 'Bạn cần đăng nhập để sử dụng chức năng này.', status: ToastStatus.warning);
+    ToastUntil.toastNotification(description: ConstantString.loginRequiredMessage, status: ToastStatus.warning);
     if (index != 2) {
       Get.to(() => SignInScreen());
     }

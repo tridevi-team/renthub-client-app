@@ -39,8 +39,6 @@ class SignInController extends BaseController {
   int initialSeconds = 90;
   RxInt remainingSeconds = 0.obs;
 
-  static const String defaultErrorMessage = "Có lỗi xảy ra. Vui lòng thử lại.";
-
   @override
   void onInit() {
     if (kDebugMode) {
@@ -90,7 +88,7 @@ class SignInController extends BaseController {
     if (response.statusCode < 300) {
       final model = ResponseModel.fromJson(jsonDecode(response.body));
       if (model.success != true) {
-        _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+        _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
       } else {
         _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
         startCountdown();
@@ -124,12 +122,12 @@ class SignInController extends BaseController {
           UserSingleton.instance.setUser(user);
           _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
         } else {
-          _showToast(model.message ?? defaultErrorMessage, ToastStatus.error);
+          _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
           viewState.value = ViewState.complete;
         }
       }
     } catch (e) {
-      _showToast(defaultErrorMessage, ToastStatus.error);
+      _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
       viewState.value = ViewState.complete;
     }
   }
@@ -177,7 +175,7 @@ class SignInController extends BaseController {
           await _auth.signInWithCredential(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
-          _showToast(defaultErrorMessage, ToastStatus.error);
+          _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
         },
         codeSent: (String verificationId, int? resendToken) {
           this.verificationId = verificationId;
@@ -204,7 +202,7 @@ class SignInController extends BaseController {
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
-      _showToast(defaultErrorMessage, ToastStatus.error);
+      _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
     }
   }
 
@@ -219,8 +217,10 @@ class SignInController extends BaseController {
         if (!isHaveAccount) return;
       }
       moveToNextPage(true);
+      return;
     }
     Get.back();
+    return;
   }
 
 

@@ -4,6 +4,7 @@ import 'package:rent_house/base/base_controller.dart';
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/untils/toast_until.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
@@ -116,7 +117,7 @@ class CustomerIssueController extends BaseController {
       ToastUntil.toastNotification(description: "Tạo báo cáo thành công!", status: ToastStatus.success);
       Get.back();
     } catch (e) {
-      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
     }
   }
 

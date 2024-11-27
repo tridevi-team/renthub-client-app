@@ -76,6 +76,7 @@ dependencies:
       url: https://github.com/julek-kal/video_thumbnail
       ref: 734a2d5
 
+  path_provider: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

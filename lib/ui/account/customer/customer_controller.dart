@@ -4,10 +4,10 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
-import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 
@@ -32,7 +32,7 @@ class CustomerController extends BaseController {
       final response = await CustomerService.getCustomerInfo();
       if (response.statusCode != 200) {
         ToastUntil.toastNotification(
-          description: "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.",
+          description: ConstantString.accountNotFoundMessage,
           status: ToastStatus.error,
         );
         UserSingleton.instance.resetUser();
@@ -44,7 +44,7 @@ class CustomerController extends BaseController {
       UserSingleton.instance.setUser(userModel);
       return true;
     } catch (e) {
-      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
       log("Error fetch: $e");
       return false;
     }

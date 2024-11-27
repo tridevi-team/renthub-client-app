@@ -1,17 +1,11 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_house/base/base_controller.dart';
-import 'package:rent_house/constants/asset_svg.dart';
-import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
-import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
-import 'package:rent_house/models/address_model.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/models/province/ward.dart';
@@ -57,7 +51,7 @@ class CustomerInfoController extends BaseController {
     final scannedData = await Get.to(() => QrScanScreen());
 
     if (scannedData == null || !scannedData.contains("||")) {
-      ToastUntil.toastNotification(description: 'Dữ liệu không hợp lệ', status: ToastStatus.error);
+      ToastUntil.toastNotification(description: ConstantString.dataInvalidMessage, status: ToastStatus.error);
       return;
     }
 
@@ -65,8 +59,8 @@ class CustomerInfoController extends BaseController {
     final infoParts = parts[1].split("|");
 
     citizenIdCtrl.text = parts[0];
-    fullNameCtrl.text = infoParts.getOrDefault(0, "Tên không rõ");
-    dateOfBirthCtrl.text = infoParts.getOrDefault(1, "Ngày sinh không rõ");
+    fullNameCtrl.text = infoParts.getOrDefault(0, "Tên không xác định");
+    dateOfBirthCtrl.text = infoParts.getOrDefault(1, "Ngày sinh không xác định");
     addressCtrl.text = infoParts.getOrDefault(2, "Địa chỉ không xác định");
 
     isVisible.value = false;
