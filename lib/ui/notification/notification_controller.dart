@@ -55,9 +55,12 @@ class NotificationController extends BaseController {
         }''';
       final response = await NotificationService.getAllNotifications(sort: sort, page: currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-
+      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      if (decodedResponse["code"] == "NO_NOTIFICATIONS_FOUND") {
+        viewState.value = ViewState.noData;
+        return;
+      }
       if (response.statusCode < 300) {
-        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         NotificationModel notificationModel = NotificationModel.fromJson(decodedResponse["data"]);
         totalPage = notificationModel.page ?? 1;
         notifications.addAll(notificationModel.results ?? []);
@@ -109,8 +112,8 @@ class NotificationController extends BaseController {
     }
   }
 
-  void refreshData() {
-    getAllNotifications();
+  void refreshData() async {
+    await getAllNotifications();
     refreshCtrl.requestRefresh();
   }
 

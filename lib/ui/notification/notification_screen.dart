@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
@@ -24,9 +25,16 @@ class NotificationScreen extends StatelessWidget {
       backgroundColor: AppColors.white,
       body: Obx(
         () {
-          if (controller.viewState.value == ViewState.loading) {
+          if (controller.viewState.value == ViewState.noData) {
+            return Center(
+              child: Text(
+                'Bạn chưa có thông báo nào',
+                style: ConstantFont.mediumText.copyWith(fontSize: 16),
+              ),
+            );
+          } else if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.complete) {
+          } else if (controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.init) {
             return SmartRefreshWidget(
               controller: controller.refreshCtrl,
               scrollController: controller.scrollCtrl,
