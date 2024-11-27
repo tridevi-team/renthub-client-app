@@ -1,3 +1,4 @@
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/address_model.dart';
 import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/models/province/ward.dart';
@@ -15,6 +17,7 @@ import 'package:rent_house/ui/account/customer_info/nfc_screen.dart';
 import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
 import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/dialog_util.dart';
+import 'package:rent_house/untils/extensions/string_extension.dart';
 import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/untils/response_error_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
@@ -24,6 +27,8 @@ class CustomerInfoController extends BaseController {
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController dateOfBirthCtrl = TextEditingController();
   TextEditingController addressCtrl = TextEditingController();
+  RxString selectedGender = 'other'.obs;
+  int tempReg = 0;
   RxBool isVisible = true.obs;
   RxBool isEditInfo = false.obs;
   UserModel user = UserSingleton.instance.getUser();
@@ -32,14 +37,9 @@ class CustomerInfoController extends BaseController {
   Rxn<District> districtSelected = Rxn<District>();
   Rxn<Ward> wardSelected = Rxn<Ward>();
 
-
   @override
   void onInit() {
-    citizenIdCtrl.text = user.citizenId ?? '';
-    fullNameCtrl.text = user.name ?? '';
-    dateOfBirthCtrl.text = FormatUtil.formatToDayMonthYear(user.birthday);
-    addressCtrl.text = user.address.toString();
-    refreshAddress();
+    loadUserAddressInfo();
     super.onInit();
   }
 
@@ -51,7 +51,10 @@ class CustomerInfoController extends BaseController {
     final scannedData = await Get.to(() => QrScanScreen());
 
     if (scannedData == null || !scannedData.contains("||")) {
-      ToastUntil.toastNotification(description: ConstantString.dataInvalidMessage, status: ToastStatus.error);
+      ToastUntil.toastNotification(
+        description: ConstantString.dataInvalidMessage,
+        status: ToastStatus.error,
+      );
       return;
     }
 
@@ -59,9 +62,39 @@ class CustomerInfoController extends BaseController {
     final infoParts = parts[1].split("|");
 
     citizenIdCtrl.text = parts[0];
-    fullNameCtrl.text = infoParts.getOrDefault(0, "Tên không xác định");
-    dateOfBirthCtrl.text = infoParts.getOrDefault(1, "Ngày sinh không xác định");
-    addressCtrl.text = infoParts.getOrDefault(2, "Địa chỉ không xác định");
+    fullNameCtrl.text = infoParts.length > 0 ? infoParts[0] : "Tên không xác định";
+    dateOfBirthCtrl.text = infoParts.length > 1 ? infoParts[1] : "Ngày sinh không xác định";
+    addressCtrl.text = infoParts.length > 2 ? infoParts[2] : "Địa chỉ không xác định";
+
+    final addressParts = addressCtrl.text.split(", ");
+    String ward = "Phường/Xã không xác định";
+    String district = "Quận/Huyện không xác định";
+    String city = "Thành phố không xác định";
+
+    for (var part in addressParts) {
+      if (part.startsWith("Thôn") || part.startsWith("Xã")) {
+        ward = part;
+      } else if (part.startsWith("Huyện") || part.startsWith("Quận")) {
+        district = part;
+      } else {
+        city = part;
+      }
+    }
+
+    citySelected.value = _findMatchingOrFirst<City>(
+      ProvinceSingleton.instance.provinces,
+      city,
+    );
+
+    districtSelected.value = _findMatchingOrFirst<District>(
+      citySelected.value?.districts ?? [],
+      district,
+    );
+
+    wardSelected.value = _findMatchingOrFirst<Ward>(
+      districtSelected.value?.wards ?? [],
+      ward,
+    );
 
     isVisible.value = false;
     isVisible.value = true;
@@ -71,7 +104,7 @@ class CustomerInfoController extends BaseController {
     if (user.tempReg == 1 || !isEditInfo.value) return;
     DialogUtil.showDialogConfirm(
       onConfirm: () {
-        user.tempReg = 1;
+        tempReg = 1;
         isVisible.value = false;
         isVisible.value = true;
         if (closeDialogRoute != null) {
@@ -87,20 +120,31 @@ class CustomerInfoController extends BaseController {
     try {
       final updatedUser = user.copyWith(
         name: fullNameCtrl.text,
-        birthday: dateOfBirthCtrl.text,
+        birthday: FormatUtil.formatDate(dateOfBirthCtrl.text).toString(),
         citizenId: citizenIdCtrl.text,
+        tempReg: tempReg,
+        address: Address(
+          city: citySelected.value?.name,
+          district: districtSelected.value?.name,
+          ward: wardSelected.value?.name,
+          street: addressCtrl.text,
+        ),
+        gender: selectedGender.value,
       );
 
-      final response = await CustomerService.updateCustomerInfo(user.id ?? '', updatedUser.toJson());
 
+
+      final response = await CustomerService.updateCustomerInfo(user.id ?? '', updatedUser.toUpdateJson());
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
 
       if (response.statusCode < 300) {
-        user
-          ..name = fullNameCtrl.text
-          ..birthday = dateOfBirthCtrl.text
-          ..citizenId = citizenIdCtrl.text;
+        UserSingleton.instance.setUser(updatedUser);
         isEditInfo.value = false;
+      } else {
+        ToastUntil.toastNotification(
+          description: ConstantString.updateFailedMessage,
+          status: ToastStatus.error,
+        );
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error updating customer", message: "$e");
@@ -132,7 +176,13 @@ class CustomerInfoController extends BaseController {
     Get.close(1);
   }
 
-  void refreshAddress() {
+  void loadUserAddressInfo() {
+    citizenIdCtrl.text = user.citizenId ?? '';
+    fullNameCtrl.text = user.name ?? '';
+    dateOfBirthCtrl.text = FormatUtil.formatToDayMonthYear(user.birthday);
+    addressCtrl.text = user.address?.street ?? '';
+    selectedGender.value = user.gender ?? '';
+    tempReg = user.tempReg ?? 0;
     citySelected.value = _findMatchingOrFirst<City>(
       ProvinceSingleton.instance.provinces,
       user.address?.city,
@@ -151,10 +201,10 @@ class CustomerInfoController extends BaseController {
 
   T? _findMatchingOrFirst<T>(List<T> items, String? name) {
     if (name?.isNotEmpty ?? false) {
-      final trimmedName = name!.toLowerCase().trim();
+      final trimmedName = name!.toLowerCase().removeSign();
       return items.firstWhere(
-            (item) => _getName(item)?.toLowerCase().trim().contains(trimmedName) ?? false,
-        orElse: () =>items.first,
+        (item) => _getName(item)?.toLowerCase().removeSign().contains(trimmedName) ?? false,
+        orElse: () => items.first,
       );
     }
     return items.isNotEmpty ? items.first : null;
@@ -167,6 +217,8 @@ class CustomerInfoController extends BaseController {
     return null;
   }
 
-
-
+  void cancelUpdateInfo() {
+    isEditInfo.toggle();
+    loadUserAddressInfo();
+  }
 }

@@ -35,23 +35,21 @@ class CustomerInfo extends StatelessWidget {
         child: Scaffold(
           backgroundColor: AppColors.white,
           appBar: const CustomAppBar(label: "Thông tin cá nhân"),
-          body: Obx(
-            () => SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildProfileImage(controller.user.name ?? ''),
-                  const SizedBox(height: 10),
-                  _buildProfileName(controller.user.name ?? ''),
-                  const SizedBox(height: 20),
-                  _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
-                  const SizedBox(height: 20),
-                  _buildCustomerInfo(),
-                  const SizedBox(height: 20),
-                  _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.user.tempReg ?? 0),
-                ],
-              ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProfileImage(controller.user.name ?? ''),
+                const SizedBox(height: 10),
+                _buildProfileName(controller.user.name ?? ''),
+                const SizedBox(height: 20),
+                _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
+                const SizedBox(height: 20),
+                _buildCustomerInfo(),
+                const SizedBox(height: 20),
+                _buildOtherInfo(moveInDate: controller.user.moveInDate ?? '', tempReg: controller.tempReg),
+              ],
             ),
           ),
           bottomNavigationBar: controller.isEditInfo.value ? _buildBottomNavBar() : const SizedBox.shrink(),
@@ -83,9 +81,7 @@ class CustomerInfo extends StatelessWidget {
     return Expanded(
       child: CustomElevatedButton(
         label: 'Hủy',
-        onTap: () {
-          controller.isEditInfo.toggle();
-        },
+        onTap: controller.cancelUpdateInfo,
       ),
     );
   }
@@ -235,8 +231,20 @@ class CustomerInfo extends StatelessWidget {
         _buildTextField(
           textCtrl: controller.dateOfBirthCtrl,
           'Ngày sinh',
-          isCalendar: true,
+          isCalendar: controller.isEditInfo.value,
           enable: false,
+        ),
+        const SizedBox(height: 10),
+        const TitleInputWidget(title: 'Giới tính'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _buildGenderRadio('male', 'Nam'),
+            const SizedBox(width: 12),
+            _buildGenderRadio('female', 'Nữ'),
+            const SizedBox(width: 12),
+            _buildGenderRadio('other', 'Khác'),
+          ],
         ),
         const SizedBox(height: 20),
         const TitleInputWidget(title: 'Tỉnh / Thành phố'),
@@ -289,6 +297,28 @@ class CustomerInfo extends StatelessWidget {
           onTimePicker: () {
             openDatePicker();
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGenderRadio(String value, String label) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Radio<String>(
+          activeColor: AppColors.primary400,
+          value: value,
+          groupValue: controller.selectedGender.value,
+          onChanged: (newValue) {
+            if (controller.isEditInfo.value) {
+              controller.selectedGender.value = value;
+            }
+          },
+        ),
+        Text(
+          label,
+          style: ConstantFont.mediumText,
         ),
       ],
     );
@@ -360,19 +390,28 @@ class CustomerInfo extends StatelessWidget {
     if (!controller.isEditInfo.value) return;
     Get.focusScope?.unfocus();
     Get.bottomSheet(BottomPicker.date(
+      height: Get.height / 2,
+      titlePadding: const EdgeInsets.symmetric(vertical: 10),
+      initialDateTime: FormatUtil.formatYYYYMMdd(controller.dateOfBirthCtrl.text),
       pickerTitle: Text(
         'Chọn ngày sinh',
         style: ConstantFont.mediumText,
       ),
       dateOrder: DatePickerDateOrder.dmy,
-      pickerTextStyle: ConstantFont.mediumText.copyWith(
-        color: AppColors.primary300,
-      ),
+      pickerTextStyle: ConstantFont.mediumText.copyWith(color: AppColors.primary300, fontSize: 16),
       maxDateTime: DateTime.now(),
       minDateTime: DateTime(1900, DateTime.january, 1),
       onSubmit: (time) {
         controller.onChangeBirthday(time);
       },
+      buttonSingleColor: AppColors.primary1,
+      buttonContent: Text(
+        ConstantString.messageConfirm,
+        textAlign: TextAlign.center,
+        style: ConstantFont.mediumText.copyWith(
+          color: AppColors.white,
+        ),
+      ),
       bottomPickerTheme: BottomPickerTheme.plumPlate,
     ));
   }
@@ -386,8 +425,7 @@ class CustomerInfo extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(width: 1.5, color: const Color(0xFFF4F4F4)),
+          color: controller.isEditInfo.value ? AppColors.neutralFAFAFA : AppColors.neutralE9e9e9,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -396,10 +434,13 @@ class CustomerInfo extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: [
               Text(label, style: ConstantFont.regularText),
-              const Spacer(),
-              SvgPicture.asset(
-                AssetSvg.iconChevronDown,
-              ),
+              if (controller.isEditInfo.value) ...[
+                const Spacer(),
+                SvgPicture.asset(
+                  AssetSvg.iconChevronDown,
+                  width: 24,
+                ),
+              ]
             ],
           ),
         ),

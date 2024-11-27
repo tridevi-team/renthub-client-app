@@ -55,8 +55,34 @@ class FormatUtil {
   }
 
   static DateTime formatYYYYMMdd(String time) {
-    DateTime parsedDate = DateTime.parse(time);
+    DateFormat inputFormat = DateFormat('dd/MM/yyyy');
+    DateTime parsedDate = inputFormat.parse(time);
     return parsedDate;
+  }
+
+  static String formatDate(String inputDate) {
+    try {
+      final possibleFormats = [
+        DateFormat('yyyy/MM/dd'),
+        DateFormat('MM/dd/yyyy'),
+        DateFormat('dd/MM/yyyy'),
+      ];
+      DateTime? parsedDate;
+      for (var format in possibleFormats) {
+        try {
+          parsedDate = format.parseStrict(inputDate);
+          break;
+        } catch (e) {
+          continue;
+        }
+      }
+      if (parsedDate == null) {
+        throw FormatException("Invalid date format. Expected valid date string, but got: $inputDate");
+      }
+      return DateFormat('yyyy-MM-dd').format(parsedDate);
+    } catch (e) {
+      throw FormatException("Error formatting date: $e");
+    }
   }
 
   static String formatVietnameseDate(String dateString) {

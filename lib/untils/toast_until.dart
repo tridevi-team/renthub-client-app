@@ -45,6 +45,7 @@ class ToastUntil {
       closeButtonShowType: CloseButtonShowType.none,
       showProgressBar: true,
       autoCloseDuration: const Duration(seconds: 5),
+      dismissDirection: DismissDirection.vertical,
       icon: Container(
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
