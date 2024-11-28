@@ -73,7 +73,7 @@ class CustomerIssueScreen extends StatelessWidget {
                     ],
                   );
                 } else {
-                  return CustomElevatedButton(label: 'Tạo báo cáo', onTap: controller.uploadFiles);
+                  return CustomElevatedButton(label: 'Tạo báo cáo', onTap: controller.createIssue);
                 }
               }),
             ],

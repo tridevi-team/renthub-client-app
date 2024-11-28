@@ -13,7 +13,7 @@ class ToastUntil {
       ToastStatus.error: {
         'iconPath': 'assets/icons/ic_close.svg',
         'color': AppColors.red,
-        'defaultTitle': ConstantString.messageSuccess,
+        'defaultTitle': ConstantString.messageError,
       },
       ToastStatus.success: {
         'iconPath': 'assets/icons/ic_checkmark_circle.svg',

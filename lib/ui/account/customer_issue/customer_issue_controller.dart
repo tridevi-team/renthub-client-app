@@ -1,16 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:rent_house/base/base_controller.dart';
-
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rent_house/constants/constant_string.dart';
+import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/user_model.dart';
+import 'package:rent_house/services/issue_service.dart';
+import 'package:rent_house/untils/app_util.dart';
 import 'package:rent_house/untils/toast_until.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CustomerIssueController extends BaseController {
-
   final TextEditingController titleCtrl = TextEditingController();
   final TextEditingController contentCtrl = TextEditingController();
 
@@ -21,9 +24,13 @@ class CustomerIssueController extends BaseController {
   final int maxVideoSizeInMB = 25;
   RxDouble uploadProgress = 0.0.obs;
 
+  void showToast(String message, ToastStatus status) {
+    ToastUntil.toastNotification(description: message, status: status);
+  }
+
   Future<void> pickImage() async {
     if (selectedImages.length >= 3) {
-      ToastUntil.toastNotification(description: "Chỉ có thể tải lên tối đa 3 hình ảnh.", status: ToastStatus.warning);
+      showToast("Chỉ có thể tải lên tối đa 3 hình ảnh.", ToastStatus.warning);
       return;
     }
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -34,16 +41,16 @@ class CustomerIssueController extends BaseController {
 
   Future<void> pickVideo() async {
     if (selectedVideos.length >= 3) {
-      ToastUntil.toastNotification(description: "Chỉ có thể tải lên tối đa 3 video.", status: ToastStatus.warning);
+      showToast("Chỉ có thể tải lên tối đa 3 video.", ToastStatus.warning);
       return;
     }
     final pickedFile = await _picker.pickVideo(source: ImageSource.gallery);
     if (pickedFile != null) {
-      File videoFile = File(pickedFile.path);
+      final videoFile = File(pickedFile.path);
       double videoSizeInMB = await _getFileSizeInMB(videoFile);
 
       if (videoSizeInMB > maxVideoSizeInMB) {
-        ToastUntil.toastNotification(description: "Kích thước video vượt quá giới hạn $maxVideoSizeInMB MB.", status: ToastStatus.warning);
+        showToast("Kích thước video vượt quá giới hạn $maxVideoSizeInMB MB.", ToastStatus.warning);
         return;
       }
 
@@ -76,62 +83,78 @@ class CustomerIssueController extends BaseController {
     videoThumbnails.removeAt(index);
   }
 
-  Future<void> uploadFiles() async {
+  Future<void> createIssue() async {
     Get.focusScope!.unfocus();
-    if (selectedImages.isEmpty) {
-      ToastUntil.toastNotification(description: "Vui lòng chọn ít nhất một hình ảnh.", status: ToastStatus.warning);
+
+    if (titleCtrl.text.isEmpty || contentCtrl.text.isEmpty) {
+      showToast("Vui lòng điền đầy đủ thông tin.", ToastStatus.warning);
       return;
     }
 
-    if (selectedVideos.isEmpty) {
-      ToastUntil.toastNotification(description: "Vui lòng chọn ít nhất một video.", status: ToastStatus.warning);
+    if (selectedImages.isEmpty || selectedVideos.isEmpty) {
+      String message = selectedImages.isEmpty ? "Vui lòng chọn ít nhất một hình ảnh." : "Vui lòng chọn ít nhất một video.";
+      showToast(message, ToastStatus.warning);
       return;
     }
 
-    uploadProgress.value = 0.0;
-    double totalSizeInBytes = 0.0;
-    double uploadedBytes = 0.0;
-
-    // Calculate the total size of all files (images and videos)
-    for (var image in selectedImages) {
-      totalSizeInBytes += await image.length();
-    }
-
-    for (var video in selectedVideos) {
-      totalSizeInBytes += await video.length();
-    }
+    UserModel user = UserSingleton.instance.getUser();
+    String houseId = user.houseId ?? "";
+    String floorId = user.floorId ?? "";
+    String roomId = user.roomId ?? "";
 
     try {
-      // Upload images
-      for (var image in selectedImages) {
-        uploadedBytes += await _uploadFile(image);
-        uploadProgress.value = (uploadedBytes / totalSizeInBytes) * 100;
+      final files = [
+        ...selectedImages.map((image) => File(image.path)),
+        ...selectedVideos.map((video) => File(video.path)),
+      ];
+
+      if (files.isEmpty) {
+        showToast("Không có tệp nào để tải lên.", ToastStatus.warning);
+        return;
       }
 
-      // Upload videos
-      for (var video in selectedVideos) {
-        uploadedBytes += await _uploadFile(video);
-        uploadProgress.value = (uploadedBytes / totalSizeInBytes) * 100;
+      final uploadResponse = await IssueService.uploadFiles(files, (progress) {
+        print("progress: $progress%");
+      });
+      if (uploadResponse.statusCode != 200) {
+        showToast("Không thể tải lên tệp. Vui lòng thử lại.", ToastStatus.error);
+        return;
       }
 
-      ToastUntil.toastNotification(description: "Tạo báo cáo thành công!", status: ToastStatus.success);
-      Get.back();
+      final decodedResponse = jsonDecode(uploadResponse.body) as Map<String, dynamic>;
+      final filesData = decodedResponse['data']['files'] as List?;
+
+      if (filesData == null) {
+        showToast("Phản hồi không hợp lệ từ máy chủ. Vui lòng thử lại.", ToastStatus.error);
+        return;
+      }
+
+      final uploadedImageUrls = filesData.where((file) => file['file'].toString().contains(RegExp(r'\.(jpg|png)$')))
+          .map((file) => file['url'] as String).toList();
+      final uploadedVideoUrls = filesData.where((file) => file['file'].toString().contains('.mp4'))
+          .map((file) => file['url'] as String).toList();
+
+      final data = {
+        "floorId": floorId,
+        "roomId": roomId,
+        "title": titleCtrl.text,
+        "content": contentCtrl.text,
+        "files": {
+          "image": uploadedImageUrls,
+          "video": uploadedVideoUrls,
+        },
+      };
+
+      // Create issue
+      final response = await IssueService.createIssues(houseId: houseId, body: data);
+      if (response.statusCode == 200) {
+        showToast("Tạo báo cáo thành công!", ToastStatus.success);
+      } else {
+        showToast("Tạo báo cáo thất bại. Vui lòng thử lại.", ToastStatus.error);
+      }
     } catch (e) {
-      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
+      AppUtil.printDebugMode(type: "create issue", message: "$e");
+      showToast(ConstantString.tryAgainMessage, ToastStatus.error);
     }
-  }
-
-
-  Future<double> _uploadFile(File file) async {
-    final totalBytes = file.lengthSync();
-    int uploadedBytes = 0;
-
-    final chunkSize = (totalBytes / 10).round(); // Upload in chunks
-    for (int i = 0; i < 10; i++) {
-      await Future.delayed(const Duration(milliseconds: 500)); // Simulate network delay
-      uploadedBytes += chunkSize;
-    }
-
-    return uploadedBytes.toDouble();
   }
 }

@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onTapShare;
   final bool isShared;
   final bool isTransparent;
-  final PreferredSize? bottomWidget;
+  final PreferredSizeWidget? bottomWidget;
 
   const CustomAppBar({
     super.key,
@@ -24,7 +24,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTapShare,
     this.isShared = false,
     this.isTransparent = false,
-    this.bottomWidget
+    this.bottomWidget,
   });
 
   Widget _buildIconButton({required String iconAsset, VoidCallback? onPressed}) {

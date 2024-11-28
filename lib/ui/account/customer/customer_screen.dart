@@ -7,6 +7,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/user_model.dart';
+import 'package:rent_house/ui/account/contract/contract_screen.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/ui/account/customer_issue/customer_issue_screen.dart';
@@ -63,6 +64,9 @@ class CustomerScreen extends StatelessWidget {
               leadingAsset: AssetSvg.iconPerson,
               titleText: 'Hợp đồng phòng',
               trailingAsset: AssetSvg.iconChevronForward,
+              onTap: () {
+                Get.to(() => CustomerContractScreen());
+              }
             ),
             _buildListTile(
               leadingAsset: AssetSvg.iconPerson,
