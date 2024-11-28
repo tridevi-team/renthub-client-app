@@ -14,7 +14,15 @@ class BaseService {
   static const int _defaultTimeout = 20;
 
   static Future<http.Response> requestApi(
-      {required String endpoint, dynamic params, required HttpMethod httpMethod, bool auth = false, Map<String, String>? additionalHeaders, bool useFullUrl = false, int timeoutDuration = _defaultTimeout, List<File>? files, void Function(double progress)? onProgress}) async {
+      {required String endpoint,
+      dynamic params,
+      required HttpMethod httpMethod,
+      bool auth = false,
+      Map<String, String>? additionalHeaders,
+      bool useFullUrl = false,
+      int timeoutDuration = _defaultTimeout,
+      List<File>? files,
+      void Function(double progress)? onProgress}) async {
     http.Response response;
     final headers = _buildHeaders(auth, additionalHeaders);
     final uri = _buildUri(endpoint, useFullUrl);
@@ -22,19 +30,28 @@ class BaseService {
     try {
       switch (httpMethod) {
         case HttpMethod.get:
-          response = await http.get(uri, headers: headers).timeout(Duration(seconds: timeoutDuration));
+          response =
+              await http.get(uri, headers: headers).timeout(Duration(seconds: timeoutDuration));
           break;
         case HttpMethod.post:
-          response = await http.post(uri, headers: headers, body: jsonEncode(params)).timeout(Duration(seconds: timeoutDuration));
+          response = await http
+              .post(uri, headers: headers, body: jsonEncode(params))
+              .timeout(Duration(seconds: timeoutDuration));
           break;
         case HttpMethod.put:
-          response = await http.put(uri, headers: headers, body: jsonEncode(params)).timeout(Duration(seconds: timeoutDuration));
+          response = await http
+              .put(uri, headers: headers, body: jsonEncode(params))
+              .timeout(Duration(seconds: timeoutDuration));
           break;
         case HttpMethod.delete:
-          response = await http.delete(uri, headers: headers, body: jsonEncode(params)).timeout(Duration(seconds: timeoutDuration));
+          response = await http
+              .delete(uri, headers: headers, body: jsonEncode(params))
+              .timeout(Duration(seconds: timeoutDuration));
           break;
         case HttpMethod.patch:
-          response = await http.patch(uri, headers: headers, body: jsonEncode(params)).timeout(Duration(seconds: timeoutDuration));
+          response = await http
+              .patch(uri, headers: headers, body: jsonEncode(params))
+              .timeout(Duration(seconds: timeoutDuration));
           break;
         case HttpMethod.multipart:
           response = await _uploadFiles(uri, files, params, headers, timeoutDuration, onProgress);
@@ -54,7 +71,8 @@ class BaseService {
     }
 
     if (response.statusCode == 401) {
-      AppUtil.printDebugMode(type: "API Error", message: "Unauthorized request, attempting token refresh...");
+      AppUtil.printDebugMode(
+          type: "API Error", message: "Unauthorized request, attempting token refresh...");
       final refreshed = await _handleTokenRefresh();
       if (refreshed) {
         return requestApi(
@@ -75,13 +93,13 @@ class BaseService {
   }
 
   static Future<http.Response> _uploadFiles(
-      Uri uri,
-      List<File>? files,
-      dynamic params,
-      Map<String, String> headers,
-      int timeoutDuration,
-      void Function(double progress)? onProgress,
-      ) async {
+    Uri uri,
+    List<File>? files,
+    Map<String, dynamic>? params,
+    Map<String, String> headers,
+    int timeoutDuration,
+    void Function(double progress)? onProgress,
+  ) async {
     if (files == null || files.isEmpty) {
       return http.Response('No files to upload', 400);
     }
@@ -94,45 +112,56 @@ class BaseService {
       }
 
       if (params != null) {
-        for (var key in params.keys) {
-          request.fields[key] = params[key].toString();
-        }
+        params.forEach((key, value) {
+          request.fields[key] = value.toString();
+        });
       }
 
       request.headers.addAll(headers);
 
-      final response = await request.send().timeout(Duration(seconds: timeoutDuration));
-      http.Response responseData = http.Response('File upload failed', response.statusCode);
-      final bytesFuture = await response.stream.toBytes();
+      final totalLength = request.contentLength;
+      int uploaded = 0;
 
-      if (response.statusCode == 200) {
-        final data = String.fromCharCodes(bytesFuture);
-        responseData = http.Response(data, 200);
+      // Completer để đánh dấu tiến trình hoàn thành
+      final Completer<void> progressCompleter = Completer<void>();
+
+      // Stream tiến trình tải lên
+      final stream = http.ByteStream(
+        request.finalize().transform(
+          StreamTransformer.fromHandlers(
+            handleData: (data, sink) {
+              sink.add(data);
+              uploaded += data.length;
+              if (onProgress != null && totalLength > 0) {
+                onProgress(uploaded / totalLength);
+              }
+              if (uploaded >= totalLength && !progressCompleter.isCompleted) {
+                progressCompleter.complete();
+              }
+            },
+          ),
+        ),
+      );
+
+      final streamedRequest = http.StreamedRequest('POST', uri)..headers.addAll(request.headers);
+
+      await for (var chunk in stream) {
+        streamedRequest.sink.add(chunk);
       }
-      /*final totalBytes = response.contentLength ?? 0;
-      int uploadedBytes = 0;
+      streamedRequest.sink.close();
 
-      // Read the stream into bytes for further processing and to prevent double listen
+      final streamedResponse =
+          await streamedRequest.send().timeout(Duration(seconds: timeoutDuration));
 
-      // Now listen to the stream for progress tracking
-      response.stream.listen(
-            (List<int> chunk) {
-          uploadedBytes += chunk.length;
-          if (onProgress != null) {
-            double progress = uploadedBytes / totalBytes;
-            onProgress(progress);
-          }
-        },
-        onDone: () async {
+      final responseBytes = await streamedResponse.stream.toBytes();
+      final responseString = String.fromCharCodes(responseBytes);
 
-        },
-        onError: (error) {
-          AppUtil.printDebugMode(type: "File Upload", message: "Error uploading files: $error");
-          return http.Response('Error uploading files', 500);
-        },
-      );*/
-      return responseData;
+      // Đảm bảo tiến trình tải lên hoàn thành trước khi trả về
+      await progressCompleter.future;
 
+      return http.Response(responseString, streamedResponse.statusCode);
+    } on TimeoutException {
+      return http.Response('Request timed out', 408);
     } catch (e) {
       AppUtil.printDebugMode(type: "File Upload", message: "Error uploading files: $e");
       return http.Response('Error uploading files', 500);

@@ -19,66 +19,87 @@ class CustomerIssueScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(label: "Báo cáo vấn đề"),
       backgroundColor: AppColors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextInputWidget(
-                controller: controller.titleCtrl,
-                label: "Tiêu đề",
-              ),
-              const SizedBox(height: 10),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(width: 1, color: const Color(0xFF9C9C9C)),
-                ),
-                child: TextField(
-                  controller: controller.contentCtrl,
-                  decoration: InputDecoration(
-                    hintText: "Mô tả",
-                    hintStyle: TextStyle(color: Colors.black, fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, fontWeight: FontWeight.w400),
-                    contentPadding: const EdgeInsets.all(10),
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    alignLabelWithHint: true,
-                    counterText: ""
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextInputWidget(
+                    controller: controller.titleCtrl,
+                    label: "Tiêu đề",
                   ),
-                  maxLines: 10,
-                  style: ConstantFont.regularText,
-                ),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(width: 1, color: const Color(0xFF9C9C9C)),
+                    ),
+                    child: TextField(
+                      controller: controller.contentCtrl,
+                      decoration: InputDecoration(
+                        hintText: "Mô tả",
+                        hintStyle: TextStyle(color: Colors.black, fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, fontWeight: FontWeight.w400),
+                        contentPadding: const EdgeInsets.all(10),
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        alignLabelWithHint: true,
+                        counterText: ""
+                      ),
+                      maxLines: 10,
+                      style: ConstantFont.regularText,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text("Hình ảnh", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  _buildMediaGrid(controller.selectedImages, controller.pickImage, controller.removeImage, AssetSvg.iconCamera, controller.selectedImages),
+                  const SizedBox(height: 20),
+                  Text("Videos", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  _buildMediaGrid(controller.videoThumbnails, controller.pickVideo, controller.removeVideo, AssetSvg.iconVideo, controller.selectedVideos),
+                  const SizedBox(height: 20),
+                  CustomElevatedButton(label: 'Tạo báo cáo', onTap: controller.createIssue)
+                ],
               ),
-              const SizedBox(height: 20),
-              Text("Hình ảnh", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
-              const SizedBox(height: 10),
-              _buildMediaGrid(controller.selectedImages, controller.pickImage, controller.removeImage, AssetSvg.iconCamera, controller.selectedImages),
-              const SizedBox(height: 20),
-              Text("Videos", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
-              const SizedBox(height: 10),
-              _buildMediaGrid(controller.videoThumbnails, controller.pickVideo, controller.removeVideo, AssetSvg.iconVideo, controller.selectedVideos),
-              const SizedBox(height: 20),
-              Obx(() {
-                if (controller.uploadProgress > 0 && controller.uploadProgress <= 99) {
-                  return Column(
+            ),
+          ),
+          Obx(() {
+            if (controller.uploadProgress.value == 0.0 || controller.uploadProgress.value >= 99.11) return const SizedBox.shrink();
+            return Positioned.fill(
+              child: Container(
+                color: AppColors.black.withOpacity(0.02),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Uploading... ${controller.uploadProgress.toStringAsFixed(0)}%"),
-                      LinearProgressIndicator(
-                        value: controller.uploadProgress / 100,
+                      SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(
+                          value: controller.uploadProgress / 100,
+                          strokeWidth: 6,
+                          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary1),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "${controller.uploadProgress.toStringAsFixed(0)}%",
+                        textAlign: TextAlign.center,
+                        style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
                       ),
                     ],
-                  );
-                } else {
-                  return CustomElevatedButton(label: 'Tạo báo cáo', onTap: controller.createIssue);
-                }
-              }),
-            ],
-          ),
-        ),
+                  ),
+                ),
+              ),
+            );
+          }),
+        ],
       ),
     );
   }

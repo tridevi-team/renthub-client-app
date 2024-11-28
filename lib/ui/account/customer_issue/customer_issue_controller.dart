@@ -112,9 +112,11 @@ class CustomerIssueController extends BaseController {
         showToast("Không có tệp nào để tải lên.", ToastStatus.warning);
         return;
       }
-
+      uploadProgress.value = 0.0;
       final uploadResponse = await IssueService.uploadFiles(files, (progress) {
-        print("progress: $progress%");
+        if (progress >= 0.991) return;
+        uploadProgress.value = progress * 100;
+
       });
       if (uploadResponse.statusCode != 200) {
         showToast("Không thể tải lên tệp. Vui lòng thử lại.", ToastStatus.error);
@@ -145,10 +147,10 @@ class CustomerIssueController extends BaseController {
         },
       };
 
-      // Create issue
       final response = await IssueService.createIssues(houseId: houseId, body: data);
       if (response.statusCode == 200) {
         showToast("Tạo báo cáo thành công!", ToastStatus.success);
+        uploadProgress.value = 100;
       } else {
         showToast("Tạo báo cáo thất bại. Vui lòng thử lại.", ToastStatus.error);
       }
