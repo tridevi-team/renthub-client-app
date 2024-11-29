@@ -8,9 +8,9 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/response_error_util.dart';
-import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/response_error_util.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class NotificationController extends BaseController {
   RxInt notificationsCount = 0.obs;

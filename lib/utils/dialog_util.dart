@@ -6,7 +6,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/ratio/radio_option.dart';
 

@@ -4,7 +4,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/rss_model.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/images/common_network_image.dart';
 
 class RssItem extends StatelessWidget {

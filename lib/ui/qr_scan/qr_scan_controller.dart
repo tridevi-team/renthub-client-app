@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_house/base/base_controller.dart';
-import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/utils/app_util.dart';
 
 class QrScanController extends BaseController with WidgetsBindingObserver {
 

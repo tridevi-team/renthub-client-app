@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
-import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/utils/app_util.dart';
 
 enum HttpMethod { get, post, put, delete, patch, multipart }
 

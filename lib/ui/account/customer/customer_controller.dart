@@ -8,8 +8,8 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class CustomerController extends BaseController {
   String version = '';

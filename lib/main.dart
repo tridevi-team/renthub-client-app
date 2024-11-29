@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/splash/splash_screen.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/local_notification_util.dart';
-import 'package:rent_house/untils/shared_pref_helper.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/local_notification_util.dart';
+import 'package:rent_house/utils/shared_pref_helper.dart';
 import 'package:toastification/toastification.dart';
 
 void main() async {

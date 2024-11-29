@@ -11,8 +11,8 @@ import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/rss_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/response_error_util.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/response_error_util.dart';
 import 'package:xml/xml.dart';
 import 'package:html/parser.dart' as html;
 

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rent_house/constants/app_colors.dart';
-import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/utils/app_util.dart';
 
 
 class LocalNotificationUtil {

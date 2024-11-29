@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/province_singleton.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
-import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class OnboardingController extends BaseController {
   final pageController = PageController();

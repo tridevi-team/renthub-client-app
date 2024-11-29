@@ -10,9 +10,8 @@ import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/contract/contract_screen.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
-import 'package:rent_house/ui/account/customer_issue/customer_issue_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
-import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 
 class CustomerScreen extends StatelessWidget {

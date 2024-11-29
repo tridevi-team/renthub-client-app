@@ -5,7 +5,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/bill/bill_detail_screen.dart';
 import 'package:rent_house/ui/statistic/widgets/line_chart_widget.dart';
 import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 
 class StatisticScreen extends StatelessWidget {
   const StatisticScreen({super.key});

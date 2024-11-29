@@ -10,7 +10,7 @@ import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';
-import 'package:rent_house/untils/response_error_util.dart';
+import 'package:rent_house/utils/response_error_util.dart';
 
 class HomeController extends BaseController {
   //controller

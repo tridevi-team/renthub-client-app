@@ -12,9 +12,9 @@ import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/onboarding/onboarding_screen.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/shared_pref_helper.dart';
-import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/shared_pref_helper.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class SplashController extends BaseController {
 

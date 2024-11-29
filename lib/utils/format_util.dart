@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:rent_house/untils/app_util.dart';
+import 'package:rent_house/utils/app_util.dart';
 
 class FormatUtil {
   FormatUtil._();

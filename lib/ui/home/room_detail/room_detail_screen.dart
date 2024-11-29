@@ -10,8 +10,8 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 

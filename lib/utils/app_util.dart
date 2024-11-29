@@ -12,9 +12,9 @@ import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
-import 'package:rent_house/untils/extensions/string_extension.dart';
-import 'package:rent_house/untils/format_util.dart';
-import 'package:rent_house/untils/shared_pref_helper.dart';
+import 'package:rent_house/utils/extensions/string_extension.dart';
+import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/utils/shared_pref_helper.dart';
 
 class AppUtil {
   AppUtil._();

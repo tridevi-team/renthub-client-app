@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -15,12 +13,12 @@ import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
 import 'package:rent_house/ui/account/customer_info/nfc_screen.dart';
 import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
-import 'package:rent_house/untils/app_util.dart';
-import 'package:rent_house/untils/dialog_util.dart';
-import 'package:rent_house/untils/extensions/string_extension.dart';
-import 'package:rent_house/untils/format_util.dart';
-import 'package:rent_house/untils/response_error_util.dart';
-import 'package:rent_house/untils/toast_until.dart';
+import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
+import 'package:rent_house/utils/extensions/string_extension.dart';
+import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/utils/response_error_util.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class CustomerInfoController extends BaseController {
   TextEditingController citizenIdCtrl = TextEditingController();

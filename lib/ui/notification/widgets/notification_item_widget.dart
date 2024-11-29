@@ -5,8 +5,8 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/notification_model.dart';
-import 'package:rent_house/untils/dialog_util.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/images/common_network_image.dart';
 
 class NotificationItemWidget extends StatelessWidget {

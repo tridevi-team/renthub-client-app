@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/room_model.dart';
-import 'package:rent_house/untils/format_util.dart';
+import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 
 class RoomWidget extends StatelessWidget {
