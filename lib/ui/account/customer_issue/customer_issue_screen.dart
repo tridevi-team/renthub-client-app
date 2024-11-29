@@ -22,9 +22,10 @@ class CustomerIssueScreen extends StatelessWidget {
     controller.titleCtrl.text = equipment != null ? "${equipment?.name} - ${equipment?.code}" : "";
     controller.equipment = equipment;
     return PopScope(
+      canPop: false,
       onPopInvoked: (_) {
         if (controller.uploadProgress.value == 100 || controller.uploadProgress.value == 0.0) {
-          return;
+          Get.back();
         }
       },
       child: Scaffold(

@@ -16,7 +16,7 @@ class HomeService {
   }
 
   static Future<http.Response> fetchProvinces() {
-    String endpoint = 'https://provinces.tmquang.com/api/?depth=1';
+    String endpoint = 'http://api.tmquang.com/provinces';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, useFullUrl: true);
   }
 }
