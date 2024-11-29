@@ -119,6 +119,7 @@ class CustomerIssueController extends BaseController {
 
         });
         if (uploadResponse.statusCode != 200) {
+          uploadProgress.value = 100;
           showToast("Không thể tải lên tệp. Vui lòng thử lại.", ToastStatus.error);
           return;
         }
@@ -155,6 +156,7 @@ class CustomerIssueController extends BaseController {
         showToast("Tạo báo cáo thành công!", ToastStatus.success);
         uploadProgress.value = 100;
       } else {
+        uploadProgress.value = 100;
         showToast("Tạo báo cáo thất bại. Vui lòng thử lại.", ToastStatus.error);
       }
     } catch (e) {

@@ -48,6 +48,7 @@ class BottomNavBarController extends FullLifeCycleController {
   District districtTemp = District();
 
   RxBool isLogin = false.obs;
+  DateTime? _lastPressedTime;
 
   @override
   void onInit() {
@@ -118,7 +119,8 @@ class BottomNavBarController extends FullLifeCycleController {
   }
 
   bool _isPermissionGranted(NotificationSettings settings) {
-    return settings.authorizationStatus == AuthorizationStatus.authorized || settings.authorizationStatus == AuthorizationStatus.provisional;
+    return settings.authorizationStatus == AuthorizationStatus.authorized ||
+        settings.authorizationStatus == AuthorizationStatus.provisional;
   }
 
   void _startPermissionCheckTimer() {
@@ -145,7 +147,8 @@ class BottomNavBarController extends FullLifeCycleController {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) {
-        bool isValidAccessToken = JwtDecoder.isExpired(SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
+        bool isValidAccessToken = JwtDecoder.isExpired(
+            SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
         if (isValidAccessToken) {
           LocalNotificationUtil.createNotification(message);
         }
@@ -177,11 +180,14 @@ class BottomNavBarController extends FullLifeCycleController {
             location.name ?? "",
             style: TextStyle(
               color: const Color(0xff1C1D1F),
-              fontWeight: selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
+              fontWeight:
+                  selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
               fontSize: 14,
             ),
           ),
-          trailing: selectedLocation?.name == location.name ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1) : const SizedBox.shrink(),
+          trailing: selectedLocation?.name == location.name
+              ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1)
+              : const SizedBox.shrink(),
         ),
       ));
     }
@@ -289,8 +295,10 @@ class BottomNavBarController extends FullLifeCycleController {
                           setSelectedCity();
                         }
                       },
-                      style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
-                      child: Text('Xác nhận', style: ConstantFont.regularText.copyWith(color: AppColors.white)),
+                      style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
+                      child: Text('Xác nhận',
+                          style: ConstantFont.regularText.copyWith(color: AppColors.white)),
                     ),
                   ),
                 ],
@@ -332,10 +340,13 @@ class BottomNavBarController extends FullLifeCycleController {
   void onFilterCity(String searchValue, {bool isDistrict = false}) {
     if (isDistrict) {
       filteredDistricts.clear();
-      filteredDistricts.addAll(citySelected.value?.districts?.where((district) => district.name?.toLowerCase().contains(searchValue.toLowerCase()) ?? false) ?? []);
+      filteredDistricts.addAll(citySelected.value?.districts?.where((district) =>
+              district.name?.toLowerCase().contains(searchValue.toLowerCase()) ?? false) ??
+          []);
     } else {
       filteredCities.clear();
-      filteredCities.addAll(provinces.where((city) => city.name != null && city.name!.toLowerCase().contains(searchValue.toLowerCase())));
+      filteredCities.addAll(provinces.where((city) =>
+          city.name != null && city.name!.toLowerCase().contains(searchValue.toLowerCase())));
     }
   }
 
@@ -358,7 +369,8 @@ class BottomNavBarController extends FullLifeCycleController {
 
   void redirectToLogin(int index) {
     if (index == 0) return;
-    ToastUntil.toastNotification(description: ConstantString.loginRequiredMessage, status: ToastStatus.warning);
+    ToastUntil.toastNotification(
+        description: ConstantString.loginRequiredMessage, status: ToastStatus.warning);
     if (index != 2) {
       Get.to(() => SignInScreen());
     }
@@ -367,5 +379,18 @@ class BottomNavBarController extends FullLifeCycleController {
   void setCustomerLoginStatus(bool isCustomer) {
     isLogin.value = isCustomer;
     update();
+  }
+
+  Future<bool> onWillPop() async {
+    final currentTime = DateTime.now();
+    const backButtonInterval = Duration(seconds: 2);
+    if (_lastPressedTime == null ||
+        currentTime.difference(_lastPressedTime!) > backButtonInterval) {
+      _lastPressedTime = currentTime;
+      ToastUntil.toastNotification(description: 'Nhấn lần nữa để thoát', status: ToastStatus.warning);
+      return false;
+    } else {
+      return true;
+    }
   }
 }

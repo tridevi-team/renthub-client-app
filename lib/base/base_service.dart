@@ -64,8 +64,8 @@ class BaseService {
     } on SocketException {
       AppUtil.printDebugMode(type: "API Error", message: "No internet connection");
       return http.Response('No internet connection', 522);
-    } on TimeoutException {
-      AppUtil.printDebugMode(type: "API Error", message: "Request timed out");
+    } on TimeoutException catch (e) {
+      AppUtil.printDebugMode(type: "API Error", message: "Request timed out: $e");
       return http.Response('Request timed out', 408);
     } catch (e) {
       AppUtil.printDebugMode(type: "API Error", message: "Unexpected error: $e");
