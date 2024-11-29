@@ -13,6 +13,7 @@ import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/untils/extensions/string_extension.dart';
+import 'package:rent_house/untils/format_util.dart';
 import 'package:rent_house/untils/shared_pref_helper.dart';
 
 class AppUtil {
@@ -54,7 +55,6 @@ class AppUtil {
     }
   }
 
-
   static Future<void> _clearLocalStorage() async {
     try {
       await Future.wait([
@@ -66,36 +66,56 @@ class AppUtil {
     }
   }
 
+  static Future<bool> autoRefreshToken() async {
+    try {
+      final appTypeToken = SharedPrefHelper.instance.getString(ConstantString.prefAppType);
+      final refreshToken = SharedPrefHelper.instance.getString(ConstantString.prefRefreshToken);
+      String accessToken = '';
 
-  static Future<void> autoRefreshToken() async {
-    final appTypeToken = SharedPrefHelper.instance.getString(ConstantString.prefAppType);
-    final refreshToken = SharedPrefHelper.instance.getString(ConstantString.prefRefreshToken);
-    String accessToken = '';
-
-    if (appTypeToken == ConstantString.prefTypeEmail || appTypeToken == ConstantString.prefTypePhone) {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        accessToken = await user.getIdToken(true) ?? '';
+      if (appTypeToken == ConstantString.prefTypeEmail ||
+          appTypeToken == ConstantString.prefTypePhone) {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          accessToken = await user.getIdToken(true) ?? '';
+        } else {
+          AppUtil.printDebugMode(type: 'Error', message: 'Firebase user is null.');
+          return false;
+        }
+      } else if (refreshToken?.isNotEmpty ?? false) {
+        try {
+          final response = await AuthService.refreshToken(refreshToken!);
+          if (response.statusCode == 200) {
+            final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+            accessToken = decodedResponse["data"]["accessToken"] ?? '';
+            if (accessToken.isEmpty) {
+              AppUtil.printDebugMode(type: 'Error', message: 'Access token missing in response.');
+              return false;
+            }
+          } else {
+            AppUtil.printDebugMode(
+                type: 'Error', message: 'Invalid response status: ${response.statusCode}');
+            return false;
+          }
+        } catch (e) {
+          AppUtil.printDebugMode(type: 'Error Refresh Token', message: "$e");
+          return false;
+        }
       }
-    } else if (refreshToken?.isNotEmpty ?? false) {
-      try {
-        final response = await AuthService.refreshToken(refreshToken!);
-        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        accessToken = decodedResponse["accessToken"] ?? '';
-      } catch (e) {
-        AppUtil.printDebugMode(type: 'Error Refresh Token', message: "$e");
+
+      if (accessToken.isNotEmpty) {
+        TokenSingleton.instance.setAccessToken(accessToken);
+        await SharedPrefHelper.instance.saveString(ConstantString.prefAccessToken, accessToken);
+        if (refreshToken?.isNotEmpty ?? false) {
+          TokenSingleton.instance.setRefreshToken(refreshToken!);
+          await SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, refreshToken);
+        }
+        return true;
       }
+    } catch (e) {
+      AppUtil.printDebugMode(type: 'Error', message: 'Unexpected error: $e');
     }
 
-    if (accessToken.isNotEmpty) {
-      TokenSingleton.instance.setAccessToken(accessToken);
-      await SharedPrefHelper.instance.saveString(ConstantString.prefAccessToken, accessToken);
-    }
-
-    if (refreshToken?.isNotEmpty ?? false) {
-      TokenSingleton.instance.setRefreshToken(refreshToken!);
-      await SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, refreshToken);
-    }
+    return false;
   }
 
   static Future<String> getUniqueDeviceId() async {
@@ -115,7 +135,7 @@ class AppUtil {
     return "Unknown Device ID";
   }
 
-  static void printDebugMode ({required String type, required String message}) {
+  static void printDebugMode({required String type, required String message}) {
     if (kDebugMode) {
       print("[$type] $message");
     }
@@ -140,5 +160,19 @@ class AppUtil {
           orElse: () => const MapEntry('', AssetSvg.iconPerson),
         )
         .value;
+  }
+
+  static String formatServiceUnit(int amount, String serviceType) {
+    String formattedAmount = FormatUtil.formatCurrency(amount);
+    if (serviceType == ConstantString.serviceTypeElectric) {
+      formattedAmount = "$formattedAmount/kWh";
+    } else if (serviceType == ConstantString.serviceTypeWater) {
+      formattedAmount = "$formattedAmount/m³";
+    } else if (serviceType == ConstantString.serviceTypePeople) {
+      formattedAmount = "$formattedAmount/người";
+    } else {
+      formattedAmount = "$formattedAmount/phòng";
+    }
+    return formattedAmount;
   }
 }

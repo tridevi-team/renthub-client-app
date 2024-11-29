@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
 import 'package:rent_house/untils/app_util.dart';
@@ -71,9 +73,7 @@ class BaseService {
     }
 
     if (response.statusCode == 401) {
-      AppUtil.printDebugMode(
-          type: "API Error", message: "Unauthorized request, attempting token refresh...");
-      final refreshed = await _handleTokenRefresh();
+      final refreshed = await AppUtil.autoRefreshToken();
       if (refreshed) {
         return requestApi(
           endpoint: endpoint,
@@ -85,6 +85,8 @@ class BaseService {
           timeoutDuration: timeoutDuration,
           files: files,
         );
+      } else {
+        return http.Response(ConstantString.sessionTimeoutMessage, 401);
       }
     }
 
@@ -202,27 +204,5 @@ class BaseService {
       log("Response Body: ${response.body}");
       log("========================================");
     }
-  }
-
-  static Future<bool> _handleTokenRefresh() async {
-    try {
-      // Implement your token refresh logic here
-      // Example:
-      // final refreshToken = TokenSingleton.instance.refreshToken;
-      // final response = await requestApi(
-      //   endpoint: "/auth/refresh",
-      //   params: {"refreshToken": refreshToken},
-      //   httpMethod: HttpMethod.post,
-      //   auth: false,
-      // );
-      // if (response.statusCode == 200) {
-      //   final newToken = jsonDecode(response.body)["accessToken"];
-      //   TokenSingleton.instance.updateAccessToken(newToken);
-      //   return true;
-      // }
-    } catch (e) {
-      AppUtil.printDebugMode(type: "Token Refresh", message: "Token refresh failed: $e");
-    }
-    return false;
   }
 }
