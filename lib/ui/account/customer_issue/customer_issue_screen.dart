@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/account/customer_issue/customer_issue_controller.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
@@ -11,11 +12,15 @@ import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class CustomerIssueScreen extends StatelessWidget {
 
-  CustomerIssueScreen({super.key});
+  CustomerIssueScreen({super.key, this.equipment});
+
   final CustomerIssueController controller = Get.put(CustomerIssueController());
+  final EquipmentModel? equipment;
 
   @override
   Widget build(BuildContext context) {
+    controller.titleCtrl.text = equipment != null ? "${equipment?.name} - ${equipment?.code}" : "";
+    controller.equipment = equipment;
     return Scaffold(
       appBar: const CustomAppBar(label: "Báo cáo vấn đề"),
       backgroundColor: AppColors.white,
@@ -29,7 +34,9 @@ class CustomerIssueScreen extends StatelessWidget {
                 children: [
                   TextInputWidget(
                     controller: controller.titleCtrl,
-                    label: "Tiêu đề",
+                    hintText: 'Tiêu đề',
+                    enable: equipment != null ? false : true,
+                    turnOffClearText: equipment != null ? true : false,
                   ),
                   const SizedBox(height: 10),
                   Container(

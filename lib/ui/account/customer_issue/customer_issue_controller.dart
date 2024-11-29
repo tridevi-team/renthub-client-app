@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/issue_service.dart';
 import 'package:rent_house/untils/app_util.dart';
@@ -23,6 +24,13 @@ class CustomerIssueController extends BaseController {
   var videoThumbnails = <File?>[].obs;
   final int maxVideoSizeInMB = 25;
   RxDouble uploadProgress = 0.0.obs;
+  EquipmentModel? equipment;
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
 
   void showToast(String message, ToastStatus status) {
     ToastUntil.toastNotification(description: message, status: status);
@@ -91,54 +99,49 @@ class CustomerIssueController extends BaseController {
       return;
     }
 
-    if (selectedImages.isEmpty || selectedVideos.isEmpty) {
-      String message = selectedImages.isEmpty ? "Vui lòng chọn ít nhất một hình ảnh." : "Vui lòng chọn ít nhất một video.";
-      showToast(message, ToastStatus.warning);
-      return;
-    }
-
     UserModel user = UserSingleton.instance.getUser();
     String houseId = user.houseId ?? "";
     String floorId = user.floorId ?? "";
     String roomId = user.roomId ?? "";
-
+    var uploadedImageUrls = [];
+    var uploadedVideoUrls = [];
     try {
       final files = [
         ...selectedImages.map((image) => File(image.path)),
         ...selectedVideos.map((video) => File(video.path)),
       ];
 
-      if (files.isEmpty) {
-        showToast("Không có tệp nào để tải lên.", ToastStatus.warning);
-        return;
+      if (files.isNotEmpty) {
+        uploadProgress.value = 0.0;
+        final uploadResponse = await IssueService.uploadFiles(files, (progress) {
+          if (progress >= 0.991) return;
+          uploadProgress.value = progress * 100;
+
+        });
+        if (uploadResponse.statusCode != 200) {
+          showToast("Không thể tải lên tệp. Vui lòng thử lại.", ToastStatus.error);
+          return;
+        }
+
+        final decodedResponse = jsonDecode(uploadResponse.body) as Map<String, dynamic>;
+        final filesData = decodedResponse['data']['files'] as List?;
+
+        if (filesData == null) {
+          showToast("Phản hồi không hợp lệ từ máy chủ. Vui lòng thử lại.", ToastStatus.error);
+          return;
+        }
+
+        uploadedImageUrls = filesData.where((file) => file['file'].toString().contains(RegExp(r'\.(jpg|png)$')))
+            .map((file) => file['url'] as String).toList();
+        uploadedVideoUrls = filesData.where((file) => file['file'].toString().contains('.mp4'))
+            .map((file) => file['url'] as String).toList();
       }
-      uploadProgress.value = 0.0;
-      final uploadResponse = await IssueService.uploadFiles(files, (progress) {
-        if (progress >= 0.991) return;
-        uploadProgress.value = progress * 100;
 
-      });
-      if (uploadResponse.statusCode != 200) {
-        showToast("Không thể tải lên tệp. Vui lòng thử lại.", ToastStatus.error);
-        return;
-      }
-
-      final decodedResponse = jsonDecode(uploadResponse.body) as Map<String, dynamic>;
-      final filesData = decodedResponse['data']['files'] as List?;
-
-      if (filesData == null) {
-        showToast("Phản hồi không hợp lệ từ máy chủ. Vui lòng thử lại.", ToastStatus.error);
-        return;
-      }
-
-      final uploadedImageUrls = filesData.where((file) => file['file'].toString().contains(RegExp(r'\.(jpg|png)$')))
-          .map((file) => file['url'] as String).toList();
-      final uploadedVideoUrls = filesData.where((file) => file['file'].toString().contains('.mp4'))
-          .map((file) => file['url'] as String).toList();
 
       final data = {
         "floorId": floorId,
         "roomId": roomId,
+        if (equipment != null) "equipmentId": equipment?.id,
         "title": titleCtrl.text,
         "content": contentCtrl.text,
         "files": {

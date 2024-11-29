@@ -89,9 +89,8 @@ class CustomerScreen extends StatelessWidget {
             _buildListTile(
                 trailingAsset: AssetSvg.iconChevronForward,
                 leadingAsset: AssetSvg.iconMailOpen,
-                titleText: 'Báo cáo vấn đề',
+                titleText: 'Danh sách vấn đề',
                 onTap: () {
-                  Get.to(() => CustomerIssueScreen());
                 }),
             const SizedBox(height: 20),
             Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),

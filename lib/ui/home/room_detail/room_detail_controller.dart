@@ -28,20 +28,6 @@ class RoomDetailController extends BaseController {
     }
   }
 
-  String formatServiceUnit(int amount, String serviceType) {
-    String formattedAmount = FormatUtil.formatCurrency(amount);
-    if (serviceType == ConstantString.serviceTypeElectric) {
-      formattedAmount = "$formattedAmount/kWh";
-    } else if (serviceType == ConstantString.serviceTypeWater) {
-      formattedAmount = "$formattedAmount/khối";
-    } else if (serviceType == ConstantString.serviceTypePeople) {
-      formattedAmount = "$formattedAmount/người";
-    } else {
-      formattedAmount = "$formattedAmount/phòng";
-    }
-    return formattedAmount;
-  }
-
   Map<String, dynamic> getRoomStatusIconPath(String status) {
     String path = AssetSvg.iconOccupied;
     String description = "Đã cho thuê";
