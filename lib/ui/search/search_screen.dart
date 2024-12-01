@@ -95,7 +95,7 @@ class SearchScreen extends StatelessWidget {
   }
 
   Widget buildContent() {
-    if (searchController.viewState.value == ViewState.loading && searchController.houseList.isEmpty) {
+    if (searchController.viewState.value == ViewState.loading) {
       return const LoadingWidget();
     }
 
@@ -110,15 +110,9 @@ class SearchScreen extends StatelessWidget {
             slivers: [HomeList(houseList: searchController.houseList)],
           ),
         );
-      } else {
-        return _buildErrorState();
       }
     }
 
-    return _buildErrorState();
-  }
-
-  Widget _buildErrorState() {
     return NetworkErrorWidget(
       viewState: searchController.viewState.value,
       onRefresh: searchController.onRefreshData,

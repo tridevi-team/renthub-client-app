@@ -29,8 +29,9 @@ class AppColors {
   static const Color primary2 = Color(0xFFD9A3F6);
 
   static const Color red = Color(0xFFF04248);
-  static const Color green = Color(0xFF00DF80);
+  static const Color green = Color(0xFF14CC76);
   static const Color green900 = Color(0xFF008000);
   static const yellow = Color(0xFFFFD21E);
+  static const blue = Color(0xFF2E90FA);
 
 }

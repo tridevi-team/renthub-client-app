@@ -20,12 +20,6 @@ class NotificationController extends BaseController {
   RefreshController refreshCtrl = RefreshController();
   ScrollController scrollCtrl = ScrollController();
 
-  @override
-  void onInit() {
-    getAllNotifications();
-    super.onInit();
-  }
-
   Future<void> getNotificationsCount() async {
     try {
       viewState.value = ViewState.loading;
@@ -54,9 +48,9 @@ class NotificationController extends BaseController {
           "direction": "asc"
         }''';
       final response = await NotificationService.getAllNotifications(sort: sort, page: currentPage);
-      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode, );
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      if (decodedResponse["code"] == "NO_NOTIFICATIONS_FOUND") {
+      if (decodedResponse["data"] == {}) {
         viewState.value = ViewState.noData;
         return;
       }

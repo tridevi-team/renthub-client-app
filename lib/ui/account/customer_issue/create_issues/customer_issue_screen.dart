@@ -5,13 +5,12 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/room_model.dart';
-import 'package:rent_house/ui/account/customer_issue/customer_issue_controller.dart';
+import 'package:rent_house/ui/account/customer_issue/create_issues/customer_issue_controller.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class CustomerIssueScreen extends StatelessWidget {
-
   CustomerIssueScreen({super.key, this.equipment});
 
   final CustomerIssueController controller = Get.put(CustomerIssueController());
@@ -25,7 +24,11 @@ class CustomerIssueScreen extends StatelessWidget {
       canPop: false,
       onPopInvoked: (_) {
         if (controller.uploadProgress.value == 100 || controller.uploadProgress.value == 0.0) {
-          Get.back();
+          Future.microtask(() {
+            if (Get.context != null) {
+              Get.back();
+            }
+          });
         }
       },
       child: Scaffold(
@@ -55,16 +58,19 @@ class CustomerIssueScreen extends StatelessWidget {
                       child: TextField(
                         controller: controller.contentCtrl,
                         decoration: InputDecoration(
-                          hintText: "Mô tả",
-                          hintStyle: TextStyle(color: Colors.black, fontSize: 14, fontFamily: ConstantFont.fontLexendDeca, fontWeight: FontWeight.w400),
-                          contentPadding: const EdgeInsets.all(10),
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          alignLabelWithHint: true,
-                          counterText: ""
-                        ),
+                            hintText: "Mô tả",
+                            hintStyle: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: ConstantFont.fontLexendDeca,
+                                fontWeight: FontWeight.w400),
+                            contentPadding: const EdgeInsets.all(10),
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            alignLabelWithHint: true,
+                            counterText: ""),
                         maxLines: 10,
                         style: ConstantFont.regularText,
                       ),
@@ -72,11 +78,13 @@ class CustomerIssueScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text("Hình ảnh", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
                     const SizedBox(height: 10),
-                    _buildMediaGrid(controller.selectedImages, controller.pickImage, controller.removeImage, AssetSvg.iconCamera, controller.selectedImages),
+                    _buildMediaGrid(controller.selectedImages, controller.pickImage,
+                        controller.removeImage, AssetSvg.iconCamera, controller.selectedImages),
                     const SizedBox(height: 20),
                     Text("Videos", style: ConstantFont.mediumText.copyWith(fontSize: 16)),
                     const SizedBox(height: 10),
-                    _buildMediaGrid(controller.videoThumbnails, controller.pickVideo, controller.removeVideo, AssetSvg.iconVideo, controller.selectedVideos),
+                    _buildMediaGrid(controller.videoThumbnails, controller.pickVideo,
+                        controller.removeVideo, AssetSvg.iconVideo, controller.selectedVideos),
                     const SizedBox(height: 20),
                     CustomElevatedButton(label: 'Tạo báo cáo', onTap: controller.createIssue)
                   ],
@@ -84,7 +92,8 @@ class CustomerIssueScreen extends StatelessWidget {
               ),
             ),
             Obx(() {
-              if (controller.uploadProgress.value == 0.0 || controller.uploadProgress.value >= 99.11) return const SizedBox.shrink();
+              if (controller.uploadProgress.value == 0.0 ||
+                  controller.uploadProgress.value >= 99.11) return const SizedBox.shrink();
               return Positioned.fill(
                 child: Container(
                   color: AppColors.black.withOpacity(0.02),
@@ -105,7 +114,8 @@ class CustomerIssueScreen extends StatelessWidget {
                         Text(
                           "${controller.uploadProgress.toStringAsFixed(0)}%",
                           textAlign: TextAlign.center,
-                          style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
+                          style: ConstantFont.mediumText
+                              .copyWith(color: AppColors.white, fontSize: 16),
                         ),
                       ],
                     ),
@@ -164,7 +174,8 @@ class CustomerIssueScreen extends StatelessWidget {
                           onTap: () => onRemoveMedia(index),
                           child: Container(
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), topRight: Radius.circular(4)),
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(8), topRight: Radius.circular(4)),
                               color: AppColors.neutralF0F0F0,
                             ),
                             child: SvgPicture.asset(AssetSvg.iconClose, color: AppColors.red),

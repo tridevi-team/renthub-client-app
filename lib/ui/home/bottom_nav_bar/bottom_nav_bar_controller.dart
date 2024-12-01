@@ -352,6 +352,7 @@ class BottomNavBarController extends FullLifeCycleController {
   void refreshData() async {
     checkIsLogin();
     if (isLogin.value) {
+      notificationController.getAllNotifications();
       await checkAndRegisterNotification();
     } else {
       ///TODO: unsubscribe notifications

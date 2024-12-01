@@ -6,6 +6,7 @@ import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/ui/home/home_widget/room_widget.dart';
 import 'package:rent_house/ui/home/house_detail/house_detail_controller.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_screen.dart';
+import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/divider/divider_custom.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
@@ -47,8 +48,12 @@ class HouseDetailScreen extends StatelessWidget {
                               child: RoomWidget(
                                 room: floor.rooms![roomIndex],
                                 onTap: () {
-                                  final address = houseDetailController.currentHouse.address.toString();
-                                  Get.to(() => RoomDetailScreen(selectedRoom: floor.rooms![roomIndex], address: address, contactModel: contact));
+                                  final address =
+                                      houseDetailController.currentHouse.address.toString();
+                                  Get.to(() => RoomDetailScreen(
+                                      selectedRoom: floor.rooms![roomIndex],
+                                      address: address,
+                                      contactModel: contact));
                                 },
                               ),
                             );

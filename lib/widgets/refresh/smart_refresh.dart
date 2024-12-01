@@ -68,7 +68,7 @@ class SmartRefreshWidget extends StatelessWidget {
               footerWidget = const SizedBox.shrink();
               break;
             case LoadStatus.loading:
-              footerWidget = buildRefreshingIndicator();
+              footerWidget = loadCompleted();
               break;
             case LoadStatus.canLoading:
               footerWidget = buildReleaseToLoadMore();
@@ -78,12 +78,8 @@ class SmartRefreshWidget extends StatelessWidget {
               break;
           }
 
-          if (showLoadCompleted) {
-            footerWidget = loadCompleted();
-          }
-
           return Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.only(top: 10),
             child: footerWidget,
           );
         },

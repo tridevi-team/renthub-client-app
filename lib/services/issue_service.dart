@@ -16,12 +16,13 @@ class IssueService {
 
   static Future<http.Response> fetchAllIssues({
     required String sort,
-    required String filters,
+    String? filters,
     required int page,
     required String houseId,
     int pageSize = 10,
   }) {
-    String endpoint = '/issues/$houseId/search';
+    String endpoint = '/issues/$houseId/search?$filters$sort&page=$page&pageSize=$pageSize';
+
     return BaseService.requestApi(
       endpoint: endpoint,
       httpMethod: HttpMethod.get,

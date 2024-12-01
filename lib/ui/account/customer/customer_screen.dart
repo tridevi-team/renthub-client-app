@@ -10,6 +10,7 @@ import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/contract/contract_screen.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
+import 'package:rent_house/ui/account/customer_issue/issue_tracking_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
@@ -88,8 +89,9 @@ class CustomerScreen extends StatelessWidget {
             _buildListTile(
                 trailingAsset: AssetSvg.iconChevronForward,
                 leadingAsset: AssetSvg.iconMailOpen,
-                titleText: 'Danh sách vấn đề',
+                titleText: 'Quản lý báo cáo',
                 onTap: () {
+                  Get.to(() => IssueTrackingScreen());
                 }),
             const SizedBox(height: 20),
             Text('Quản lý tài khoản', style: ConstantFont.boldText.copyWith(fontSize: 18)),

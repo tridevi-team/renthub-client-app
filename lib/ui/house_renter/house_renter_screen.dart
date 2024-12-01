@@ -9,10 +9,11 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/user_model.dart';
-import 'package:rent_house/ui/account/customer_issue/customer_issue_screen.dart';
+import 'package:rent_house/ui/account/customer_issue/create_issues/customer_issue_screen.dart';
 import 'package:rent_house/ui/house_renter/house_renter_controller.dart';
 import 'package:rent_house/ui/house_renter/widgets/rss_item.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
@@ -33,16 +34,11 @@ class HouseRenterScreen extends StatelessWidget {
         switch (controller.viewState.value) {
           case ViewState.loading:
             return const LoadingWidget();
-          case ViewState.noInternetConnection:
-            return NetworkErrorWidget(
-              viewState: controller.viewState.value,
-              onRefresh: controller.onRefreshData,
-            );
           case ViewState.complete:
           case ViewState.init:
             return _buildContent();
           default:
-            return const SizedBox();
+            return NetworkErrorWidget(viewState: controller.viewState.value);
         }
       }),
     );
@@ -61,7 +57,9 @@ class HouseRenterScreen extends StatelessWidget {
           padding: const EdgeInsets.all(0),
           children: [
             CommonNetworkImage(
-              imageUrl: controller.room.images?.isNotEmpty == true ? controller.room.images![0].imageUrl : '',
+              imageUrl: controller.room.images?.isNotEmpty == true
+                  ? controller.room.images![0].imageUrl
+                  : '',
               height: Get.height / 3,
               width: Get.width,
               borderRadius: 0,
@@ -355,15 +353,23 @@ class HouseRenterScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              CustomElevatedButton(label: 'Vấn đề chung', onTap: () {
-                Get.close(0);
-                Get.to(() => CustomerIssueScreen());
-              }),
+              CustomElevatedButton(
+                  label: 'Vấn đề chung',
+                  onTap: () {
+                    Get.close(0);
+                    Get.to(() => CustomerIssueScreen());
+                  }),
               const SizedBox(height: 8),
-              CustomElevatedButton(label: 'Vấn đề thiết bị', onTap: () {
-                Get.close(0);
-                Get.to(() => CustomerIssueScreen(equipment: equipment),);
-              }, isReverse: true,),
+              CustomElevatedButton(
+                label: 'Vấn đề thiết bị',
+                onTap: () {
+                  Get.close(0);
+                  Get.to(
+                    () => CustomerIssueScreen(equipment: equipment),
+                  );
+                },
+                isReverse: true,
+              ),
             ],
           ),
         ),

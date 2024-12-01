@@ -32,7 +32,10 @@ class HomeScreen extends StatelessWidget {
         }
 
         // Handling error states
-        return _buildErrorState();
+        return NetworkErrorWidget(
+          viewState: homeController.viewState.value,
+          onRefresh: homeController.onRefreshData,
+        );
       }),
     );
   }
@@ -68,13 +71,6 @@ class HomeScreen extends StatelessWidget {
           HomeList(houseList: homeController.houseList),
         ],
       ),
-    );
-  }
-
-  Widget _buildErrorState() {
-    return NetworkErrorWidget(
-      viewState: homeController.viewState.value,
-      onRefresh: homeController.onRefreshData,
     );
   }
 }

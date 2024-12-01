@@ -6,6 +6,7 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/notification/widgets/notification_item_widget.dart';
+import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -34,7 +35,8 @@ class NotificationScreen extends StatelessWidget {
             );
           } else if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.init) {
+          } else if (controller.viewState.value == ViewState.complete ||
+              controller.viewState.value == ViewState.init) {
             return SmartRefreshWidget(
               controller: controller.refreshCtrl,
               scrollController: controller.scrollCtrl,
