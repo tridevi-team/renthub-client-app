@@ -64,7 +64,7 @@ class HomeController extends BaseController {
         currentPage = 1;
       }
 
-      String sort = '''{
+      String sort = '''sort[]={
        "field": "houses.name",
           "direction": "asc"
         }''';

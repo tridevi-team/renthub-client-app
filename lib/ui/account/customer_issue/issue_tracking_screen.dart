@@ -158,7 +158,7 @@ class IssueTrackingScreen extends StatelessWidget {
                       .copyWith(color: AppColors.neutralCCCAC6, fontSize: 12),
                   children: [
                     TextSpan(
-                      text: FormatUtil.formatToDayMonthYear(issue.createdAt.toString()),
+                      text: FormatUtil.formatToDayMonthYearTime(issue.createdAt.toString()),
                       style: ConstantFont.mediumText.copyWith(
                         fontSize: 12,
                       ),

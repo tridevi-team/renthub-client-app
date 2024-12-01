@@ -39,7 +39,7 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
   }
 
   void changeTab(int tabIndex) {
-    if (tabIndex != prevIssueTabIndex && viewState.value != ViewState.loading) {
+    if (tabIndex != currentIssueTabIndex && viewState.value != ViewState.loading) {
       prevIssueTabIndex = currentIssueTabIndex;
       currentIssueTabIndex = tabIndex;
       issueTabController.animateTo(tabIndex, duration: const Duration(milliseconds: 0));
@@ -58,8 +58,8 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
     }
 
     String currentStatus = statusList[currentIssueTabIndex];
-    String sort = '''{
-     "field": "issues.createAt",
+    String sort = '''sort[]={
+     "field": "issues.createdAt",
      "direction": "desc"
     }''';
 
