@@ -8,7 +8,9 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/issue_model.dart';
+import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_screen.dart';
 import 'package:rent_house/ui/account/customer_issue/issue_tracking_controller.dart';
+import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
@@ -123,7 +125,7 @@ class IssueTrackingScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  // Navigate to issue detail screen
+                  Get.to(() => DetailIssueScreen(issueModel: issue));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -168,7 +170,7 @@ class IssueTrackingScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: _getIssueStatusColor(controller.currentIssueTabIndex),
+                  color: AppUtil.getIssueStatusColor('${issue.status}'),
                 ),
                 child: Text(
                   controller.getStatus(),

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
@@ -174,5 +176,20 @@ class AppUtil {
       formattedAmount = "$formattedAmount/phòng";
     }
     return formattedAmount;
+  }
+
+  static Color getIssueStatusColor(String status) {
+    switch (status) {
+      case "OPEN":
+        return AppColors.blue;
+      case "IN_PROGRESS":
+        return AppColors.yellow;
+      case "DONE":
+        return AppColors.green;
+      case "CLOSED":
+        return AppColors.red;
+      default:
+        return AppColors.blue;
+    }
   }
 }

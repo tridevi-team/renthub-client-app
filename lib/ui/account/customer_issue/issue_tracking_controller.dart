@@ -39,10 +39,10 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
   }
 
   void changeTab(int tabIndex) {
-    issueTabController.animateTo(tabIndex, duration: const Duration(milliseconds: 0));
-    if (tabIndex != prevIssueTabIndex) {
+    if (tabIndex != prevIssueTabIndex && viewState.value != ViewState.loading) {
       prevIssueTabIndex = currentIssueTabIndex;
       currentIssueTabIndex = tabIndex;
+      issueTabController.animateTo(tabIndex, duration: const Duration(milliseconds: 0));
       getHistoryOfIssueTab(isRefresh: true);
     }
   }
