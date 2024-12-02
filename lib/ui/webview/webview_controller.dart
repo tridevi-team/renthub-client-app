@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -8,7 +10,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewInAppController extends BaseController {
   WebViewController? webViewController;
-  String url = "";
+  String? url;
+  String? htmlContent;
   RxBool isLoading = true.obs;
   RxDouble progress = 0.0.obs;
 
@@ -51,8 +54,19 @@ class WebViewInAppController extends BaseController {
     webViewController = controller;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      webViewController?.loadRequest(Uri.parse(url));
+      if (htmlContent != null) {
+        webViewController?.loadHtmlString('''
+        <!DOCTYPE html>
+        <html lang="vi">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <body>
+            $htmlContent
+          </body>
+        </html>''');
+      } else {
+        webViewController?.loadRequest(Uri.parse(url ?? ''));
+      }
     });
   }
-
 }

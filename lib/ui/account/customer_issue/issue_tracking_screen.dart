@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
@@ -182,20 +180,5 @@ class IssueTrackingScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  _getIssueStatusColor(int index) {
-    switch (index) {
-      case 0:
-        return AppColors.blue;
-      case 1:
-        return AppColors.yellow;
-      case 2:
-        return AppColors.green;
-      case 3:
-        return AppColors.red;
-      default:
-        return AppColors.blue;
-    }
   }
 }

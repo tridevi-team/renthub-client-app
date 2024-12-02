@@ -30,16 +30,18 @@ class NetworkErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String image = '';
     String content = '';
-
-    if (viewState == ViewState.notFound) {
+    if (viewState == ViewState.noInternetConnection) {
+      image = statusWidgets[0]['image']!;
+      content = statusWidgets[0]['content']!;
+    } else if (viewState == ViewState.notFound) {
       image = statusWidgets[1]['image']!;
       content = statusWidgets[1]['content']!;
     } else if (viewState == ViewState.serverError) {
       image = statusWidgets[2]['image']!;
       content = statusWidgets[2]['content']!;
     } else {
-      image = statusWidgets[0]['image']!;
-      content = statusWidgets[0]['content']!;
+      image = statusWidgets[1]['image']!;
+      content = statusWidgets[1]['content']!;
     }
 
     return Padding(

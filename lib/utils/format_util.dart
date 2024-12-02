@@ -32,8 +32,12 @@ class FormatUtil {
 
   static String formatToDayMonthYear(String? isoTime) {
     if (isoTime?.isEmpty ?? true) return "";
-    DateTime dateTime = DateTime.parse(isoTime!).toLocal();
-    return DateFormat('dd/MM/yyyy').format(dateTime);
+    try {
+      DateTime dateTime = DateTime.parse(isoTime!).toLocal();
+      return DateFormat('dd/MM/yyyy').format(dateTime);
+    } catch (e) {
+      return "";
+    }
   }
 
   static String formatDateOfBirth(String? dateOfBirth) {

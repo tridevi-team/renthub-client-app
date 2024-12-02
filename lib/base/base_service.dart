@@ -172,6 +172,7 @@ class BaseService {
 
   static Map<String, String> _buildHeaders(bool auth, Map<String, String>? additionalHeaders) {
     final headers = {
+      "User-Agent": "Mobile/RentHouse",
       "Content-Type": "application/json",
     };
 

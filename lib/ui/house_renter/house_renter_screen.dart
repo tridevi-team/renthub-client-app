@@ -13,7 +13,6 @@ import 'package:rent_house/ui/account/customer_issue/create_issues/customer_issu
 import 'package:rent_house/ui/house_renter/house_renter_controller.dart';
 import 'package:rent_house/ui/house_renter/widgets/rss_item.dart';
 import 'package:rent_house/utils/app_util.dart';
-import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';

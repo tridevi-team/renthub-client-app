@@ -33,7 +33,7 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
   void onInit() {
     super.onInit();
     _houseId = UserSingleton.instance.getUser().houseId ?? "";
-    getHistoryOfIssueTab();
+    getHistoryOfIssueTab(isRefresh: true);
     issueTabController = TabController(length: issueTabs.length, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
