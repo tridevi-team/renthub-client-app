@@ -151,11 +151,11 @@ class Landlord {
     gender = json['gender'];
     address = json['address'] != null ? Address.fromJson(json['address']) : null;
     birthday = json['birthday'];
-    fullName = json['fullName'];
-    citizenId = json['citizenId'];
-    phoneNumber = json['phoneNumber'];
-    dateOfIssue = json['dateOfIssue'];
-    placeOfIssue = json['placeOfIssue'];
+    fullName = json['fullName'] ?? json['full_name'];
+    citizenId = json['citizenId'] ?? json['citizen_id'];
+    phoneNumber = json['phoneNumber'] ?? json['phone_number'];
+    dateOfIssue = json['dateOfIssue'] ?? json['date_of_issue'];
+    placeOfIssue = json['placeOfIssue'] ?? json['place_of_issue'];
   }
 
   Map<String, dynamic> toJson() {
