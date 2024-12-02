@@ -22,13 +22,13 @@ class NotificationController extends BaseController {
 
   Future<void> getNotificationsCount() async {
     try {
-      viewState.value = ViewState.loading;
       final response = await NotificationService.fetchNotificationCount();
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         notificationsCount.value = decodedResponse["data"]['unread'];
         viewState.value = ViewState.complete;
+        refreshCtrl.loadComplete();
       }
     } catch (e) {
       viewState.value = ViewState.notFound;
@@ -37,12 +37,13 @@ class NotificationController extends BaseController {
   }
 
   Future<void> getAllNotifications({bool isLoadMore = false}) async {
+    viewState.value = ViewState.init;
     try {
       if (isLoadMore == false) {
+        viewState.value = ViewState.loading;
         currentPage = 1;
         notifications.clear();
       }
-      viewState.value = ViewState.loading;
       String sort = '''{
        "field": "notifications.createdAt",
           "direction": "asc"
@@ -50,8 +51,12 @@ class NotificationController extends BaseController {
       final response = await NotificationService.getAllNotifications(sort: sort, page: currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode, );
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      if (decodedResponse["data"] == {}) {
-        viewState.value = ViewState.noData;
+      if ((decodedResponse["data"]["results"] as List).isEmpty) {
+        if (isLoadMore) {
+          viewState.value = ViewState.noData;
+        }
+        viewState.value = ViewState.complete;
+        refreshCtrl.loadNoData();
         return;
       }
       if (response.statusCode < 300) {
@@ -59,7 +64,7 @@ class NotificationController extends BaseController {
         totalPage = notificationModel.page ?? 1;
         notifications.addAll(notificationModel.results ?? []);
         await getNotificationsCount();
-        viewState.value = ViewState.complete;
+
       }
     } catch (e) {
       viewState.value = ViewState.notFound;
@@ -97,10 +102,11 @@ class NotificationController extends BaseController {
         "status": "read"
       };
       final response = await NotificationService.removeNotification(params);
-      if (response.statusCode != 200) {
-        return;
+      if (response.statusCode == 200) {
+        final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        refreshCtrl.loadComplete();
       }
-      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
     } catch (e) {
       AppUtil.printDebugMode(type: "MarkAsReadNotification", message: '$e');
     }
@@ -112,10 +118,8 @@ class NotificationController extends BaseController {
   }
 
   void loadMoreData() {
-    if (currentPage < totalPage) {
       currentPage++;
       getAllNotifications(isLoadMore: true);
-    }
   }
 
   void resetNotificationCount() => notificationsCount.value = 0;

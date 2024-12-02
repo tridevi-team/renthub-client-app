@@ -26,42 +26,33 @@ class NotificationScreen extends StatelessWidget {
       backgroundColor: AppColors.white,
       body: Obx(
         () {
-          if (controller.viewState.value == ViewState.noData) {
-            return Center(
-              child: Text(
-                'Bạn chưa có thông báo nào',
-                style: ConstantFont.mediumText.copyWith(fontSize: 16),
-              ),
-            );
-          } else if (controller.viewState.value == ViewState.loading) {
+          if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.complete ||
-              controller.viewState.value == ViewState.init) {
+          } else if (controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.noData) {
             return SmartRefreshWidget(
               controller: controller.refreshCtrl,
               scrollController: controller.scrollCtrl,
               onRefresh: controller.refreshData,
               onLoadingMore: controller.loadMoreData,
-              child: controller.notifications.isEmpty
-                  ? const SizedBox.shrink()
-                  : CustomScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            addAutomaticKeepAlives: false,
-                            (BuildContext context, int index) {
-                              NotificationItem notificationItem = controller.notifications[index];
-                              return NotificationItemWidget(
-                                  notification: notificationItem,
-                                  removeNotification: () {
-                                    controller.removeNotification(index);
-                                  });
-                            },
-                            childCount: controller.notifications.length,
-                          ),
-                        )
-                      ],
+              child: controller.notifications.isEmpty && controller.viewState.value == ViewState.noData
+                  ? Center(
+                      child: Text(
+                        'Bạn chưa có thông báo nào',
+                        style: ConstantFont.mediumText.copyWith(fontSize: 16),
+                      ),
+                    )
+                  : ListView.builder(
+                      addAutomaticKeepAlives: false,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: controller.notifications.length,
+                      itemBuilder: (_, index) {
+                        NotificationItem notificationItem = controller.notifications[index];
+                        return NotificationItemWidget(
+                            notification: notificationItem,
+                            removeNotification: () {
+                              controller.removeNotification(index);
+                            });
+                      },
                     ),
             );
           } else {

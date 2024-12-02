@@ -141,7 +141,6 @@ class BottomNavBarController extends FullLifeCycleController {
   Future<void> _registerFirebaseNotification() async {
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
-      // LocalNotificationUtil.handleJsonMessage(json.encode(initialMessage.data));
     }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -155,7 +154,9 @@ class BottomNavBarController extends FullLifeCycleController {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Handle opened app from notification
+      if (Get.isRegistered<NotificationController>()) {
+        Get.find<NotificationController>().getAllNotifications();
+      }
     });
   }
 
