@@ -11,6 +11,7 @@ import 'package:rent_house/ui/account/contract/contract_screen.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/ui/account/customer_issue/issue_tracking_screen.dart';
+import 'package:rent_house/ui/account/payment_history/payment_history_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
@@ -69,9 +70,12 @@ class CustomerScreen extends StatelessWidget {
               }
             ),
             _buildListTile(
-              leadingAsset: AssetSvg.iconPerson,
-              titleText: 'Phương thức thanh toán',
+              leadingAsset: AssetSvg.iconCard,
+              titleText: 'Lịch sử thanh toán',
               trailingAsset: AssetSvg.iconChevronForward,
+              onTap: () {
+                Get.to(() => PaymentHistoryScreen());
+              }
             ),
             _buildListTile(
               leadingAsset: AssetSvg.iconLock,

@@ -55,6 +55,7 @@ class AssetSvg {
   static const String iconBulb = "assets/icons/ic_idea.svg";
   static const String iconWaterHeater = "assets/icons/ic_water_heater.svg";
   static const String iconPlay = "assets/icons/ic_play.svg";
+  static const String iconCard = "assets/icons/ic_card.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";
