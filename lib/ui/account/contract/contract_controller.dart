@@ -9,8 +9,10 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/contract_model.dart';
 import 'package:rent_house/services/contract_service.dart';
+import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
+import 'package:rent_house/utils/toast_until.dart';
 
 class CustomerContractController extends BaseController with GetTickerProviderStateMixin {
   final List<Widget> contractTabs = <Widget>[
@@ -60,9 +62,7 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
       if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         if (decodedResponse["data"]["results"] != null && decodedResponse["data"]["results"] is List) {
-          List<ContractModel> filteredContracts = (decodedResponse["data"]["results"] as List)
-              .map((contract) => ContractModel.fromJson(contract))
-              .toList();
+          List<ContractModel> filteredContracts = (decodedResponse["data"]["results"] as List).map((contract) => ContractModel.fromJson(contract)).toList();
 
           switch (currentContractTabIndex) {
             case 0:
@@ -79,23 +79,26 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
           }
 
           contracts = filteredContracts;
-
-          viewState.value = ViewState.complete;
-          return;
+          if (contracts.isEmpty) {
+            viewState.value = ViewState.noData;
+            return;
+          } else {
+            viewState.value = ViewState.complete;
+            return;
+          }
         }
 
         ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
     } catch (e) {
       viewState.value = ViewState.notFound;
-      log("Error: $e");
+      AppUtil.printDebugMode(type: 'Contract Error', message: "$e");
     }
   }
 
   List<ContractModel> getContractsByStatus(List<ContractModel> contractsList, String status) {
-    return contractsList.where((contract) => contract.status == status).toList();
+    return contractsList.where((contract) => contract.approvalStatus == status).toList();
   }
-
 
   String replaceKeyHtml(String html, Map<String, String> values) {
     values.forEach((key, value) {
@@ -108,15 +111,13 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
     Map<String, String> placeholders = {
       "CURRENT_DATE": contract.approvalDate != null ? FormatUtil.formatToDayMonthYear(contract.approvalDate.toString()) : "Chưa ký",
       "HOST_NAME": "${contract.landlord?.fullName}",
-      "OWNER_ADDRESS": '${contract.landlord?.address?.street}, ${contract.landlord?.address?.ward}, '
-          '${contract.landlord?.address?.district}, ${contract.landlord?.address?.city}',
+      "OWNER_ADDRESS": '${contract.landlord?.address?.toString()}',
       "OWNER_IDENTITY_NUMBER": "${contract.landlord?.citizenId}",
       "OWNER_DATE_OF_ISSUANCE": "${contract.landlord?.dateOfIssue}",
       "OWNER_PLACE_OF_ISSUE": "${contract.landlord?.placeOfIssue}",
       "OWNER_PHONE": "${contract.landlord?.phoneNumber}",
       "RENTER_NAME": "${contract.renter?.fullName}",
-      "RENTER_ADDRESS": '${contract.renter?.address?.street}, ${contract.renter?.address?.ward}, '
-          '${contract.renter?.address?.district}, ${contract.renter?.address?.city}',
+      "RENTER_ADDRESS": '${contract.renter?.address?.toString()}',
       "RENTER_IDENTITY_NUMBER": "${contract.renter?.citizenId}",
       "RENTER_DATE_OF_ISSUANCE": "${contract.renter?.dateOfIssue}",
       "RENTER_PLACE_OF_ISSUE": "${contract.renter?.placeOfIssue}",
@@ -132,12 +133,7 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
       "DEPOSIT_AMOUNT": FormatUtil.formatCurrency(contract.depositAmount ?? 0),
       "RENTAL_AMOUNT_IN_WORDS": numberToVietnameseWords(contract.depositAmount ?? 0),
       "DEPOSIT_AMOUNT_IN_WORDS": numberToVietnameseWords(contract.depositAmount ?? 0),
-      "USE_SERVICES": contract.services != null
-          ? '<ul>${contract.services!
-              .map((service) => '<li><strong>${service.name}:</strong> ${FormatUtil.formatCurrency(service.unitPrice ?? 0)}</li>')
-              .join('')}</ul>'
-          : '',
-
+      "USE_SERVICES": contract.services != null ? '<ul>${contract.services!.map((service) => '<li><strong>${service.name}:</strong> ${FormatUtil.formatCurrency(service.unitPrice ?? 0)}</li>').join('')}</ul>' : '',
       "ROOM_VEHICLE_LIST": contract.equipment != null ? contract.equipment!.map((e) => e.name).join(', ') : '',
     };
 
@@ -201,5 +197,22 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
     if (contractStatus == 'APPROVED') return "Đã ký";
     if (contractStatus == 'REJECTED') return "Đã từ chối";
     return "Chờ phê duyệt";
+  }
+
+  Future<void> updateStatusContract(String contractId, String status) async {
+    try {
+      final response = await ContractService.updateContractStatus(contractId: contractId, body: {"status": status});
+      print("updated status: $response");
+      if (response.statusCode == 200) {
+        ToastUntil.toastNotification(description: "Cập nhật hợp đồng thành công", status: ToastStatus.success);
+        Get.back();
+        return;
+      }
+      ToastUntil.toastNotification(description: "Cập nhật hợp đồng thất bại. Vui lòng thử lại.", status: ToastStatus.error);
+      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+    } catch (e) {
+      viewState.value = ViewState.notFound;
+      AppUtil.printDebugMode(type: 'Contract Update Error', message: "$e");
+    }
   }
 }

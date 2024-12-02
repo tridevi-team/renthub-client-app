@@ -128,7 +128,7 @@ class ServiceModel {
   ServiceModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    unitPrice = json['unitPrice'];
+    unitPrice = json['unitPrice'] ?? json['unit_price'];
     description = json['description'];
     type = json['type'];
     quantity = json['quantity'];

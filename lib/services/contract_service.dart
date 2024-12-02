@@ -12,4 +12,9 @@ class ContractService {
     String endpoint = '/contracts/$contractId/contract-details';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
+
+  static Future<http.Response> updateContractStatus({required String contractId, required Map<String, dynamic> body}) async {
+    String endpoint = '/contracts/$contractId/update-contract-status';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.patch, auth: true, params: body);
+  }
 }

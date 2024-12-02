@@ -10,6 +10,7 @@ import 'package:rent_house/models/contract_model.dart';
 import 'package:rent_house/ui/account/contract/contract_controller.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -108,7 +109,11 @@ class CustomerContractScreen extends StatelessWidget {
         Get.to(
           () => WebViewScreen(
             title: "Thông tin hợp đồng",
-            htmlContent: controller.generateContractHtml(contract)
+            htmlContent: controller.generateContractHtml(contract),
+            statusContract: contract.approvalStatus,
+            onTap: (status) {
+              controller.updateStatusContract(contract.id ?? "", status);
+            },
           ),
         );
       },
@@ -132,10 +137,10 @@ class CustomerContractScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: _getStatusColor('${contract.status}'),
+                    color: _getStatusColor('${contract.approvalStatus}'),
                   ),
                   child: Text(
-                    controller.getStatusName('${contract.status}'),
+                    controller.getStatusName('${contract.approvalStatus}'),
                     style: ConstantFont.regularText.copyWith(color: AppColors.white, fontSize: 10),
                   ),
                 )
