@@ -1,8 +1,10 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/enums/enums.dart';
@@ -10,6 +12,7 @@ import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';
+import 'package:rent_house/ui/home/home_list/home_recent_view.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 
 class HomeController extends BaseController {
@@ -28,6 +31,7 @@ class HomeController extends BaseController {
   ];
 
   List<House> houseList = [];
+  RxList<House> recentHouse = <House>[].obs;
   int currentPage = 1;
 
 
@@ -106,5 +110,17 @@ class HomeController extends BaseController {
   void onRefreshData() async {
     await fetchHouseList();
     refreshController.requestRefresh();
+  }
+
+  void addToRecentHouse(House item) {
+    for (var house in recentHouse) {
+      if (house.id == item.id) {
+        return;
+      }
+    }
+    if (recentHouse.length == 10) {
+      recentHouse.removeAt(recentHouse.length - 1);
+    }
+    recentHouse.insert(0, item);
   }
 }

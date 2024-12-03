@@ -5,6 +5,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/ui/home/home_app_bar.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
+import 'package:rent_house/ui/home/home_list/home_recent_view.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -49,28 +50,38 @@ class HomeScreen extends StatelessWidget {
       child: homeController.widgets.isEmpty
           ? const Center(child: SizedBox.shrink())
           : CustomScrollView(
-        physics: const ClampingScrollPhysics(),
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [...homeController.widgets],
-              addAutomaticKeepAlives: false,
-              addRepaintBoundaries: false,
-              addSemanticIndexes: false,
+              physics: const ClampingScrollPhysics(),
+              slivers: [
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      ...homeController.widgets,
+                      if (homeController.recentHouse.isNotEmpty) ...[
+                        HomeRecentView(
+                          houseList: homeController.recentHouse,
+                        ),
+                      ],
+                    ],
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: false,
+                    addSemanticIndexes: false,
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  sliver: SliverToBoxAdapter(
+                    child: Text(
+                      'Danh sách nhà',
+                      style: ConstantFont.boldText.copyWith(fontSize: 16),
+                    ),
+                  ),
+                ),
+                HomeList(
+                  houseList: homeController.houseList,
+                  addToRecentHouse: homeController.addToRecentHouse,
+                ),
+              ],
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                'Danh sách nhà',
-                style: ConstantFont.boldText.copyWith(fontSize: 16),
-              ),
-            ),
-          ),
-          HomeList(houseList: homeController.houseList),
-        ],
-      ),
     );
   }
 }

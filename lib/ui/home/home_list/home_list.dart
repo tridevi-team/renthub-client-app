@@ -6,9 +6,10 @@ import 'package:rent_house/ui/home/house_detail/house_detail_screen.dart';
 import 'package:rent_house/widgets/divider/divider_custom.dart';
 
 class HomeList extends StatelessWidget {
-  const HomeList({super.key, this.houseList});
+  const HomeList({super.key, this.houseList, this.addToRecentHouse});
 
   final List<House>? houseList;
+  final void Function(House house)? addToRecentHouse;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class HomeList extends StatelessWidget {
                   return DividerCustom(
                     child: HomeWidget(
                         onTap: () {
+                          addToRecentHouse?.call(houseList![index]);
                           Get.to(() => HouseDetailScreen(),
                               arguments: {'houseId': houseList![index].id});
                         },
