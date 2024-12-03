@@ -6,7 +6,8 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/bill_model.dart';
-import 'package:rent_house/ui/account/payment_history/payment_history_controller.dart';
+import 'package:rent_house/ui/account/payment/checkout/payment_screen.dart';
+import 'package:rent_house/ui/account/payment/payment_history_controller.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
@@ -123,6 +124,7 @@ class PaymentHistoryScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
+                  Get.to(() => PaymentScreen(), arguments: {"billId": bill.id});
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -164,7 +166,24 @@ class PaymentHistoryScreen extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 8),
+          Text.rich(
+            TextSpan(
+              text: 'Thanh toán: ',
+              style: ConstantFont.mediumText
+                  .copyWith(color: AppColors.neutralCCCAC6, fontSize: 12),
+              children: [
+                TextSpan(
+                  text: FormatUtil.formatCurrency(bill.amount ?? 0),
+                  style: ConstantFont.mediumText.copyWith(
+                      fontSize: 12,
+                      color: AppColors.red
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

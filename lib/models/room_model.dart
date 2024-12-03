@@ -115,6 +115,10 @@ class ServiceModel {
   String? description;
   String? type;
   int? quantity;
+  int? oldValue;
+  int? newValue;
+  int? amount;
+  int? totalPrice;
 
   ServiceModel({
     this.id,
@@ -123,6 +127,10 @@ class ServiceModel {
     this.description,
     this.type,
     this.quantity,
+    this.oldValue,
+    this.newValue,
+    this.amount,
+    this.totalPrice,
   });
 
   ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -132,6 +140,10 @@ class ServiceModel {
     description = json['description'];
     type = json['type'];
     quantity = json['quantity'];
+    oldValue = json['oldValue'];
+    newValue = json['newValue'];
+    amount = json['amount'];
+    totalPrice = json['totalPrice'];
   }
 
   Map<String, dynamic> toJson() {
@@ -142,6 +154,10 @@ class ServiceModel {
       'description': description,
       'type': type,
       'quantity': quantity,
+      'oldValue': oldValue,
+      'newValue': newValue,
+      'amount': amount,
+      'totalPrice': totalPrice,
     };
   }
 }

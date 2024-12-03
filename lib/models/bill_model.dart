@@ -1,3 +1,5 @@
+import 'package:rent_house/models/room_model.dart';
+
 class BillModel {
   String? id;
   String? roomId;
@@ -6,27 +8,31 @@ class BillModel {
   int? amount;
   String? startDate;
   String? endDate;
+  String? paymentDate;
   String? status;
   String? description;
   String? accountName;
   String? accountNumber;
   String? bankName;
   String? createdAt;
+  List<ServiceModel>? services;
 
   BillModel({
-    required this.id,
-    required this.roomId,
-    required this.roomName,
-    required this.title,
-    required this.amount,
-    required this.startDate,
-    required this.endDate,
-    required this.status,
-    required this.description,
-    required this.accountName,
-    required this.accountNumber,
-    required this.bankName,
-    required this.createdAt,
+    this.id,
+    this.roomId,
+    this.roomName,
+    this.title,
+    this.amount,
+    this.startDate,
+    this.endDate,
+    this.paymentDate,
+    this.status,
+    this.description,
+    this.accountName,
+    this.accountNumber,
+    this.bankName,
+    this.createdAt,
+    this.services,
   });
 
   BillModel.fromJson(Map<String, dynamic> json) {
@@ -37,12 +43,14 @@ class BillModel {
     amount = json['amount'] ?? 0;
     startDate = json['startDate'] ?? '';
     endDate = json['endDate'] ?? '';
+    paymentDate = json['paymentDate'] ?? '';
     status = json['status'] ?? '';
     description = json['description'] ?? '';
     accountName = json['accountName'] ?? '';
     accountNumber = json['accountNumber'] ?? '';
     bankName = json['bankName'] ?? '';
     createdAt = json['createdAt'] ?? '';
+    services = (json['services'] as List<dynamic>?)?.map((service) => ServiceModel.fromJson(service as Map<String, dynamic>)).toList();
   }
 
   Map<String, dynamic> toJson() {
