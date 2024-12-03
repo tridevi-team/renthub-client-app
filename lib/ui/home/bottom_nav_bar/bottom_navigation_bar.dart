@@ -44,7 +44,7 @@ class BottomNavigationBarView extends StatelessWidget {
               },
               children: [
                 bottomNavController.isLogin.value ? HouseRenterScreen() : HomeScreen(),
-                const StatisticScreen(),
+                StatisticScreen(),
                 NotificationScreen(),
                 CustomerScreen(),
               ],
