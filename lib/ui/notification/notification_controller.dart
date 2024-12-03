@@ -8,6 +8,8 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
+import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_screen.dart';
+import 'package:rent_house/ui/account/payment/checkout/payment_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/utils/toast_until.dart';
@@ -86,6 +88,7 @@ class NotificationController extends BaseController {
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       bool isSuccess = decodedResponse["success"];
       if (isSuccess) {
+        notifications.removeAt(index);
         ToastUntil.toastNotification(description: 'Xóa thông báo thành công', status: ToastStatus.success);
       } else {
         ToastUntil.toastNotification(description: 'Có lỗi xảy ra. Xóa thông báo thất bại.', status: ToastStatus.error);
@@ -96,21 +99,41 @@ class NotificationController extends BaseController {
   }
 
   Future<void> markAsReadNotification(int index) async {
+    if (notifications[index].isRead) return;
     try {
       final params = {
         "ids": [notifications[index].id.toString()],
         "status": "read"
       };
-      final response = await NotificationService.removeNotification(params);
+      final response = await NotificationService.markNotificationAsRead(params);
       if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         refreshCtrl.loadComplete();
+        if (decodedResponse['success']) {
+          notifications[index].status = "read";
+        }
       }
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
     } catch (e) {
       AppUtil.printDebugMode(type: "MarkAsReadNotification", message: '$e');
     }
   }
+
+  void viewNotification(int index) {
+    final notification = notifications[index];
+    final data = notification.data;
+
+
+    if (isValid(data?['billId'])) {
+      Get.to(() => PaymentScreen(), arguments: {"billId": data?['billId']});
+      return;
+    } else if (isValid(data?['issueId'])) {
+      Get.to(() => DetailIssueScreen(), arguments: {"issueId": data?['issueId']});
+      return;
+    }
+  }
+
+  bool isValid(String? value) => value != null && value.isNotEmpty;
 
   void refreshData() async {
     await getAllNotifications();

@@ -213,7 +213,7 @@ class PaymentScreen extends StatelessWidget {
               child: CustomElevatedButton(
                 label: "Thanh toán",
                 isReverse: true,
-                onTap: () {},
+                onTap: controller.checkout,
               ),
             )
           : const SizedBox()),
@@ -231,7 +231,7 @@ class PaymentScreen extends StatelessWidget {
         statusName = "Chưa thanh toán";
         color = AppColors.blue;
       case "IN_DEBT":
-        statusName = "Nợ";
+        statusName = "Đang nợ";
         color = AppColors.yellow;
       case "OVERDUE":
         statusName = "Quá hạn";
@@ -251,7 +251,7 @@ class PaymentScreen extends StatelessWidget {
       ),
       child: Text(
         statusName,
-        style: ConstantFont.regularText.copyWith(color: AppColors.white, fontSize: 10),
+        style: ConstantFont.regularText.copyWith(color: AppColors.white, fontSize: 12),
       ),
     );
   }

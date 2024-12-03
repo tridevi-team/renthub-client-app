@@ -17,4 +17,9 @@ class BillService {
     String endpoint = '/bills/$billId/details';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, auth: true);
   }
+
+  static Future<http.Response> createPaymentLink(Map<String, dynamic> body) {
+    String endpoint = '/payment/create-payment-link';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.post, auth: true, params: body);
+  }
 }

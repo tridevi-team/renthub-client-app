@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
-import 'package:rent_house/ui/bill/bill_detail_screen.dart';
 import 'package:rent_house/ui/statistic/widgets/line_chart_widget.dart';
 import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
 import 'package:rent_house/utils/format_util.dart';
@@ -25,7 +24,6 @@ class StatisticScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 InkWell(
                   onTap: () {
-                    Get.to(() => BillDetailScreen());
                   },
                   child: Container(
                     width: Get.width,

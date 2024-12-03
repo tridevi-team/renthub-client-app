@@ -46,11 +46,17 @@ class NotificationScreen extends StatelessWidget {
                       itemCount: controller.notifications.length,
                       itemBuilder: (_, index) {
                         NotificationItem notificationItem = controller.notifications[index];
-                        return NotificationItemWidget(
-                            notification: notificationItem,
-                            removeNotification: () {
-                              controller.removeNotification(index);
-                            });
+                        return GestureDetector(
+                          onTap: () {
+                            controller.markAsReadNotification(index);
+                            controller.viewNotification(index);
+                          },
+                          child: NotificationItemWidget(
+                              notification: notificationItem,
+                              removeNotification: () {
+                                controller.removeNotification(index);
+                              }),
+                        );
                       },
                     ),
             );

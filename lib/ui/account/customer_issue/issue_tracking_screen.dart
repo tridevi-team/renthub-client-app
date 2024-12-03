@@ -123,7 +123,7 @@ class IssueTrackingScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(() => DetailIssueScreen(issueModel: issue));
+                  Get.to(() => DetailIssueScreen(), arguments: {"issueId": issue.id});
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
