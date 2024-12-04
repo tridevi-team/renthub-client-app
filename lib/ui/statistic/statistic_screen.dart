@@ -12,10 +12,22 @@ import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
 
-class StatisticScreen extends StatelessWidget {
-  StatisticScreen({super.key});
+class StatisticScreen extends StatefulWidget {
+  const StatisticScreen({super.key});
 
-  final controller = Get.put(StatisticsController());
+
+  @override
+  State<StatisticScreen> createState() => _StatisticScreenState();
+}
+
+class _StatisticScreenState extends State<StatisticScreen> {
+  late final StatisticsController controller;
+
+  @override
+  void initState() {
+    controller = Get.put(StatisticsController());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
