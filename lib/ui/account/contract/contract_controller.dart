@@ -134,7 +134,8 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
       "RENTAL_AMOUNT_IN_WORDS": numberToVietnameseWords(contract.depositAmount ?? 0),
       "DEPOSIT_AMOUNT_IN_WORDS": numberToVietnameseWords(contract.depositAmount ?? 0),
       "USE_SERVICES": contract.services != null ? '<ul>${contract.services!.map((service) => '<li><strong>${service.name}:</strong> ${FormatUtil.formatCurrency(service.unitPrice ?? 0)}</li>').join('')}</ul>' : '',
-      "ROOM_VEHICLE_LIST": contract.equipment != null ? contract.equipment!.map((e) => e.name).join(', ') : '',
+      //"ROOM_VEHICLE_LIST": contract.equipment != null ? contract.equipment!.map((e) => e.name).join(', ') : '',
+      "EQUIPMENT_LIST": contract.equipment != null ? '<ul>${contract.equipment!.map((item) => '<li><strong>${item.name}:</strong> x1</li>').join('')}</ul>' : '',
     };
 
     return replaceKeyHtml(contract.content ?? "", placeholders);
