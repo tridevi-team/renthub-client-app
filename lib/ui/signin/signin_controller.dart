@@ -53,11 +53,13 @@ class SignInController extends BaseController {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
+        DialogUtil.hideLoading();
         _showToast('Quá trình xác thực Google bị hủy bỏ.', ToastStatus.warning);
         return null;
       }
       return await googleUser.authentication;
     } catch (e) {
+      DialogUtil.hideLoading();
       _showToast('Đã xảy ra lỗi trong quá trình xác thực Google.', ToastStatus.error);
       return null;
     }
