@@ -18,6 +18,7 @@ import 'package:rent_house/services/auth_service.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/utils/shared_pref_helper.dart';
 import 'package:rent_house/utils/toast_until.dart';
@@ -64,6 +65,7 @@ class SignInController extends BaseController {
 
   Future<void> signInWithGoogle() async {
     try {
+      DialogUtil.showLoading();
       final googleAuth = await _authenticateWithGoogle();
       if (googleAuth == null) return;
       final credential = GoogleAuthProvider.credential(
@@ -75,6 +77,7 @@ class SignInController extends BaseController {
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
+      DialogUtil.hideLoading();
       AppUtil.printDebugMode(type: "Đăng nhập thất bại", message: "$e");
       _showToast('Đã xảy ra lỗi không xác định.', ToastStatus.warning);
     }
@@ -102,6 +105,7 @@ class SignInController extends BaseController {
   }
 
   Future<void> signInWithEmail() async {
+    DialogUtil.showLoading();
     final email = contactInputController.text.trim();
     final otp = otpEditingController.text.trim();
     viewState.value = ViewState.loading;
@@ -127,6 +131,7 @@ class SignInController extends BaseController {
         }
       }
     } catch (e) {
+      DialogUtil.hideLoading();
       _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
       viewState.value = ViewState.complete;
     }
@@ -192,6 +197,7 @@ class SignInController extends BaseController {
 
   void signInWithPhone() async {
     try {
+      DialogUtil.showLoading();
       final credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: otpEditingController.text,
@@ -202,11 +208,13 @@ class SignInController extends BaseController {
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
     } catch (e) {
+      DialogUtil.hideLoading();
       _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
     }
   }
 
   void _processLogin(String? token, String type, {String? refreshToken}) async {
+    DialogUtil.hideLoading();
     if (token?.isNotEmpty ?? false) {
       accessToken = token!;
       this.refreshToken = refreshToken ?? '';
