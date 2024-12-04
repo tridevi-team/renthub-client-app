@@ -86,18 +86,25 @@ class SignInController extends BaseController {
   }
 
   Future<void> generateOTPByEmail() async {
-    final email = contactInputController.text.trim();
-    final response = await AuthService.generateOTPByEmail({"email": email});
-
-    ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-    if (response.statusCode < 300) {
-      final model = ResponseModel.fromJson(jsonDecode(response.body));
-      if (model.success != true) {
-        _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
+    try {
+      DialogUtil.showLoading();
+      final email = contactInputController.text.trim();
+      final response = await AuthService.generateOTPByEmail({"email": email});
+      DialogUtil.hideLoading();
+      if (response.statusCode < 300) {
+        final model = ResponseModel.fromJson(jsonDecode(response.body));
+        if (model.success != true) {
+          _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
+        } else {
+          _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
+          startCountdown();
+        }
       } else {
-        _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
-        startCountdown();
+        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       }
+    } catch (e) {
+      DialogUtil.hideLoading();
+      AppUtil.printDebugMode(type: "Generate OTP", message: "$e");
     }
   }
 
@@ -175,13 +182,16 @@ class SignInController extends BaseController {
 
   Future<void> _sendOTPByPhone() async {
     try {
+      DialogUtil.showLoading();
       await _auth.verifyPhoneNumber(
         phoneNumber: contactInputController.text.trim().replaceFirst('0', '+84'),
         verificationCompleted: (PhoneAuthCredential credential) async {
           startCountdown();
           await _auth.signInWithCredential(credential);
+          DialogUtil.hideLoading();
         },
         verificationFailed: (FirebaseAuthException e) {
+          DialogUtil.hideLoading();
           _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -189,10 +199,12 @@ class SignInController extends BaseController {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           this.verificationId = verificationId;
+          DialogUtil.hideLoading();
         },
         timeout: const Duration(seconds: 120),
       );
     } catch (e) {
+      DialogUtil.hideLoading();
       _showToast("Không xác minh được số điện thoại", ToastStatus.error);
     }
   }
