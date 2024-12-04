@@ -91,10 +91,10 @@ class PaymentHistoryScreen extends StatelessWidget {
       controller: controller.paymentRefreshCtrl,
       scrollController: ScrollController(),
       onRefresh: () async {
-
+        controller.fetchPaymentHistoryByStatus(isRefresh: true);
       },
       onLoadingMore: () {
-
+        controller.fetchPaymentHistoryByStatus();
       },
       child: ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),

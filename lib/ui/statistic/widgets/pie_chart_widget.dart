@@ -1,14 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/models/statistical_model.dart';
 class PieChartWidget extends StatefulWidget {
-  const PieChartWidget({super.key});
+  const PieChartWidget({super.key, required this.staticsData});
+
+  final List<StatisticalModel> staticsData;
 
   @override
   State<StatefulWidget> createState() => PieChart2State();
 }
 
-class PieChart2State extends State {
+class PieChart2State extends State<PieChartWidget> {
   int touchedIndex = -1;
 
   @override
@@ -49,7 +52,7 @@ class PieChart2State extends State {
               ),
             ),
           ),
-          const Column(
+           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -79,7 +82,7 @@ class PieChart2State extends State {
               ),
               Indicator(
                 color: AppColors.green,
-                text: 'Fourth',
+                text: '${widget.staticsData[0].month}',
                 isSquare: true,
               ),
               SizedBox(

@@ -6,8 +6,10 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_screen/home_controller.dart';
+import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
+import 'package:rent_house/widgets/loading/loading_widget.dart';
 import 'package:rent_house/widgets/ratio/radio_option.dart';
 
 class DialogUtil {
@@ -332,5 +334,29 @@ class DialogUtil {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
     );
+  }
+
+  static void showLoading() {
+    if (!Get.isDialogOpen!) {
+      Get.dialog(
+          PopScope(
+            canPop: false,
+            onPopInvoked: (value) => Future.value(false),
+            child: const Center(
+              child: LoadingWidget(),
+            ),
+          ),
+          barrierDismissible: false);
+    }
+  }
+
+  static void hideLoading() {
+    try {
+      if (Get.isDialogOpen!) {
+        Get.close(1);
+      }
+    } catch (e) {
+      AppUtil.printDebugMode(type: "hide loading", message: "$e");
+    }
   }
 }

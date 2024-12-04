@@ -9,6 +9,7 @@ import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/bill_model.dart';
 import 'package:rent_house/services/bill_service.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/utils/toast_until.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -69,11 +70,11 @@ class PaymentController extends BaseController {
   }
 
   Future<void> checkout() async {
-    showLoading();
+    DialogUtil.showLoading();
     try {
       final response = await BillService.createPaymentLink({"billId": billId});
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      hideLoading();
+      DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         viewState.value = ViewState.complete;
         final paymentUrl = Uri.parse(decodedResponse["data"]["paymentUrl"]);
@@ -86,30 +87,9 @@ class PaymentController extends BaseController {
       }
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
     } catch (e) {
-      hideLoading();
+      DialogUtil.hideLoading();
       AppUtil.printDebugMode(type: "checkout", message: "$e");
       return;
     }
-  }
-
-  static void showLoading() {
-    if (!Get.isDialogOpen!) {
-      Get.dialog(
-          WillPopScope(
-            onWillPop: () => Future.value(false),
-            child: const Center(
-              child: LoadingWidget(),
-            ),
-          ),
-          barrierDismissible: false);
-    }
-  }
-
-  static hideLoading() {
-    try {
-      if (Get.isDialogOpen!) {
-        Get.close(1);
-      }
-    } catch (e) {}
   }
 }
