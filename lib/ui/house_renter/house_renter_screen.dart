@@ -198,7 +198,7 @@ class HouseRenterScreen extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
-        childAspectRatio: 3,
+        childAspectRatio: 2.5,
       ),
       padding: const EdgeInsets.all(0),
       itemCount: controller.room.equipments?.length,
@@ -214,21 +214,31 @@ class HouseRenterScreen extends StatelessWidget {
               color: AppColors.neutralFAFAFA,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SvgPicture.asset(
-                  AppUtil.getEquipmentIconPath(equipment.name ?? ''),
-                  width: 24,
-                  height: 24,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SvgPicture.asset(
+                      AppUtil.getEquipmentIconPath(equipment.name ?? ''),
+                      width: 24,
+                      height: 24,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${equipment.name}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ConstantFont.regularText.copyWith(fontSize: 12),
+                    )
+                  ],
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(height: 6),
                 Text(
-                  "${equipment.name}",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  "Số lượng: x1",
                   style: ConstantFont.regularText.copyWith(fontSize: 12),
-                )
+                ),
               ],
             ),
           ),
