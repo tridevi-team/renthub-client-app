@@ -13,6 +13,7 @@ import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/ui/account/customer_issue/issue_tracking_screen.dart';
 import 'package:rent_house/ui/account/payment/payment_history_screen.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
+import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 
@@ -53,7 +54,8 @@ class CustomerScreen extends StatelessWidget {
                   'Xem thông tin',
                   style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
                 ),
-                trailing: SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
+                trailing:
+                    SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
               ),
             ),
             const SizedBox(height: 10),
@@ -62,31 +64,33 @@ class CustomerScreen extends StatelessWidget {
             Text('Tổng quát', style: ConstantFont.boldText.copyWith(fontSize: 18)),
             const SizedBox(height: 10),
             _buildListTile(
-              leadingAsset: AssetSvg.iconPerson,
-              titleText: 'Hợp đồng phòng',
-              trailingAsset: AssetSvg.iconChevronForward,
-              onTap: () {
-                Get.to(() => CustomerContractScreen());
-              }
-            ),
+                leadingAsset: AssetSvg.iconPerson,
+                titleText: 'Hợp đồng phòng',
+                trailingAsset: AssetSvg.iconChevronForward,
+                onTap: () {
+                  Get.to(() => CustomerContractScreen());
+                }),
             _buildListTile(
-              leadingAsset: AssetSvg.iconCard,
-              titleText: 'Lịch sử thanh toán',
-              trailingAsset: AssetSvg.iconChevronForward,
-              onTap: () {
-                Get.to(() => PaymentHistoryScreen());
-              }
-            ),
+                leadingAsset: AssetSvg.iconCard,
+                titleText: 'Lịch sử thanh toán',
+                trailingAsset: AssetSvg.iconChevronForward,
+                onTap: () {
+                  Get.to(() => PaymentHistoryScreen());
+                }),
             _buildListTile(
               leadingAsset: AssetSvg.iconLock,
               titleText: 'Điều khoản',
               trailingAsset: AssetSvg.iconChevronForward,
             ),
             _buildListTile(
-              leadingAsset: AssetSvg.iconLock,
-              titleText: 'Chính sách bảo mật',
-              trailingAsset: AssetSvg.iconChevronForward,
-            ),
+                leadingAsset: AssetSvg.iconLock,
+                titleText: 'Chính sách bảo mật',
+                trailingAsset: AssetSvg.iconChevronForward,
+                onTap: () {
+                  Get.to(() => WebViewScreen(title: "Chính sách bảo mật",
+                      url:
+                          "https://www.freeprivacypolicy.com/live/2ab662e0-312e-4350-8ed0-af2174976af4"));
+                }),
             const SizedBox(height: 20),
             Text('Trung tâm trợ giúp', style: ConstantFont.boldText.copyWith(fontSize: 18)),
             const SizedBox(height: 10),
@@ -112,7 +116,8 @@ class CustomerScreen extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   'v${customerController.version}',
-                  style: ConstantFont.regularText.copyWith(fontSize: 14, color: AppColors.neutral545453),
+                  style: ConstantFont.regularText
+                      .copyWith(fontSize: 14, color: AppColors.neutral545453),
                 ))
           ],
         ),
@@ -132,8 +137,11 @@ class CustomerScreen extends StatelessWidget {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
           leading: SvgPicture.asset(leadingAsset, color: color ?? Colors.black),
-          title: Text(titleText, style: ConstantFont.regularText.copyWith(color: color ?? AppColors.black)),
-          trailing: trailingAsset != null ? SvgPicture.asset(trailingAsset, color: AppColors.neutralCCCAC6) : null,
+          title: Text(titleText,
+              style: ConstantFont.regularText.copyWith(color: color ?? AppColors.black)),
+          trailing: trailingAsset != null
+              ? SvgPicture.asset(trailingAsset, color: AppColors.neutralCCCAC6)
+              : null,
           onTap: onTap,
         ),
         const Divider(height: 1, color: AppColors.neutralE5E5E3),
