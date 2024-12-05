@@ -111,6 +111,12 @@ class _VideoPlayerScreenState extends State<MediaScreen> {
                 fit: BoxFit.cover,
                 width: Get.width,
                 height: 300,
+                loadingBuilder: (_, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return const LoadingWidget();
+                },
                 errorBuilder: (context, error, stackTrace) => const ErrorImageWidget(),
               ),
             ),

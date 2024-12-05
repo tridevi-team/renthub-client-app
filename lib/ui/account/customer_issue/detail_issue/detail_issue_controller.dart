@@ -30,6 +30,11 @@ class DetailIssueController extends BaseController {
         viewState.value = ViewState.complete;
         return;
       }
+      if (decodedResponse['data'] == null) {
+        viewState.value = ViewState.noData;
+        return;
+      }
+
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
     } catch (e) {
       viewState.value = ViewState.notFound;

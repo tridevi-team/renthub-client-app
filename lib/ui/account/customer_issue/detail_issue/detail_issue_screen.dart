@@ -4,13 +4,17 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/issue_model.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_controller.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/media_screen.dart';
+import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
+import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
+import 'package:rent_house/widgets/loading/loading_widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DetailIssueScreen extends StatelessWidget {
@@ -20,45 +24,55 @@ class DetailIssueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final issue = controller.issueModel;
     return Scaffold(
       appBar: const CustomAppBar(label: 'Chi tiết vấn đề'),
       backgroundColor: AppColors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                issue?.title ?? '',
-                style: ConstantFont.mediumText.copyWith(fontSize: 16),
+      body: Obx(() {
+        if (controller.viewState.value == ViewState.loading) {
+          return const LoadingWidget();
+        } else if (controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.noData) {
+          if (controller.viewState.value == ViewState.noData) {
+            return const NotFoundWidget();
+          }
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.issueModel?.title ?? '',
+                    style: ConstantFont.mediumText.copyWith(fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '${controller.issueModel?.roomName ?? ''} - ${controller.issueModel?.floorName ?? ''}',
+                    style: ConstantFont.regularText,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildIssueInfoRow(controller.issueModel),
+                  const SizedBox(height: 12),
+                  _buildDescriptionField(controller.issueModel?.content),
+                  const SizedBox(height: 12),
+                  _buildMediaSection(
+                    title: "Hình ảnh",
+                    mediaList: controller.issueModel?.files?.image,
+                    isMp4: false,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMediaSection(
+                    title: "Video",
+                    mediaList: controller.issueModel?.files?.video,
+                    isMp4: true,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                '${issue?.roomName ?? ''} - ${issue?.floorName ?? ''}',
-                style: ConstantFont.regularText,
-              ),
-              const SizedBox(height: 8),
-              _buildIssueInfoRow(issue),
-              const SizedBox(height: 12),
-              _buildDescriptionField(issue?.content),
-              const SizedBox(height: 12),
-              _buildMediaSection(
-                title: "Hình ảnh",
-                mediaList: issue?.files?.image,
-                isMp4: false,
-              ),
-              const SizedBox(height: 12),
-              _buildMediaSection(
-                title: "Video",
-                mediaList: issue?.files?.video,
-                isMp4: true,
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          return NetworkErrorWidget(viewState: controller.viewState.value);
+        }
+      }),
     );
   }
 
