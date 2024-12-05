@@ -219,7 +219,7 @@ class _TextInputWidgetState extends State<TextInputWidget> {
                               ),
                             ),
                           ],
-                          if (widget.sendOTP && widget.controller != null && widget.controller!.text.isNotEmpty) ...[
+                          if (widget.sendOTP) ...[
                             InkWell(
                               onTap: widget.onSendOTP,
                               splashColor: AppColors.primary1.withOpacity(0.2),
