@@ -9,7 +9,6 @@ import 'package:rent_house/models/statistical_model.dart';
 import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/ui/statistic/statistic_controller.dart';
 import 'package:rent_house/ui/statistic/widgets/bar_chart_widget.dart';
-import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -88,18 +87,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text("Tiền phòng hàng tháng (triệu đồng)", style: ConstantFont.mediumText),
-                              const SizedBox(height: 30),
-                              const SizedBox(height: 250, child: BarChartWidget()),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildMinMaxWidget("Tháng ít nhất ${controller.lowestMonth}", (controller.lowestPayment * 1000000).toInt()),
-                                  const SizedBox(width: 10),
-                                  _buildMinMaxWidget("Tháng nhiều nhất ${controller.highestMonth}", (controller.highestPayment * 1000000).toInt()),
-                                ],
-                              ),
+
+                              const BarChartWidget(),
                               const SizedBox(height: 30),
                               //SizedBox(height: 200, child: PieChartWidget(staticsData: controller.statisticData,)),
                             ],
@@ -121,30 +110,6 @@ class _StatisticScreenState extends State<StatisticScreen> {
     );
   }
 
-  Widget _buildMinMaxWidget(String title, int amount) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: const Border.fromBorderSide(
-            BorderSide(width: 1, color: AppColors.neutralE9e9e9),
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: ConstantFont.mediumText),
-            const SizedBox(height: 10),
-            Text(
-              FormatUtil.formatCurrency(amount),
-              style: ConstantFont.regularText.copyWith(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildAnalyticsView() {
     List<ServiceCompareData> serviceData = controller.statisticData.serviceCompare?.data ?? [];

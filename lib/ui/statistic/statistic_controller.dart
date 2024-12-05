@@ -34,6 +34,7 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
   }
 
   Future<void> getChartByRoom({bool isRefresh = false}) async {
+    _resetMinMaxPayment();
     try {
       if (isRefresh) {
         selectedTab.value = 0;
@@ -48,18 +49,19 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
       final response = await StatisticService.getChartByRoom(_roomId, startTime, today);
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      DialogUtil.hideLoading();
       if (decodedResponse["data"] == null || decodedResponse["data"] == {}) {
         viewState.value = ViewState.noData;
         return;
       }
       if (response.statusCode == 200) {
         statisticData = StatisticalModel.fromJson(decodedResponse["data"]);
-        barChartGroupData.value = generateBarChartData();
         findLowestAndHighestPayment();
+        barChartGroupData.value = generateBarChartData();
         viewState.value = ViewState.complete;
+        DialogUtil.hideLoading();
       } else {
         ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+        DialogUtil.hideLoading();
       }
     } catch (e) {
       DialogUtil.hideLoading();
@@ -100,10 +102,7 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
   void findLowestAndHighestPayment() {
     if (statisticData.serviceCompare?.data?.isEmpty ?? true) {
-      highestPayment = 0;
-      lowestPayment = 0;
-      lowestMonth = '';
-      highestMonth = '';
+      _resetMinMaxPayment();
       return;
     }
 
@@ -161,13 +160,13 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
       final percentageIncrease = ((thisMonthFee - lastMonthFee) / lastMonthFee) * 100;
       return {
         "color": AppColors.red,
-        "content": "Tăng ${percentageIncrease.toStringAsFixed(2)}%",
+        "content": "Tăng ${percentageIncrease.toStringAsFixed(0)}%",
       };
     } else if (lastMonthFee > thisMonthFee) {
       final percentageDecrease = ((lastMonthFee - thisMonthFee) / lastMonthFee) * 100;
       return {
         "color": AppColors.green,
-        "content": "Giảm ${percentageDecrease.toStringAsFixed(2)}%",
+        "content": "Giảm ${percentageDecrease.toStringAsFixed(0)}%",
       };
     } else {
       return {
@@ -181,5 +180,12 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
     String label = statisticData.serviceCompare?.config?.configItems?[key]?.label ?? "";
     String color = statisticData.serviceCompare?.config?.configItems?[key]?.color?.replaceFirst("#", "0xFF") ?? "";
     return [label, color];
+  }
+
+  void _resetMinMaxPayment() {
+    highestPayment = -double.infinity;
+    highestMonth = "";
+    lowestPayment = double.infinity;
+    lowestMonth = "";
   }
 }
