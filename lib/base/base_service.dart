@@ -13,7 +13,7 @@ import 'package:rent_house/utils/app_util.dart';
 enum HttpMethod { get, post, put, delete, patch, multipart }
 
 class BaseService {
-  static const int _defaultTimeout = 20;
+  static const int _defaultTimeout = 60;
 
   static Future<http.Response> requestApi(
       {required String endpoint,

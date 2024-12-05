@@ -7,6 +7,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/ui/home/home_list/home_list.dart';
 import 'package:rent_house/ui/search/search_controller.dart';
+import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
 import 'package:rent_house/widgets/refresh/smart_refresh.dart';
@@ -99,7 +100,7 @@ class SearchScreen extends StatelessWidget {
       return const LoadingWidget();
     }
 
-    if (searchController.viewState.value == ViewState.complete || searchController.viewState.value == ViewState.init) {
+    if (searchController.viewState.value == ViewState.complete || searchController.viewState.value == ViewState.init || searchController.viewState.value == ViewState.noData) {
       if (searchController.houseList.isNotEmpty) {
         return SmartRefreshWidget(
           controller: searchController.refreshController,
@@ -110,6 +111,8 @@ class SearchScreen extends StatelessWidget {
             slivers: [HomeList(houseList: searchController.houseList)],
           ),
         );
+      } else {
+        return const NotFoundWidget();
       }
     }
 

@@ -26,7 +26,6 @@ class SearchXController extends BaseController {
 
   List<String> sortOptions = [
     "Tên",
-    "Số phòng ngủ",
     "Số người 1 phòng",
     "Diện tích",
     "Giá",
@@ -37,22 +36,22 @@ class SearchXController extends BaseController {
   RxInt filterSelected = 0.obs;
   double previousOffset = 0.0;
   double threshold = 20.0;
-  List<String> sorts = ["houses.name", "numOfBeds", "rooms.max_renters", "rooms.room_area", "rooms.price"];
+  List<String> sorts = ["houses.name", "rooms.max_renters", "rooms.room_area", "rooms.price"];
   int sortBySelected = 0;
 
   RxString orderBy = "asc".obs;
   int? numOfBeds;
   int? numOfRenters;
   int? roomArea;
-  double minPrice = 100000000;
+  double minPrice = 1000000000;
   double maxPrice = 0;
-  Rx<RangeValues> currentFilterPrice = const RangeValues(0, 0).obs;
+  Rx<RangeValues> currentFilterPrice = const RangeValues(0, 1000000000).obs;
 
   @override
   void onInit() {
     super.onInit();
     initScrollController();
-    fetchHouseList();
+    fetchHouseList(isFistFilter: true);
   }
 
   @override
@@ -99,7 +98,16 @@ class SearchXController extends BaseController {
     });
   }
 
-  Future<void> fetchHouseList({bool isLoadMore = false, int? numOfBeds, String? street, String? ward, String? district, String? city, int? numOfRenters, int? roomArea, int? priceFrom, int? priceTo, int limit = 10, int page = 1}) async {
+  Future<void> fetchHouseList({
+    bool isLoadMore = false,
+    int? numOfRenters,
+    int? roomArea,
+    int? priceFrom,
+    int? priceTo,
+    int limit = 10,
+    int page = 1,
+    bool isFistFilter = false,
+  }) async {
     try {
       viewState.value = ViewState.init;
       if (isLoadMore) {
@@ -115,7 +123,9 @@ class SearchXController extends BaseController {
           "direction": "${orderBy.value}"
         }''';
 
-      String filters = 'filter[]={"field": "${sorts[sortBySelected]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&';
+      String filters = 'filter[]={"field": "${sorts[sortBySelected]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&'
+          'filter[]={"field": "rooms.price", "operator": "gte", "value": "${currentFilterPrice.value.start}"}&'
+          'filter[]={"field": "rooms.price", "operator": "lte", "value": "${currentFilterPrice.value.end}"}&';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
@@ -133,10 +143,13 @@ class SearchXController extends BaseController {
               maxPrice = house.maxPrice!.toDouble();
             }
           }
-          currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
+          if (isFistFilter) {
+            currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
+          }
           houseList.addAll(houses);
           refreshController.loadComplete();
         } else {
+          viewState.value = ViewState.noData;
           houseList.clear();
         }
       }
@@ -182,7 +195,10 @@ class SearchXController extends BaseController {
       DialogUtil.showFilterBottomSheet(
         currentRange: currentFilterPrice,
         onChanged: updateRange,
-        onApply: () {},
+        onApply: () {
+          Get.close(0);
+          fetchHouseList();
+        },
         minPrice: roundDownToMillion(minPrice),
         maxPrice: roundUpToMillion(maxPrice),
       );
