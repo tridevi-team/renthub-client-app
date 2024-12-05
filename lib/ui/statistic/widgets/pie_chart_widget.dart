@@ -80,11 +80,11 @@ class PieChart2State extends State<PieChartWidget> {
               SizedBox(
                 height: 4,
               ),
-              Indicator(
+             /* Indicator(
                 color: AppColors.green,
                 text: '${widget.staticsData[0].month}',
                 isSquare: true,
-              ),
+              ),*/
               SizedBox(
                 height: 18,
               ),

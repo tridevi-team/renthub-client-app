@@ -59,7 +59,7 @@ class CustomerScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            const Divider(height: 1, color: AppColors.neutralE5E5E3),
+            const Divider(height: 1, color: AppColors.neutralF5F5F5),
             const SizedBox(height: 30),
             Text('Tổng quát', style: ConstantFont.boldText.copyWith(fontSize: 18)),
             const SizedBox(height: 10),
@@ -144,7 +144,7 @@ class CustomerScreen extends StatelessWidget {
               : null,
           onTap: onTap,
         ),
-        const Divider(height: 1, color: AppColors.neutralE5E5E3),
+        const Divider(height: 1, color: AppColors.neutralF5F5F5),
       ],
     );
   }

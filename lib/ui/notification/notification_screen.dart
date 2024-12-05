@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/notification/widgets/notification_item_widget.dart';
+import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -34,11 +36,9 @@ class NotificationScreen extends StatelessWidget {
               onRefresh: controller.refreshData,
               onLoadingMore: controller.loadMoreData,
               child: controller.notifications.isEmpty && controller.viewState.value == ViewState.noData
-                  ? Center(
-                      child: Text(
-                        'Bạn chưa có thông báo nào',
-                        style: ConstantFont.mediumText.copyWith(fontSize: 16),
-                      ),
+                  ? const NotFoundWidget(
+                      title: "Bạn chưa có thông báo nào",
+                      content: ConstantString.messageContentNoData,
                     )
                   : ListView.builder(
                       addAutomaticKeepAlives: false,

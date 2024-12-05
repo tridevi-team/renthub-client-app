@@ -27,6 +27,7 @@ class ConstantString {
   //message
   static const String messageNoInternet = 'Không có kết nối mạng.';
   static const String messageNoData = 'Không có dữ liệu.';
+  static const String messageContentNoData = 'Bạn chưa có bất kì dữ liệu nào cho danh mục này.';
   static const String dataInvalidMessage = 'Dữ liệu không hợp lệ';
   static const String messageSuccess = 'Thành công';
   static const String messageError = 'Lỗi';

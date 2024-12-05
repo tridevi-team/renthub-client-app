@@ -5,7 +5,10 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 
 class NotFoundWidget extends StatelessWidget {
-  const NotFoundWidget({super.key});
+  const NotFoundWidget({super.key, this.title, this.content});
+
+  final String? title;
+  final String? content;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +26,13 @@ class NotFoundWidget extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           Text(
-            'Rất tiếc, hiện không có phòng nào phù hợp với tìm kiếm của bạn.',
+            title != null ? title! : 'Rất tiếc, hiện không có phòng nào phù hợp với tìm kiếm của bạn.',
             style: ConstantFont.semiBoldText.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
           Text(
-            'Hãy thử tìm kiếm một căn phòng khác hoặc quay lại trang chủ.',
+            content != null ? content! :'Hãy thử tìm kiếm một căn phòng khác hoặc quay lại trang chủ.',
             style: ConstantFont.regularText,
             textAlign: TextAlign.center,
           ),

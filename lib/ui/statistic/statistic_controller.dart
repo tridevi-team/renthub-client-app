@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_house/base/base_controller.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/statistical_model.dart';
@@ -15,11 +16,11 @@ import 'package:rent_house/utils/response_error_util.dart';
 
 class StatisticsController extends BaseController with GetTickerProviderStateMixin {
   String _roomId = "";
-  List<StatisticalModel> statisticData = [];
+  StatisticalModel statisticData = StatisticalModel();
   RxList<BarChartGroupData> barChartGroupData = <BarChartGroupData>[].obs;
-  double highestPayment = 0;
+  double highestPayment = -double.infinity;
   String highestMonth = "";
-  double lowestPayment = 1000;
+  double lowestPayment = double.infinity;
   String lowestMonth = "";
   late TabController tabController;
   RxInt selectedTab = 0.obs;
@@ -48,11 +49,12 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
       final response = await StatisticService.getChartByRoom(_roomId, startTime, today);
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       DialogUtil.hideLoading();
-
+      if (decodedResponse["data"] == null || decodedResponse["data"] == {}) {
+        viewState.value = ViewState.noData;
+        return;
+      }
       if (response.statusCode == 200) {
-        statisticData.assignAll((decodedResponse["data"] as List)
-            .map((statistic) => StatisticalModel.fromJson(statistic))
-            .toList());
+        statisticData = StatisticalModel.fromJson(decodedResponse["data"]);
         barChartGroupData.value = generateBarChartData();
         findLowestAndHighestPayment();
         viewState.value = ViewState.complete;
@@ -67,16 +69,19 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
   }
 
   List<BarChartGroupData> generateBarChartData() {
-    return List.generate(statisticData.length, (index) {
-      final data = statisticData[index];
+    return List.generate(statisticData.serviceCompare?.data?.length ?? 0, (index) {
+      final data = statisticData.serviceCompare?.data?[index];
+      final services = data?.services ?? {};
+      final totalServices = services.values.fold(0, (sum, value) => sum + value) / 1000000.0;
+
       return BarChartGroupData(
         x: index,
         barsSpace: 8,
         barRods: <BarChartRodData>[
           BarChartRodData(
-            toY: (data.totalPrice ?? 0) / 1000000.0,
+            toY: totalServices,
             color: Colors.blue,
-            width: statisticData.length < 6 ? 30 : 20,
+            width: (statisticData.serviceCompare?.data?.length ?? 0) < 6 ? 30 : 20,
             borderRadius: const BorderRadius.only(topRight: Radius.circular(2), topLeft: Radius.circular(1)),
           ),
         ],
@@ -86,15 +91,15 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
   String getMonthTitle(double value) {
     int index = value.toInt();
-    if (index >= 0 && index < statisticData.length) {
-      String month = statisticData[index].month ?? "";
+    if (index >= 0 && index < (statisticData.serviceCompare?.data?.length ?? 0)) {
+      String month = statisticData.serviceCompare?.data?[index].month ?? "";
       return month.split('/')[0];
     }
     return '';
   }
 
   void findLowestAndHighestPayment() {
-    if (statisticData.isEmpty) {
+    if (statisticData.serviceCompare?.data?.isEmpty ?? true) {
       highestPayment = 0;
       lowestPayment = 0;
       lowestMonth = '';
@@ -102,25 +107,20 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
       return;
     }
 
-    highestPayment = 0;
-    lowestPayment = double.infinity;
-    lowestMonth = '';
-    highestMonth = '';
-
-    for (var data in statisticData) {
-      final payment = (data.totalPrice ?? 0) / 1000000.0;
+    for (var data in statisticData.serviceCompare!.data!) {
+      final totalPayment = (data.services?.values.fold(0, (sum, value) => sum + value) ?? 0) / 1000000.0;
       final month = data.month ?? '';
-      if (payment < lowestPayment) {
-        lowestPayment = payment;
+
+      if (totalPayment < lowestPayment) {
+        lowestPayment = totalPayment;
         lowestMonth = month;
       }
-      if (payment > highestPayment) {
-        highestPayment = payment;
+      if (totalPayment > highestPayment) {
+        highestPayment = totalPayment;
         highestMonth = month;
       }
     }
   }
-
 
   void changeTab(int index) {
     if (selectedTab.value == index) return;
@@ -154,5 +154,32 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
     DateTime startDate = DateTime(currentDate.year + yearAdjustment, adjustedMonth, 1);
     return DateFormat('yyyy-MM-dd').format(startDate);
+  }
+
+  Map<String, dynamic> calculateFeeChange(int lastMonthFee, int thisMonthFee) {
+    if (lastMonthFee < thisMonthFee) {
+      final percentageIncrease = ((thisMonthFee - lastMonthFee) / lastMonthFee) * 100;
+      return {
+        "color": AppColors.red,
+        "content": "Tăng ${percentageIncrease.toStringAsFixed(2)}%",
+      };
+    } else if (lastMonthFee > thisMonthFee) {
+      final percentageDecrease = ((lastMonthFee - thisMonthFee) / lastMonthFee) * 100;
+      return {
+        "color": AppColors.green,
+        "content": "Giảm ${percentageDecrease.toStringAsFixed(2)}%",
+      };
+    } else {
+      return {
+        "color": AppColors.blue,
+        "content": "Không thay đổi",
+      };
+    }
+  }
+
+  List<String> getServiceName(String key) {
+    String label = statisticData.serviceCompare?.config?.configItems?[key]?.label ?? "";
+    String color = statisticData.serviceCompare?.config?.configItems?[key]?.color?.replaceFirst("#", "0xFF") ?? "";
+    return [label, color];
   }
 }

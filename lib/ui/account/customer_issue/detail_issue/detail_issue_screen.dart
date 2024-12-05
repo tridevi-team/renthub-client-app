@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/issue_model.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_controller.dart';
@@ -32,7 +33,7 @@ class DetailIssueScreen extends StatelessWidget {
           return const LoadingWidget();
         } else if (controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.noData) {
           if (controller.viewState.value == ViewState.noData) {
-            return const NotFoundWidget();
+            return const NotFoundWidget(title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
           }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
