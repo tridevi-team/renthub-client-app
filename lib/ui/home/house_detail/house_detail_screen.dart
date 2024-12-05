@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/ui/home/home_widget/room_widget.dart';
@@ -43,7 +44,8 @@ class HouseDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           ...List.generate(floor.rooms!.length, (roomIndex) {
-                            return DividerCustom(
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10),
                               child: RoomWidget(
                                 room: floor.rooms![roomIndex],
                                 onTap: () {

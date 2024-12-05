@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RoomWidget extends StatelessWidget {
   final void Function()? onTap;
@@ -15,10 +17,19 @@ class RoomWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool status = room.status == ConstantString.statusAvailable;
+    double width = Get.width * 0.4;
     return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+      onTap: () {
+        if (!status) return;
+        onTap?.call();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: status ? AppColors.white : AppColors.neutralFAFAFA,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
         child: Row(
           children: [
             Stack(
@@ -26,17 +37,44 @@ class RoomWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                   clipBehavior: Clip.hardEdge,
-                  child: CachedNetworkImage(
-                    imageUrl: room.images?[0].imageUrl ?? '',
-                    width: Get.width / 4,
-                    height: 3 * Get.width / 8,
+                  child: Image.network(
+                    room.images?[0].imageUrl ?? '',
+                    width: width,
+                    height: width,
                     fit: BoxFit.cover,
-                    errorWidget: (_, __, ___) => ErrorImageWidget(
-                      width: Get.width / 4,
-                      height: Get.width / 2,
+                    loadingBuilder: (_, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Shimmer.fromColors(
+                          baseColor: AppColors.neutralF0F0F0,
+                          highlightColor: AppColors.shimmerColor,
+                          child: Container(
+                            width: width,
+                            height: width,
+                            color: Colors.white,
+                          ));
+                    },
+                    errorBuilder: (_, __, ___) => ErrorImageWidget(
+                      width: width,
+                      height: width,
                     ),
                   ),
                 ),
+                Positioned(
+                    bottom: 5,
+                    right: 5,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                          color: status ? AppColors.green : AppColors.red,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Text(
+                        status ? "Khả dụng" : "Không khả dụng",
+                        style:
+                            ConstantFont.mediumText.copyWith(fontSize: 10, color: AppColors.white),
+                      ),
+                    ))
               ],
             ),
             const SizedBox(width: 10),
