@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -8,12 +7,10 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/bill_model.dart';
 import 'package:rent_house/services/bill_service.dart';
+import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
-import 'package:rent_house/utils/toast_until.dart';
-import 'package:rent_house/widgets/loading/loading_widget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PaymentController extends BaseController {
   BillModel? bill;
@@ -77,12 +74,10 @@ class PaymentController extends BaseController {
       DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         viewState.value = ViewState.complete;
-        final paymentUrl = Uri.parse(decodedResponse["data"]["paymentUrl"]);
-        if (await canLaunchUrl(paymentUrl)) {
-          await launchUrl(paymentUrl);
-        } else {
-          ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại.", status: ToastStatus.error);
-        }
+        final paymentUrl = decodedResponse["data"]["paymentUrl"];
+        await Get.to(() => WebViewScreen(title: "Thanh toán", url: paymentUrl))?.then((value) {
+
+        },);
         return;
       }
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
