@@ -176,9 +176,16 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
     }
   }
 
-  List<String> getServiceName(String key) {
+  List<String> getServiceLabelAndColor(String key) {
     String label = statisticData.serviceCompare?.config?.configItems?[key]?.label ?? "";
-    String color = statisticData.serviceCompare?.config?.configItems?[key]?.color?.replaceFirst("#", "0xFF") ?? "";
+    String color = statisticData.serviceCompare?.config?.configItems?[key]?.color ?? "";
+
+    if (color.startsWith("#")) {
+      color = color.substring(1);
+    }
+
+    color = "FF$color";
+
     return [label, color];
   }
 

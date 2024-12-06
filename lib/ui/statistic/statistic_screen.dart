@@ -9,6 +9,7 @@ import 'package:rent_house/models/statistical_model.dart';
 import 'package:rent_house/ui/search/search_widget/not_found_widget.dart';
 import 'package:rent_house/ui/statistic/statistic_controller.dart';
 import 'package:rent_house/ui/statistic/widgets/bar_chart_widget.dart';
+import 'package:rent_house/ui/statistic/widgets/pie_chart_widget.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
@@ -90,7 +91,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
 
                               const BarChartWidget(),
                               const SizedBox(height: 30),
-                              //SizedBox(height: 200, child: PieChartWidget(staticsData: controller.statisticData,)),
+                              const PieChartWidget(),
+                              const SizedBox(height: 30),
                             ],
                           ),
                   ),
@@ -169,7 +171,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Text(controller.getServiceName(serviceName)[0], style: ConstantFont.mediumText),
+                  child: Text(controller.getServiceLabelAndColor(serviceName)[0], style: ConstantFont.mediumText),
                 ),
                 const SizedBox(width: 6),
                 Text(

@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/extensions/string_extension.dart';
 
 class FormatUtil {
   FormatUtil._();
@@ -125,4 +126,8 @@ class FormatUtil {
     }
   }
 
+  static String formatToSlug(String value) {
+    value = value.toLowerCase().removeSign();
+    return value.replaceAll(RegExp(r'\s+'), '-');
+  }
 }
