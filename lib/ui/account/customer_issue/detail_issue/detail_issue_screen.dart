@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -31,9 +32,12 @@ class DetailIssueScreen extends StatelessWidget {
       body: Obx(() {
         if (controller.viewState.value == ViewState.loading) {
           return const LoadingWidget();
-        } else if (controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.noData) {
+        } else if (controller.viewState.value == ViewState.init ||
+            controller.viewState.value == ViewState.complete ||
+            controller.viewState.value == ViewState.noData) {
           if (controller.viewState.value == ViewState.noData) {
-            return const NotFoundWidget(title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
+            return const NotFoundWidget(
+                title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
           }
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -173,25 +177,22 @@ class DetailIssueScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 child: isMp4
                     ? SvgPicture.asset(
-                  AssetSvg.iconPlay,
-                  color: AppColors.neutral9E9E9E,
-                )
-                    : Image.network(
-                  media,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (_, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Shimmer.fromColors(
-                      baseColor: AppColors.neutralF0F0F0,
-                      highlightColor: AppColors.shimmerColor,
-                      child: Container(color: Colors.white),
-                    );
-                  },
-                  errorBuilder: (_, __, ___) => const ErrorImageWidget(
-                    width: 100,
-                    height: 100,
-                  ),
-                ),
+                        AssetSvg.iconPlay,
+                        color: AppColors.neutral9E9E9E,
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: media,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: AppColors.neutralF0F0F0,
+                          highlightColor: AppColors.shimmerColor,
+                          child: Container(color: Colors.white),
+                        ),
+                        errorWidget: (context, url, error) => const ErrorImageWidget(
+                          width: 100,
+                          height: 100,
+                        ),
+                      ),
               ),
             ),
           );
@@ -215,4 +216,3 @@ class DetailIssueScreen extends StatelessWidget {
     }
   }
 }
-

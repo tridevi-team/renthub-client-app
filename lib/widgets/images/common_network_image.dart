@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 
@@ -23,12 +24,18 @@ class CommonNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: Image.network(
-        imageUrl ?? '',
+      child: CachedNetworkImage(
+        imageUrl: imageUrl ?? '',
         height: height,
         width: width,
         fit: fit,
-        errorBuilder: (_, __, ___) => Image.asset(
+        placeholder: (context, url) => Image.asset(
+          placeholderAsset,
+          height: height,
+          width: width,
+          fit: fit,
+        ),
+        errorWidget: (context, url, error) => Image.asset(
           placeholderAsset,
           height: height,
           width: width,

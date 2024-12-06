@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -36,25 +37,21 @@ class RoomWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                   clipBehavior: Clip.hardEdge,
-                  child: Image.network(
-                    room.images?[0].imageUrl ?? '',
+                  child: CachedNetworkImage(
+                    imageUrl: room.images?[0].imageUrl ?? '',
                     width: width,
                     height: width,
                     fit: BoxFit.cover,
-                    loadingBuilder: (_, child, loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      }
-                      return Shimmer.fromColors(
-                          baseColor: AppColors.neutralF0F0F0,
-                          highlightColor: AppColors.shimmerColor,
-                          child: Container(
-                            width: width,
-                            height: width,
-                            color: Colors.white,
-                          ));
-                    },
-                    errorBuilder: (_, __, ___) => ErrorImageWidget(
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: AppColors.neutralF0F0F0,
+                      highlightColor: AppColors.shimmerColor,
+                      child: Container(
+                        width: width,
+                        height: width,
+                        color: Colors.white,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => ErrorImageWidget(
                       width: width,
                       height: width,
                     ),

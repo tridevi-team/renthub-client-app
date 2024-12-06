@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -96,25 +97,21 @@ class PaymentScreen extends StatelessWidget {
                           ),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(
-                              controller.getImageUrlBank(),
+                            child: CachedNetworkImage(
+                              imageUrl: controller.getImageUrlBank(),
                               fit: BoxFit.cover,
                               height: 60,
                               width: 60,
-                              loadingBuilder: (_, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return Shimmer.fromColors(
-                                    baseColor: AppColors.neutralF0F0F0,
-                                    highlightColor: AppColors.shimmerColor,
-                                    child: Container(
-                                    width: 60,
-                                    height: 60,
-                                    color: Colors.white,
-                                ));
-                              },
-                              errorBuilder: (_, __, ___) => const ErrorImageWidget(
+                              placeholder: (context, url) => Shimmer.fromColors(
+                                baseColor: AppColors.neutralF0F0F0,
+                                highlightColor: AppColors.shimmerColor,
+                                child: Container(
+                                  width: 60,
+                                  height: 60,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => const ErrorImageWidget(
                                 height: 60,
                                 width: 60,
                                 imagePath: AssetSvg.imgLogoApp,

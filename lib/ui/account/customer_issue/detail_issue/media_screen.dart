@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -50,7 +51,7 @@ class _VideoPlayerScreenState extends State<MediaScreen> {
           AppUtil.printDebugMode(type: "Error initializing video", message: error);
         });
 
-      _timeoutTimer = Timer(const Duration(seconds: 10), () {
+      _timeoutTimer = Timer(const Duration(seconds: 30), () {
         if (_isLoading) {
           setState(() {
             _isTimeout = true;
@@ -106,18 +107,13 @@ class _VideoPlayerScreenState extends State<MediaScreen> {
             ),
           ] else ...[
             Center(
-              child: Image.network(
-                widget.url,
+              child: CachedNetworkImage(
+                imageUrl: widget.url,
                 fit: BoxFit.cover,
                 width: Get.width,
                 height: 300,
-                loadingBuilder: (_, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return const LoadingWidget();
-                },
-                errorBuilder: (context, error, stackTrace) => const ErrorImageWidget(),
+                placeholder: (context, url) => const LoadingWidget(),
+                errorWidget: (context, url, error) => const ErrorImageWidget(),
               ),
             ),
           ],
