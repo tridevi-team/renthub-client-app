@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
@@ -13,7 +12,6 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/services/auth_service.dart';
-import 'package:rent_house/ui/signin/signin_screen.dart';
 import 'package:rent_house/utils/extensions/string_extension.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/utils/shared_pref_helper.dart';
@@ -32,7 +30,6 @@ class AppUtil {
       TokenSingleton.instance.setRefreshToken('');
       UserSingleton.instance.resetUser();
 
-      Get.offAll(() => SignInScreen());
     } catch (e) {
       AppUtil.printDebugMode(type: "Error Logout", message: '$e');
     }

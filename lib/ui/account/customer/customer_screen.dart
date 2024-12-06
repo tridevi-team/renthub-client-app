@@ -12,6 +12,7 @@ import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
 import 'package:rent_house/ui/account/customer_issue/issue_tracking_screen.dart';
 import 'package:rent_house/ui/account/payment/payment_history_screen.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_navigation_bar.dart';
 import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
@@ -110,6 +111,7 @@ class CustomerScreen extends StatelessWidget {
                 onTap: () async {
                   Get.find<NotificationController>().resetNotificationCount();
                   AppUtil.logout();
+                  Get.offAll(() => BottomNavigationBarView());
                 }),
             const Spacer(),
             Align(

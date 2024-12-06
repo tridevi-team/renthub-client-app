@@ -53,15 +53,10 @@ class BottomNavigationBarView extends StatelessWidget {
               selectedFontSize: 0,
               type: BottomNavigationBarType.fixed,
               items: [
+                BottomNavigationBarItem(icon: SvgPicture.asset(AssetSvg.iconHome), label: 'Trang chủ'),
+                BottomNavigationBarItem(icon: SvgPicture.asset(AssetSvg.iconChart), label: 'Thống kê'),
                 BottomNavigationBarItem(
-                    icon: SvgPicture.asset(AssetSvg.iconHome), label: 'Trang chủ'),
-                BottomNavigationBarItem(
-                    icon: SvgPicture.asset(AssetSvg.iconChart), label: 'Thống kê'),
-                BottomNavigationBarItem(
-                    icon: Badge(
-                        label: Text('${Get.find<NotificationController>().notificationsCount}'),
-                        child: SvgPicture.asset(AssetSvg.iconNotification)),
-                    label: 'Thông báo'),
+                    icon: bottomNavController.notificationController.notificationsCount.value != 0 ? Badge(label: Text('${Get.find<NotificationController>().notificationsCount}'), child: SvgPicture.asset(AssetSvg.iconNotification)) : SvgPicture.asset(AssetSvg.iconNotification), label: 'Thông báo'),
                 BottomNavigationBarItem(icon: SvgPicture.asset(AssetSvg.iconPerson), label: 'Tôi'),
               ],
               currentIndex: bottomNavController.selectedIndex.value,

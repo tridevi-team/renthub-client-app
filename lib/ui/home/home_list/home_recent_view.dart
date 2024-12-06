@@ -5,7 +5,6 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/ui/home/house_detail/house_detail_screen.dart';
-import 'package:rent_house/utils/format_util.dart';
 
 class HomeRecentView extends StatelessWidget {
   const HomeRecentView({super.key, this.houseList});
