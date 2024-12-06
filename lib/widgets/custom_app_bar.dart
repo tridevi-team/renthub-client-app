@@ -11,6 +11,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double? elevationDouble;
   final VoidCallback? onTap;
   final VoidCallback? onTapShare;
+  final VoidCallback? onBack;
   final bool isShared;
   final bool isTransparent;
   final PreferredSizeWidget? bottomWidget;
@@ -25,6 +26,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isShared = false,
     this.isTransparent = false,
     this.bottomWidget,
+    this.onBack,
   });
 
   Widget _buildIconButton({required String iconAsset, VoidCallback? onPressed}) {
@@ -34,9 +36,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: isTransparent ? const EdgeInsets.all(6) : EdgeInsets.zero,
         decoration: isTransparent
             ? BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(100),
-        )
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(100),
+              )
             : null,
         child: SvgPicture.asset(
           iconAsset,
@@ -57,10 +59,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _buildIconButton(
-            iconAsset: AssetSvg.iconChevronBack,
-            onPressed: () => Get.back(),
-          ),
+          _buildIconButton(iconAsset: AssetSvg.iconChevronBack, onPressed: onBack ?? Get.back),
           const SizedBox(width: 8),
           Expanded(
             child: Align(
@@ -71,7 +70,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-
         ],
       ),
       actions: [

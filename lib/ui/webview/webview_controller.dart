@@ -14,6 +14,7 @@ class WebViewInAppController extends BaseController {
   String? htmlContent;
   RxBool isLoading = true.obs;
   RxDouble progress = 0.0.obs;
+  String statusPayment = "PENDING";
 
   @override
   void onInit() {
@@ -43,8 +44,17 @@ class WebViewInAppController extends BaseController {
             isLoading.value = false;
             progress.value = 0;
           },
-          onNavigationRequest: (NavigationRequest request) {
+          onNavigationRequest: (NavigationRequest request) async {
             if (request.url.contains('appvne://openapp') || request.url.contains('fr.playsoft.vnexpress')) {
+              return NavigationDecision.prevent;
+            }
+            if (request.url.contains("http://api.tmquang.com/") && request.url.contains("status=")) {
+              Uri uri = Uri.parse(request.url);
+              statusPayment = uri.queryParameters['status']!;
+              Get.back(result: statusPayment);
+            }
+            if (request.url == "http://api.tmquang.com/") {
+              Get.back(result: statusPayment);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;
