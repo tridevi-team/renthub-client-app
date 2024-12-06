@@ -16,11 +16,11 @@ class DetailIssueController extends BaseController {
   @override
   void onInit() {
     _issueId = Get.arguments["issueId"];
-    getBillDetails();
+    getIssueDetails();
     super.onInit();
   }
 
-  Future<void> getBillDetails() async {
+  Future<void> getIssueDetails() async {
     try {
       viewState.value = ViewState.loading;
       final response = await IssueService.fetchDetailIssue(issueId: _issueId);

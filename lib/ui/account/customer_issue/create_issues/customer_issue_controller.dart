@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
+import 'package:rent_house/models/issue_model.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/issue_service.dart';
+import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/toast_until.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -152,9 +154,12 @@ class CustomerIssueController extends BaseController {
       };
 
       final response = await IssueService.createIssues(houseId: houseId, body: data);
+      final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
+        IssueModel issueModel = IssueModel.fromJson(decodedResponse["data"]);
         showToast("Tạo báo cáo thành công!", ToastStatus.success);
         uploadProgress.value = 100;
+        Get.off(() => DetailIssueScreen(), arguments: {"issueId" : issueModel.id});
       } else {
         uploadProgress.value = 100;
         showToast("Tạo báo cáo thất bại. Vui lòng thử lại.", ToastStatus.error);
