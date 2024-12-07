@@ -31,37 +31,37 @@ class HouseDetailScreen extends StatelessWidget {
                 Expanded(
                   child: ListView.separated(
                     itemBuilder: (_, floorIndex) {
-                      final floor = houseDetailController.currentHouse.floors![floorIndex];
+                      final floor = houseDetailController.currentHouse.floors?[floorIndex];
                       ContactModel? contact = houseDetailController.currentHouse.contact;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${floor.name}',
+                            '${floor?.name}',
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),
-                          ...List.generate(floor.rooms!.length, (roomIndex) {
+                          ...List.generate(floor?.rooms?.length ?? 0, (roomIndex) {
                             return Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: RoomWidget(
-                                room: floor.rooms![roomIndex],
+                              child: floor?.rooms?[roomIndex] != null ? RoomWidget(
+                                room: floor!.rooms![roomIndex],
                                 onTap: () {
                                   final address =
-                                      houseDetailController.currentHouse.address.toString();
+                                  houseDetailController.currentHouse.address.toString();
                                   Get.to(() => RoomDetailScreen(
                                       selectedRoom: floor.rooms![roomIndex],
                                       address: address,
                                       contactModel: contact));
                                 },
-                              ),
+                              ) : const SizedBox(),
                             );
                           }),
                         ],
                       );
                     },
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemCount: houseDetailController.currentHouse.floors!.length,
+                    itemCount: houseDetailController.currentHouse.floors?.length ?? 0,
                     shrinkWrap: true,
                   ),
                 ),

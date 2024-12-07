@@ -38,7 +38,7 @@ class RoomWidget extends StatelessWidget {
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                   clipBehavior: Clip.hardEdge,
                   child: CachedNetworkImage(
-                    imageUrl: room.images?[0].imageUrl ?? '',
+                    imageUrl:room.images?.isNotEmpty ?? true ? (room.images?[0].imageUrl ?? "") : '',
                     width: width,
                     height: width,
                     fit: BoxFit.cover,
