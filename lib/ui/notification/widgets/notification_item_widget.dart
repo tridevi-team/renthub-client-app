@@ -5,12 +5,14 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/notification_model.dart';
+import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/images/common_network_image.dart';
 
 class NotificationItemWidget extends StatelessWidget {
-  const NotificationItemWidget({super.key, required this.notification, required this.removeNotification});
+  const NotificationItemWidget(
+      {super.key, required this.notification, required this.removeNotification});
 
   final NotificationItem notification;
   final void Function() removeNotification;
@@ -63,7 +65,8 @@ class NotificationItemWidget extends StatelessWidget {
                         children: [
                           Text(
                             "${notification.title}",
-                            style: ConstantFont.boldText.copyWith(color: AppColors.primary1, fontSize: 14),
+                            style: ConstantFont.boldText
+                                .copyWith(color: AppColors.primary1, fontSize: 14),
                           ),
                           const SizedBox(width: 10),
                           Text(
@@ -76,7 +79,8 @@ class NotificationItemWidget extends StatelessWidget {
                           Align(
                             alignment: Alignment.bottomRight,
                             child: Text(
-                              FormatUtil.formatToDayMonthYearTime(notification.createdAt.toString()),
+                              FormatUtil.formatToDayMonthYearTime(
+                                  notification.createdAt.toString()),
                               style: ConstantFont.regularText.copyWith(fontSize: 12),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
@@ -87,17 +91,23 @@ class NotificationItemWidget extends StatelessWidget {
                     )
                   ],
                 ),
-                if (!notification.isRead) ...[
-                  Positioned(
-                    right: 2,
-                    top: 0,
-                    child: Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(color: AppColors.red, borderRadius: BorderRadius.circular(50)),
-                    ),
-                  )
-                ]
+                Obx(() {
+                  if (Get.find<NotificationController>().notificationsCount.value >= 0 &&
+                      !notification.isRead) {
+                    return Positioned(
+                      right: 2,
+                      top: 0,
+                      child: Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                            color: AppColors.red, borderRadius: BorderRadius.circular(50)),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                })
               ],
             ),
           )),

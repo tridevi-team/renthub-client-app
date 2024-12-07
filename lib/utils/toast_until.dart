@@ -41,7 +41,7 @@ class ToastUntil {
       description: Text(description),
       style: ToastificationStyle.fillColored,
       primaryColor: const Color(0xFF242C32),
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       closeButtonShowType: CloseButtonShowType.none,
       showProgressBar: true,
       autoCloseDuration: const Duration(seconds: 5),

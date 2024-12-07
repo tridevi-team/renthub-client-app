@@ -111,6 +111,11 @@ class NotificationController extends BaseController {
         refreshCtrl.loadComplete();
         if (decodedResponse['success']) {
           notifications[index].status = "read";
+          if (notificationsCount.value > 0) {
+            notificationsCount.value -= 1;
+          } else {
+            notificationsCount.value = 0;
+          }
         }
       }
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
