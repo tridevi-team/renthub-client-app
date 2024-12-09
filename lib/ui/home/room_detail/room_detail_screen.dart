@@ -12,8 +12,10 @@ import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
+import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class RoomDetailScreen extends StatelessWidget {
   RoomDetailScreen({super.key, required this.selectedRoom, this.address = '', this.contactModel});
@@ -25,9 +27,10 @@ class RoomDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.roomId = selectedRoom.id;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const CustomAppBar(isShared: true, isTransparent: true),
+      appBar: const CustomAppBar(isTransparent: true),
       backgroundColor: AppColors.white,
       body: CustomScrollView(
         slivers: [
@@ -44,7 +47,7 @@ class RoomDetailScreen extends StatelessWidget {
   Widget _buildRoomImage() {
     return SliverToBoxAdapter(
       child: CachedNetworkImage(
-        imageUrl: selectedRoom.images?.first.imageUrl ?? '',
+        imageUrl: (selectedRoom.images?.isNotEmpty ?? false) ? selectedRoom.images?.first.imageUrl ?? '' : '',
         width: Get.width,
         height: 300,
         fit: BoxFit.cover,
@@ -144,9 +147,11 @@ class RoomDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Thông tin chi tiết', style: ConstantFont.boldText.copyWith(fontSize: 18)),
-            const SizedBox(height: 10),
-            _buildExpandableDescription(),
+            if (selectedRoom.description?.isNotEmpty ?? false) ...[
+              Text('Thông tin chi tiết', style: ConstantFont.boldText.copyWith(fontSize: 18)),
+              const SizedBox(height: 10),
+              _buildExpandableDescription(),
+            ],
             const SizedBox(height: 10),
             const Divider(height: 1, color: AppColors.neutralF5F5F5),
             const SizedBox(height: 20),
@@ -154,9 +159,7 @@ class RoomDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildEquipment(),
             const SizedBox(height: 10),
-            Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
-            const SizedBox(height: 20),
-            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) _buildImageCarousel()
+            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) ...[Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)), const SizedBox(height: 20), _buildImageCarousel()]
           ],
         ),
       ),
@@ -392,22 +395,25 @@ class RoomDetailScreen extends StatelessWidget {
 
   Widget _buildRegisterButton() {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: AppColors.primary1,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(AssetSvg.iconHome, width: 24, color: AppColors.white),
-            const SizedBox(width: 10),
-            Text(
-              'Đăng ký nhận thông tin',
-              style: ConstantFont.mediumText.copyWith(color: AppColors.white),
-            ),
-          ],
+      child: InkWell(
+        onTap: receiveRoomInformationForm,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: AppColors.primary1,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(AssetSvg.iconHome, width: 24, color: AppColors.white),
+              const SizedBox(width: 10),
+              Text(
+                'Đăng ký nhận thông tin',
+                style: ConstantFont.mediumText.copyWith(color: AppColors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -442,5 +448,76 @@ class RoomDetailScreen extends StatelessWidget {
               ),
       ],
     );
+  }
+
+  void receiveRoomInformationForm() {
+    Get.bottomSheet(
+        Container(
+          height: Get.height * 0.4,
+          padding: const EdgeInsets.all(14),
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              color: AppColors.white),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: Text(
+                    "Đăng ký nhận thông tin",
+                    style: ConstantFont.boldText,
+                  )),
+                  InkWell(
+                      onTap: () {
+                        Get.close(1);
+                      },
+                      child: SvgPicture.asset(AssetSvg.iconClose, width: 24))
+                ],
+              ),
+              const SizedBox(height: 30),
+              TextInputWidget(
+                hintText: "Họ tên",
+                controller: controller.fullNameCtrl,
+                errorInput: controller.fullNameError,
+                onChanged: controller.onChangeFullNameInput,
+              ),
+              const SizedBox(height: 10),
+              TextInputWidget(
+                hintText: "Số điện thoại",
+                controller: controller.phoneCtrl,
+                errorInput: controller.phoneError,
+                onChanged: controller.onChangePhoneInput,
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CustomElevatedButton(
+                        label: "Hủy",
+                        onTap: () {
+                          Get.close(1);
+                        }),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: CustomElevatedButton(
+                      label: "Đăng ký",
+                      onTap: controller.receiveRoomInformation,
+                      isReverse: true,
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+        isScrollControlled: true);
   }
 }

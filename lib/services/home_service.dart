@@ -19,4 +19,9 @@ class HomeService {
     String endpoint = 'https://provinces.tmquang.com/api/?depth=3';
     return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.get, useFullUrl: true);
   }
+
+  static Future<http.Response> signUpReceiveRoomInformation(Map<String, dynamic> body) {
+    String endpoint = '/houses/signup-receive-information';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.post, params: body);
+  }
 }
