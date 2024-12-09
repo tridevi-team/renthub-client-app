@@ -42,6 +42,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914117044001:android:ce1dcf80e2960b414f0060",
+        "android_client_info": {
+          "package_name": "com.tridevi.rent_house.staging"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "914117044001-ek7bbbv20i4ubfl1e31hl0c127usnrk5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7k1_AkO2KHcfEL41U8c82pg-65NQxpAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "914117044001-ek7bbbv20i4ubfl1e31hl0c127usnrk5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

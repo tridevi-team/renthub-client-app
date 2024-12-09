@@ -4,13 +4,14 @@ A new Flutter project.
 3.22.0
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Build APK:
+# Staging
+flutter build apk --flavor staging -t lib/main.dart
+# Live
+flutter build apk --flavor product -t lib/main.dart
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Build AAB:
+# Live
+flutter build appbundle --flavor product -t lib/main.dart
+# Staging
+flutter build appbundle --flavor staging -t lib/main.dart

@@ -46,19 +46,75 @@ android {
     }
 
     signingConfigs {
-        release {
+        product {
             keyAlias 'dHJpZGV2aV9yZW50aG91c203U='
             keyPassword 'password'
-            storeFile file('renthub_key.jks')
+            storeFile file('src/product/renthub_key.jks')
             storePassword 'password'
+        }
+
+        staging {
+            keyAlias 'dHJpZGV2aV9yZW50aG91c2Vfc3RhZ203luZw=='
+            keyPassword 'password'
+            storeFile file('src/staging/renthub_staging_key.jks')
+            storePassword 'password'
+        }
+    }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        staging {
+            dimension "default"
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "UAT Rent House"
+            resValue "string", "scheme", "staging-renthouse"
+        }
+        product {
+            dimension "default"
+            resValue "string", "app_name", "Rent House"
+            resValue "string", "scheme", "renthouse"
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        assembleDebug {
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        assembleRelease {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        bundleRelease {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
