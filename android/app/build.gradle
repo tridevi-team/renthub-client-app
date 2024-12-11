@@ -67,12 +67,12 @@ android {
         staging {
             dimension "default"
             applicationIdSuffix ".staging"
-            resValue "string", "app_name", "UAT Rent House"
+            resValue "string", "app_name", "UAT Trọ ơi"
             resValue "string", "scheme", "staging-renthouse"
         }
         product {
             dimension "default"
-            resValue "string", "app_name", "Rent House"
+            resValue "string", "app_name", "Trọ ơi"
             resValue "string", "scheme", "renthouse"
         }
     }
