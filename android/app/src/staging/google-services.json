@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "914117044001-hq0hni6jeq7jep00e9qdkiisigo8eji3.apps.googleusercontent.com",
+          "client_id": "914117044001-1j7ukndjutounq1mgie1s00v0mimanjn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tridevi.rent_house",
-            "certificate_hash": "e96537e02f9de23c0acbf3c37da9233bc0d9b6cd"
+            "certificate_hash": "80ef47793cb79046f1bfed287ec281c8aa38efec"
           }
         },
         {
@@ -52,11 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "914117044001-gtvjmh0e86h24j0b6v4ahv6i9ac50sv8.apps.googleusercontent.com",
+          "client_id": "914117044001-qh2fmj38am8ac0dhrel1pbrv6kkvfg1v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.tridevi.rent_house.staging",
-            "certificate_hash": "4c7e05bf832cff94d768dca01a91457343681406"
+            "certificate_hash": "0300d4dc3198a670c287bd84182f9121eb920061"
           }
         },
         {

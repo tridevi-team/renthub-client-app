@@ -6,9 +6,9 @@ A new Flutter project.
 
 ### Build APK:
 # Staging
-flutter build apk --flavor staging -t lib/main.dart
+flutter build apk --flavor staging -t lib/main_staging.dart
 # Live
-flutter build apk --flavor product -t lib/main.dart
+flutter build apk --flavor product -t lib/main_product.dart
 
 ### Build AAB:
 # Live
