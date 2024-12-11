@@ -49,7 +49,9 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
       final response = await StatisticService.getChartByRoom(_roomId, startTime, today);
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      if (decodedResponse["data"] == null || decodedResponse["data"] == {}) {
+      if (decodedResponse["data"] == null ||
+          (decodedResponse["data"] is Map && (decodedResponse["data"] as Map).isEmpty) ||
+          (decodedResponse["data"] is List && (decodedResponse["data"] as List).isEmpty)) {
         viewState.value = ViewState.noData;
         return;
       }
