@@ -18,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 class RoomDetailController extends BaseController {
   RxBool isExpanded = false.obs;
   String? roomId;
+  String? address;
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController phoneCtrl = TextEditingController();
   final Rx<ErrorInputModel> fullNameError = ErrorInputModel().obs;
@@ -138,4 +139,15 @@ class RoomDetailController extends BaseController {
       AppUtil.printDebugMode(type: 'Receive Room Info', message: "$e");
     }
   }
+
+  void viewRoomAddressOnMap() async {
+    String addressSearch = address?.replaceAll(",", "+") ?? "";
+    Uri uri = Uri.parse("https://www.google.com/maps/search/$addressSearch?hl=vi-VN&entry=ttu&g_ep=EgoyMDI0MTIwOS4wIKXMDSoASAFQAw==");
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $uri';
+    }
+  }
+
 }

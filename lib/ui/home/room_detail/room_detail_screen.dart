@@ -28,6 +28,7 @@ class RoomDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.roomId = selectedRoom.id;
+    controller.address = address;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: const CustomAppBar(isTransparent: true),
@@ -117,20 +118,24 @@ class RoomDetailScreen extends StatelessWidget {
   }
 
   Widget _buildMapLink() {
-    return Row(
-      children: [
-        SvgPicture.asset(
-          AssetSvg.iconLocation,
-          width: 18,
-          height: 18,
-          color: AppColors.primary1,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          'Xem trên bản đồ',
-          style: ConstantFont.regularText.copyWith(color: AppColors.primary1),
-        ),
-      ],
+    return GestureDetector(
+      onTap: controller.viewRoomAddressOnMap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            AssetSvg.iconLocation,
+            width: 18,
+            height: 18,
+            color: AppColors.primary1,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'Xem trên bản đồ',
+            style: ConstantFont.regularText.copyWith(color: AppColors.primary1),
+          ),
+        ],
+      ),
     );
   }
 
