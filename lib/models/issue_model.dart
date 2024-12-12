@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class IssueModel {
   String? id;
   String? houseId;
@@ -55,7 +57,7 @@ class IssueModel {
     content = json['content'];
     status = json['status'];
     description = json['description'] ?? '';
-    files = json['files'] != null ? Files.fromJson(json['files']) : null;
+    files = json['files'] != null ? Files.fromJson(jsonDecode(json['files'])) : null;
     assignTo = json['assignTo'];
     createdBy = json['createdBy'];
     createdAt = json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null;
