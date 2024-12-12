@@ -29,17 +29,13 @@ class SplashController extends BaseController {
   Future<void> _initializeApp() async {
     try {
       await _fetchProvinces();
+      String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
+
       if (ProvinceSingleton.instance.isProvincesEmpty) {
         ToastUntil.toastNotification(description: ConstantString.restartAppMessage, status: ToastStatus.error);
         return;
       }
-      String token = SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '';
-
-      if (token.isNotEmpty && !JwtDecoder.isExpired(token)) {
-        TokenSingleton.instance.setAccessToken(token);
-        await _initializeUserData();
-        Get.offAll(() => BottomNavigationBarView(isCustomer: isCustomer));
-      } else {
+      if (token.isEmpty) {
         await AppUtil.logout();
         bool isFirstLogin = SharedPrefHelper.instance.getInt(ConstantString.prefFirstLogin) != 1;
         if (isFirstLogin) {
@@ -47,8 +43,15 @@ class SplashController extends BaseController {
           Get.off(() => const OnboardingScreen());
           return;
         }
-        ToastUntil.toastNotification(description: ConstantString.sessionTimeoutMessage, status: ToastStatus.error);
         Get.off(() => BottomNavigationBarView());
+      } else {
+        if (JwtDecoder.isExpired(token)) {
+          ToastUntil.toastNotification(description: ConstantString.sessionTimeoutMessage, status: ToastStatus.error);
+        } else {
+          TokenSingleton.instance.setAccessToken(token);
+          await _initializeUserData();
+        }
+        Get.offAll(() => BottomNavigationBarView(isCustomer: isCustomer));
       }
     } catch (e) {
       ToastUntil.toastNotification(description: "Error during initialization: $e", status: ToastStatus.error);
