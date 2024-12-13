@@ -7,7 +7,6 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/error_input_model.dart';
-import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/dialog_util.dart';

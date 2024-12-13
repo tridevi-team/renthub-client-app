@@ -42,7 +42,7 @@ class CustomerInfoController extends BaseController {
   }
 
   void useNFC() {
-    Get.to(() => const NfcScreen());
+    Get.to(() => NFCScreen());
   }
 
   Future<void> useScanQR() async {

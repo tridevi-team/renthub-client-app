@@ -57,7 +57,11 @@ class IssueModel {
     content = json['content'];
     status = json['status'];
     description = json['description'] ?? '';
-    files = json['files'] != null ? Files.fromJson(jsonDecode(json['files'])) : null;
+    files = json['files'] != null
+        ? json['files'] is String
+            ? Files.fromJson(jsonDecode(json['files']))
+            : Files.fromJson(json['files'])
+        : null;
     assignTo = json['assignTo'];
     createdBy = json['createdBy'];
     createdAt = json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null;

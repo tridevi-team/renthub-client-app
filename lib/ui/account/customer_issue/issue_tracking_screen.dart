@@ -96,6 +96,7 @@ class IssueTrackingScreen extends StatelessWidget {
       },
       onLoadingMore: controller.getHistoryOfIssueTab,
       child: ListView.builder(
+        addAutomaticKeepAlives: false,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: controller.issueList.length,
         itemBuilder: (_, index) => _buildIssueWidget(controller.issueList[index]),
