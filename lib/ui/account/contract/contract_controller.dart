@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -8,6 +9,7 @@ import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/contract_model.dart';
 import 'package:rent_house/services/contract_service.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/utils/toast_until.dart';
@@ -120,8 +122,8 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
       "RENTER_DATE_OF_ISSUANCE": "${contract.renter?.dateOfIssue}",
       "RENTER_PLACE_OF_ISSUE": "${contract.renter?.placeOfIssue}",
       "RENTER_PHONE_NUMBER": "${contract.renter?.phoneNumber}",
-      "RENTAL_HOUSE_ADDRESS": "${contract.room?.house}",
-      "HOUSE_NAME": "${contract.room?.name}",
+      "RENTAL_HOUSE_ADDRESS": "${contract.room?.house?.address.toString()}",
+      "HOUSE_NAME": "${contract.room?.house?.name}",
       "SQUARE_METER": "${contract.room?.area.toString()}",
       "ROOM_NAME": "${contract.room?.name}",
       "CONTRACT_START_DATE": FormatUtil.formatToDayMonthYear(contract.rentalStartDate?.toString()),
@@ -134,9 +136,25 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
       "USE_SERVICES": contract.services != null ? '<ul>${contract.services!.map((service) => '<li><strong>${service.name}:</strong> ${FormatUtil.formatCurrency(service.unitPrice ?? 0)}</li>').join('')}</ul>' : '',
       //"ROOM_VEHICLE_LIST": contract.equipment != null ? contract.equipment!.map((e) => e.name).join(', ') : '',
       "EQUIPMENT_LIST": contract.equipment != null ? '<ul>${contract.equipment!.map((item) => '<li><strong>${item.name}:</strong> x1</li>').join('')}</ul>' : '',
+      "CONTRACT_MONTHS": "${calculateMonthsBetweenDates(rentalStartDate: contract.rentalStartDate?.toString() ?? "", rentalEndDate: contract.rentalEndDate?.toString() ?? "")}",
+      "FEE_COLLECTION_DAY": FormatUtil.formatToDayMonthYear(contract.depositDate?.toString())
     };
 
     return replaceKeyHtml(contract.content ?? "", placeholders);
+  }
+
+  int calculateMonthsBetweenDates({
+    required String rentalStartDate,
+    required String rentalEndDate,
+  }) {
+    if (rentalStartDate == "" || rentalEndDate == "") return 0;
+    DateTime startDate = DateTime.parse(rentalStartDate);
+    DateTime endDate = DateTime.parse(rentalEndDate);
+
+    int yearDiff = endDate.year - startDate.year;
+    int monthDiff = endDate.month - startDate.month;
+
+    return yearDiff * 12 + monthDiff;
   }
 
   String numberToVietnameseWords(int number) {
@@ -200,16 +218,19 @@ class CustomerContractController extends BaseController with GetTickerProviderSt
 
   Future<void> updateStatusContract(String contractId, String status) async {
     try {
+      DialogUtil.showLoading();
       final response = await ContractService.updateContractStatus(contractId: contractId, body: {"status": status});
-      print("updated status: $response");
+      DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         ToastUntil.toastNotification(description: "Cập nhật hợp đồng thành công", status: ToastStatus.success);
         Get.back();
+        changeTab(1);
         return;
       }
       ToastUntil.toastNotification(description: "Cập nhật hợp đồng thất bại. Vui lòng thử lại.", status: ToastStatus.error);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
     } catch (e) {
+      DialogUtil.hideLoading();
       viewState.value = ViewState.notFound;
       AppUtil.printDebugMode(type: 'Contract Update Error', message: "$e");
     }

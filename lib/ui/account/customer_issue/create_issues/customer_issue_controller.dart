@@ -12,6 +12,7 @@ import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/issue_service.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
+import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/toast_until.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
@@ -112,7 +113,7 @@ class CustomerIssueController extends BaseController {
         ...selectedImages.map((image) => File(image.path)),
         ...selectedVideos.map((video) => File(video.path)),
       ];
-
+      DialogUtil.showLoading(uploadProgress: uploadProgress);
       if (files.isNotEmpty) {
         uploadProgress.value = 0.0;
         final uploadResponse = await IssueService.uploadFiles(files, (progress) {
@@ -159,7 +160,7 @@ class CustomerIssueController extends BaseController {
         IssueModel issueModel = IssueModel.fromJson(decodedResponse["data"]);
         showToast("Tạo báo cáo thành công!", ToastStatus.success);
         uploadProgress.value = 100;
-        Get.off(() => DetailIssueScreen(), arguments: {"issueId" : issueModel.id});
+        Get.off(() => DetailIssueScreen(), arguments: {"issueId" : issueModel.id, "routesClose" : 2});
       } else {
         uploadProgress.value = 100;
         showToast("Tạo báo cáo thất bại. Vui lòng thử lại.", ToastStatus.error);

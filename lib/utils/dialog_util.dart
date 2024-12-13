@@ -336,14 +336,37 @@ class DialogUtil {
     );
   }
 
-  static void showLoading() {
+  static void showLoading({Rx<double>? uploadProgress}) {
     if (!Get.isDialogOpen!) {
       Get.dialog(
           PopScope(
             canPop: false,
             onPopInvoked: (value) => Future.value(false),
-            child: const Center(
-              child: LoadingWidget(),
+            child: Material(
+              surfaceTintColor: Colors.transparent,
+              color: Colors.transparent,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const LoadingWidget(),
+                    Obx(() => uploadProgress?.value != 0
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 10),
+                              Text(
+                                "${uploadProgress?.toStringAsFixed(0)}%",
+                                textAlign: TextAlign.center,
+                                style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
+                              )
+                            ],
+                          )
+                        : const SizedBox())
+                  ],
+                ),
+              ),
             ),
           ),
           barrierDismissible: false);

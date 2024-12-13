@@ -26,58 +26,70 @@ class DetailIssueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(label: 'Chi tiết vấn đề'),
-      backgroundColor: AppColors.white,
-      body: Obx(() {
-        if (controller.viewState.value == ViewState.loading) {
-          return const LoadingWidget();
-        } else if (controller.viewState.value == ViewState.init ||
-            controller.viewState.value == ViewState.complete ||
-            controller.viewState.value == ViewState.noData) {
-          if (controller.viewState.value == ViewState.noData) {
-            return const NotFoundWidget(
-                title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.issueModel?.title ?? '',
-                    style: ConstantFont.mediumText.copyWith(fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${controller.issueModel?.roomName ?? ''} - ${controller.issueModel?.floorName ?? ''}',
-                    style: ConstantFont.regularText,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildIssueInfoRow(controller.issueModel),
-                  const SizedBox(height: 12),
-                  _buildDescriptionField(controller.issueModel?.content),
-                  const SizedBox(height: 12),
-                  _buildMediaSection(
-                    title: "Hình ảnh",
-                    mediaList: controller.issueModel?.files?.image,
-                    isMp4: false,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMediaSection(
-                    title: "Video",
-                    mediaList: controller.issueModel?.files?.video,
-                    isMp4: true,
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return NetworkErrorWidget(viewState: controller.viewState.value);
+    final routes = Get.arguments["routesClose"] ?? 1;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
         }
-      }),
+        Get.close(routes);
+      },
+      child: Scaffold(
+        appBar: CustomAppBar(label: 'Chi tiết vấn đề', onBack: () {
+          Get.close(routes);
+        },),
+        backgroundColor: AppColors.white,
+        body: Obx(() {
+          if (controller.viewState.value == ViewState.loading) {
+            return const LoadingWidget();
+          } else if (controller.viewState.value == ViewState.init ||
+              controller.viewState.value == ViewState.complete ||
+              controller.viewState.value == ViewState.noData) {
+            if (controller.viewState.value == ViewState.noData) {
+              return const NotFoundWidget(
+                  title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.issueModel?.title ?? '',
+                      style: ConstantFont.mediumText.copyWith(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${controller.issueModel?.roomName ?? ''} - ${controller.issueModel?.floorName ?? ''}',
+                      style: ConstantFont.regularText,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildIssueInfoRow(controller.issueModel),
+                    const SizedBox(height: 12),
+                    _buildDescriptionField(controller.issueModel?.content),
+                    const SizedBox(height: 12),
+                    _buildMediaSection(
+                      title: "Hình ảnh",
+                      mediaList: controller.issueModel?.files?.image,
+                      isMp4: false,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildMediaSection(
+                      title: "Video",
+                      mediaList: controller.issueModel?.files?.video,
+                      isMp4: true,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return NetworkErrorWidget(viewState: controller.viewState.value);
+          }
+        }),
+      ),
     );
   }
 

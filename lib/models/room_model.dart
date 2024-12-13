@@ -1,3 +1,5 @@
+import 'package:rent_house/models/address_model.dart';
+
 class Room {
   String? id;
   String? name;
@@ -220,6 +222,7 @@ class _HouseModel {
   String? name;
   String? description;
   _FloorModel? floor;
+  Address? address;
 
   _HouseModel();
 
@@ -228,6 +231,7 @@ class _HouseModel {
     name = json['name'];
     description = json['description'];
     floor = json['floor'] != null ? _FloorModel.fromJson(json['floor']) : null;
+    address = json['address'] != null ? Address.fromJson(json['address']) : null;
   }
 
   Map<String, dynamic> toJson() {

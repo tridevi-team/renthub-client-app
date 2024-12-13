@@ -135,6 +135,9 @@ class SignInController extends BaseController {
           UserSingleton.instance.setUser(user);
           _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
         } else {
+          if (model.code == "INVALID_VERIFICATION_CODE") {
+            _showToast(ConstantString.invalidOTPMessage, ToastStatus.error);
+          }
           _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
           viewState.value = ViewState.complete;
         }

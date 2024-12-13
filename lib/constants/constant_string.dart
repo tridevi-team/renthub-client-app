@@ -40,6 +40,7 @@ class ConstantString {
   static const String accountNotFoundMessage = "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.";
   static const String updateFailedMessage = "Cập nhật thông tin thất bại. Vui lòng thử lại.";
   static const String uploadFailedMessage = "Tải file lên thất bại. Vui lòng thử lại.";
+  static const String invalidOTPMessage = "Mã xác minh không hợp lệ hoặc đã hết hạn. Vui lòng nhập lại chính xác hoặc nhận mã khác";
 
   static const List<Map<String, dynamic>> bankApps = [
     {
