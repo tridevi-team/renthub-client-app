@@ -350,20 +350,22 @@ class DialogUtil {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const LoadingWidget(),
-                    Obx(() => uploadProgress?.value != 0
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 10),
-                              Text(
-                                "${uploadProgress?.toStringAsFixed(0)}%",
-                                textAlign: TextAlign.center,
-                                style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
-                              )
-                            ],
+                    if (uploadProgress != null) ...[
+                      Obx(() => uploadProgress.value != 0
+                          ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 10),
+                          Text(
+                            "${uploadProgress.toStringAsFixed(0)}%",
+                            textAlign: TextAlign.center,
+                            style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
                           )
-                        : const SizedBox())
+                        ],
+                      )
+                          : const SizedBox())
+                    ]
                   ],
                 ),
               ),
