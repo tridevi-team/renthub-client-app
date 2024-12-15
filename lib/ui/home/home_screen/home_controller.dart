@@ -64,6 +64,7 @@ class HomeController extends BaseController {
       if (isLoadMore) {
         currentPage++;
       } else {
+        houseList.clear();
         viewState.value = ViewState.loading;
         currentPage = 1;
       }
@@ -91,7 +92,7 @@ class HomeController extends BaseController {
       }
 
       if (districtNameSelected != "") {
-        filters = '''filter[]={
+        filters = '''${filters}filter[]={
         "field": "houses.district",
         "operator": "eq",
         "value": "$districtNameSelected"
@@ -105,9 +106,6 @@ class HomeController extends BaseController {
         HouseDataModel houseDataModel = HouseDataModel.fromJson(decodedResponse['data']);
         viewState.value = ViewState.complete;
         if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
-          if (!isLoadMore) {
-            houseList.clear();
-          }
           houseList.addAll(houseDataModel.results!);
           refreshController.loadComplete();
         } else {

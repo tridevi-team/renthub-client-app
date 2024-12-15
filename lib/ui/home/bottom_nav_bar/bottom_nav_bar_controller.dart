@@ -294,7 +294,6 @@ class BottomNavBarController extends FullLifeCycleController {
                         } else {
                           setSelectedCity();
                         }
-                        Get.find<HomeController>().fetchHouseList();
                       },
                       style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all<Color>(AppColors.primary1)),
