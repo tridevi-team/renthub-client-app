@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -65,19 +63,7 @@ class WebViewInAppController extends BaseController {
     webViewController = controller;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (htmlContent != null) {
-        webViewController?.loadHtmlString('''
-        <!DOCTYPE html>
-        <html lang="vi">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <body>
-            $htmlContent
-          </body>
-        </html>''');
-      } else {
-        webViewController?.loadRequest(Uri.parse(url ?? ''));
-      }
+      webViewController?.loadRequest(Uri.parse(url ?? ''));
     });
   }
 }

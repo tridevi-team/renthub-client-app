@@ -131,11 +131,11 @@ class CustomerInfoController extends BaseController {
       );
 
 
-
+      DialogUtil.showLoading();
       final response = await CustomerService.updateCustomerInfo(user.id ?? '', updatedUser.toUpdateJson());
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-
-      if (response.statusCode < 300) {
+      DialogUtil.showLoading();
+      if (response.statusCode == 200) {
         UserSingleton.instance.setUser(updatedUser);
         isEditInfo.value = false;
       } else {

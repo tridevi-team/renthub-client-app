@@ -7,6 +7,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/contract_model.dart';
 import 'package:rent_house/ui/account/contract/contract_controller.dart';
+import 'package:rent_house/ui/account/contract/detail/contract_detail_screen.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
@@ -28,12 +29,15 @@ class CustomerContractScreen extends StatelessWidget {
         if (controller.viewState.value == ViewState.loading) {
           return const LoadingWidget();
         }
-        if ([ViewState.complete, ViewState.init, ViewState.noData].contains(controller.viewState.value)) {
+        if ([ViewState.complete, ViewState.init, ViewState.noData]
+            .contains(controller.viewState.value)) {
           return Column(
             children: [
               _buildTabBar(),
               Expanded(
-                child: controller.viewState.value == ViewState.noData ? _buildNoDataView() : _buildContractList(),
+                child: controller.viewState.value == ViewState.noData
+                    ? _buildNoDataView()
+                    : _buildContractList(),
               ),
             ],
           );
@@ -103,17 +107,8 @@ class CustomerContractScreen extends StatelessWidget {
 
   Widget _buildIssueWidget(ContractModel contract) {
     return InkWell(
-      onTap: () {
-        Get.to(
-          () => WebViewScreen(
-            title: "Thông tin hợp đồng",
-            htmlContent: controller.generateContractHtml(contract),
-            statusContract: contract.approvalStatus,
-            onTap: (status) {
-              controller.updateStatusContract(contract.id ?? "", status);
-            },
-          ),
-        );
+      onTap: () async {
+        Get.to(() => ContractDetailScreen(), arguments: {"contractId": contract.id});
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),

@@ -236,16 +236,27 @@ class RoomDetailScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SvgPicture.asset(
-                    AppUtil.getEquipmentIconPath(equipment.name ?? ''),
-                    width: 24,
-                    height: 24,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SvgPicture.asset(
+                        AppUtil.getEquipmentIconPath(equipment.name ?? ''),
+                        width: 24,
+                        height: 24,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        "${equipment.name}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ConstantFont.regularText.copyWith(fontSize: 12),
+                      )
+                    ],
                   ),
-                  const SizedBox(width: 6),
                   Text(
-                    "${equipment.name}",
+                    "x1",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ConstantFont.regularText.copyWith(fontSize: 12),
