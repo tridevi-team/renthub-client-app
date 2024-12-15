@@ -99,7 +99,7 @@ class CustomerScreen extends StatelessWidget {
             _buildListTile(
                 trailingAsset: AssetSvg.iconChevronForward,
                 leadingAsset: AssetSvg.iconMailOpen,
-                titleText: 'Quản lý báo cáo',
+                titleText: 'Quản lý phản ánh',
                 onTap: () {
                   Get.to(() => IssueTrackingScreen());
                 }),

@@ -23,7 +23,7 @@ class IssueTrackingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(label: "Quản lý báo cáo"),
+      appBar: const CustomAppBar(label: "Quản lý phản ánh"),
       backgroundColor: AppColors.white,
       body: Obx(() {
         if (controller.viewState.value == ViewState.loading) {
