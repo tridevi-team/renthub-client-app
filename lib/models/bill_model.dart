@@ -41,8 +41,8 @@ class BillModel {
     roomName = json['roomName'] ?? '';
     title = json['title'] ?? '';
     amount = json['amount'] ?? 0;
-    startDate = json['startDate'] ?? '';
-    endDate = json['endDate'] ?? '';
+    startDate = json['date']?['from'] ?? '';
+    endDate = json['date']?['to'] ?? '';
     paymentDate = json['paymentDate'] ?? '';
     status = json['status'] ?? '';
     description = json['description'] ?? '';
@@ -60,14 +60,18 @@ class BillModel {
       'roomName': roomName,
       'title': title,
       'amount': amount,
-      'startDate': startDate,
-      'endDate': endDate,
+      'date': {
+        'from': startDate,
+        'to': endDate,
+      },
+      'paymentDate': paymentDate,
       'status': status,
       'description': description,
       'accountName': accountName,
       'accountNumber': accountNumber,
       'bankName': bankName,
       'createdAt': createdAt,
+      'services': services?.map((service) => service.toJson()).toList(),
     };
   }
 }
