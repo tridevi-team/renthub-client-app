@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 
@@ -136,7 +137,7 @@ class AppUtil {
 
   static void printDebugMode({required String type, required String message}) {
     if (kDebugMode) {
-      print("[$type] $message");
+      log("[$type] $message");
     }
   }
 

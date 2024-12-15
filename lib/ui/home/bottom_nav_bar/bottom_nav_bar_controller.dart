@@ -147,7 +147,7 @@ class BottomNavBarController extends FullLifeCycleController {
       if (Platform.isAndroid) {
         bool isValidAccessToken = JwtDecoder.isExpired(
             SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
-        if (isValidAccessToken) {
+        if (isValidAccessToken == false) {
           LocalNotificationUtil.createNotification(message);
         }
       }

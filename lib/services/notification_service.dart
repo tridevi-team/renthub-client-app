@@ -30,7 +30,7 @@ class NotificationService {
       Map<String, dynamic> data = {"FCM": fcmToken};
 
       await db.collection("users").doc(uuid).collection("devices").doc(device).set(data, SetOptions(merge: true));
-      AppUtil.printDebugMode(type: "FCM save success", message: "FCM token saved successfully for device: $device");
+      AppUtil.printDebugMode(type: "FCM save success", message: "FCM token $fcmToken saved successfully for device: $device");
     } catch (e) {
       AppUtil.printDebugMode(type: "Error saving FCM to Firestore", message: "FCM token saved successfully for device: $e");
     }
