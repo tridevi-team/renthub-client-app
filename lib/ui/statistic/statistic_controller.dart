@@ -49,9 +49,12 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
 
       final response = await StatisticService.getChartByRoom(_roomId, startTime, today);
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-      if (decodedResponse["data"] == null ||
-          (decodedResponse["data"] is Map && (decodedResponse["data"] as Map).isEmpty) ||
-          (decodedResponse["data"] is List && (decodedResponse["data"] as List).isEmpty)) {
+      DialogUtil.hideLoading();
+      if (isNullOrEmpty(decodedResponse["data"])) {
+        viewState.value = ViewState.noData;
+        return;
+      }
+      if (isNullOrEmpty(decodedResponse["data"]["serviceCompare"]["data"])) {
         viewState.value = ViewState.noData;
         return;
       }
@@ -60,16 +63,20 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
         findLowestAndHighestPayment();
         barChartGroupData.value = generateBarChartData();
         viewState.value = ViewState.complete;
-        DialogUtil.hideLoading();
       } else {
         ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-        DialogUtil.hideLoading();
       }
     } catch (e) {
       DialogUtil.hideLoading();
       AppUtil.printDebugMode(type: 'fetch chart', message: "$e");
       viewState.value = ViewState.notFound;
     }
+  }
+
+  bool isNullOrEmpty(dynamic value) {
+    return value == null ||
+        (value is Map && value.isEmpty) ||
+        (value is List && value.isEmpty);
   }
 
   List<BarChartGroupData> generateBarChartData() {
@@ -86,7 +93,8 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
             toY: totalServices,
             color: Colors.blue,
             width: (statisticData.serviceCompare?.data?.length ?? 0) < 6 ? 30 : 20,
-            borderRadius: const BorderRadius.only(topRight: Radius.circular(2), topLeft: Radius.circular(1)),
+            borderRadius:
+                const BorderRadius.only(topRight: Radius.circular(2), topLeft: Radius.circular(1)),
           ),
         ],
       );
@@ -109,7 +117,8 @@ class StatisticsController extends BaseController with GetTickerProviderStateMix
     }
 
     for (var data in statisticData.serviceCompare!.data!) {
-      final totalPayment = (data.services?.values.fold(0, (sum, value) => sum + value) ?? 0) / 1000000.0;
+      final totalPayment =
+          (data.services?.values.fold(0, (sum, value) => sum + value) ?? 0) / 1000000.0;
       final month = data.month ?? '';
 
       if (totalPayment < lowestPayment) {

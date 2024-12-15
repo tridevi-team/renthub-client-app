@@ -144,29 +144,44 @@ class PaymentScreen extends StatelessWidget {
                         children: controller.bill?.services?.map((service) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        "${service.name} x${service.amount}",
-                                        style: ConstantFont.regularText,
-                                      ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "${service.name} x${service.amount}",
+                                            style: ConstantFont.regularText,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          FormatUtil.formatCurrency(service.unitPrice ?? 0),
+                                          style: ConstantFont.regularText.copyWith(color: AppColors.red),
+                                        ),
+
+                                      ],
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      FormatUtil.formatCurrency(service.unitPrice ?? 0),
-                                      style: ConstantFont.regularText.copyWith(color: AppColors.red),
-                                    ),
+                                    const SizedBox(height: 4),
                                     if (service.oldValue != null && service.oldValue! >= 0 && service.newValue != null && service.newValue! > 0) ...[
                                       Text(
-                                        "Chỉ số cũ: ${FormatUtil.formatCurrency(service.oldValue!)}",
+                                        "Chỉ số cũ: ${service.oldValue!}",
                                         style: ConstantFont.regularText,
                                       ),
                                       const SizedBox(width: 4),
-                                      Text(
-                                        "Chỉ số mới: ${FormatUtil.formatCurrency(service.newValue!)}",
-                                        style: ConstantFont.regularText,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Chỉ số mới: ${service.newValue}",
+                                            style: ConstantFont.regularText,
+                                          ),
+                                          Text(FormatUtil.formatCurrency(
+                                              (service.unitPrice ?? 0) * ((service.newValue ?? 0) - (service.oldValue ?? 0))
+                                          ), style: ConstantFont.regularText.copyWith(color: AppColors.red),)
+                                        ],
                                       ),
                                     ]
                                   ],

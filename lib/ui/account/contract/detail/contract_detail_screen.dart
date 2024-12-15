@@ -27,9 +27,9 @@ class ContractDetailScreen extends StatelessWidget {
               ? _buildWebView()
               : WebViewWidget(controller: controller.webViewController!),
         ),
-        bottomNavigationBar: controller.contract?.status == "PENDING"
+        bottomNavigationBar: Obx(() => controller.contract.value.status == "PENDING"
             ? _buildBottomNavBar()
-            : const SizedBox.shrink());
+            : const SizedBox.shrink()));
   }
 
   Widget _buildWebView() {

@@ -43,8 +43,8 @@ class SearchXController extends BaseController {
   int? numOfBeds;
   int? numOfRenters;
   int? roomArea;
-  double minPrice = 1000000000;
-  double maxPrice = 0;
+  double minPrice = 0;
+  double maxPrice = 100000000;
   Rx<RangeValues> currentFilterPrice = const RangeValues(0, 1000000000).obs;
 
   @override
@@ -139,14 +139,7 @@ class SearchXController extends BaseController {
         viewState.value = ViewState.complete;
         final houses = houseDataModel.results ?? [];
         if (houseDataModel.results != null && houseDataModel.results!.isNotEmpty) {
-          for (var house in houses) {
-            if (house.minPrice != null && minPrice > house.minPrice!) {
-              minPrice = house.minPrice!.toDouble();
-            }
-            if (house.maxPrice != null && maxPrice < house.maxPrice!) {
-              maxPrice = house.maxPrice!.toDouble();
-            }
-          }
+
           if (isFistFilter) {
             currentFilterPrice.value =
                 RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));

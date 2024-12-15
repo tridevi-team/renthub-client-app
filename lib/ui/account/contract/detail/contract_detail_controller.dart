@@ -20,7 +20,7 @@ class ContractDetailController extends BaseController {
   String statusPayment = "PENDING";
   String htmlContent = '';
   Map<String, dynamic> keys = {};
-  ContractModel? contract;
+  Rx<ContractModel> contract = ContractModel().obs;
 
   @override
   void onInit() async {
@@ -70,7 +70,7 @@ class ContractDetailController extends BaseController {
       final response = await ContractService.getContractDetail(contractId: contractId);
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
-        contract = ContractModel.fromJson(decodedResponse["data"]["contract"]);
+        contract.value = ContractModel.fromJson(decodedResponse["data"]["contract"]);
         keys = decodedResponse["data"]["keys"];
         htmlContent = replaceKeyHtml(decodedResponse["data"]["contract"]["content"]);
       }
@@ -84,7 +84,7 @@ class ContractDetailController extends BaseController {
   String replaceKeyHtml(String content) {
     keys.forEach((key, value) {
       if (key == "EQUIPMENT_LIST") {
-        value = contract?.equipment != null
+        value = contract.value.equipment != null
             ? '''
         <table border="1" style="border-collapse: collapse; width: 100%;">
           <thead>
@@ -95,7 +95,7 @@ class ContractDetailController extends BaseController {
             </tr>
           </thead>
           <tbody>
-            ${contract?.equipment?.map((item) {
+            ${contract.value.equipment?.map((item) {
               String status = item.status == "NORMAL" ? "Bình thường" : "Hỏng";
               return '''
               <tr>
@@ -110,7 +110,7 @@ class ContractDetailController extends BaseController {
       '''
             : '';
       } else if (key == "USE_SERVICES") {
-        value = contract?.services != null
+        value = contract.value.services != null
             ? '''
         <table border="1" style="border-collapse: collapse; width: 100%;">
           <thead>
@@ -120,7 +120,7 @@ class ContractDetailController extends BaseController {
             </tr>
           </thead>
           <tbody>
-            ${contract?.services?.map((service) => '''
+            ${contract.value.services?.map((service) => '''
               <tr>
                 <td style="text-align: left; padding: 8px;">${service.name}</td>
                 <td style="text-align: left; padding: 8px;">${FormatUtil.formatCurrency(service.unitPrice ?? 0)}</td>
@@ -141,7 +141,7 @@ class ContractDetailController extends BaseController {
     try {
       DialogUtil.showLoading();
       final response = await ContractService.updateContractStatus(
-          contractId: contract?.contractId ?? "", body: {"status": status});
+          contractId: contract.value.id ?? "", body: {"status": status});
       DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         ToastUntil.toastNotification(

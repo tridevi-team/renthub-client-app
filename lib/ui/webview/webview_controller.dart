@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/web_service.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewInAppController extends BaseController {
@@ -46,7 +47,7 @@ class WebViewInAppController extends BaseController {
             if (request.url.contains('appvne://openapp') || request.url.contains('fr.playsoft.vnexpress')) {
               return NavigationDecision.prevent;
             }
-            if (request.url.contains("http://api.tmquang.com/") && request.url.contains("status=")) {
+            if (request.url.contains(WebService.baseUrl) && request.url.contains("status=")) {
               Uri uri = Uri.parse(request.url);
               statusPayment = uri.queryParameters['status']!;
               Get.back(result: statusPayment);
