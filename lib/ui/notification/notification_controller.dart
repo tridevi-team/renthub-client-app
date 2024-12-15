@@ -8,6 +8,7 @@ import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/notification_model.dart';
 import 'package:rent_house/services/notification_service.dart';
+import 'package:rent_house/ui/account/contract/detail/contract_detail_screen.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/detail_issue_screen.dart';
 import 'package:rent_house/ui/account/payment/checkout/payment_screen.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
@@ -136,8 +137,8 @@ class NotificationController extends BaseController {
     } else if (isValid(data?['issueId'])) {
       Get.to(() => DetailIssueScreen(), arguments: {"issueId": data?['issueId']});
       return;
-    } else if (isValid(data?[''])) {
-      Get.to(() => WebViewScreen(), arguments: {"contractId": data?['contractId']});
+    } else if (isValid(data?['contractId'])) {
+      Get.to(() => ContractDetailScreen(), arguments: {"contractId": data?['contractId']});
     }
   }
 
