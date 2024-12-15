@@ -134,15 +134,21 @@ class CustomerInfoController extends BaseController {
       DialogUtil.showLoading();
       final response = await CustomerService.updateCustomerInfo(user.id ?? '', updatedUser.toUpdateJson());
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-      DialogUtil.showLoading();
+      DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         UserSingleton.instance.setUser(updatedUser);
         isEditInfo.value = false;
+        ToastUntil.toastNotification(
+          description: ConstantString.updateSuccessMessage,
+          status: ToastStatus.error,
+        );
+        return;
       } else {
         ToastUntil.toastNotification(
           description: ConstantString.updateFailedMessage,
           status: ToastStatus.error,
         );
+        return;
       }
     } catch (e) {
       AppUtil.printDebugMode(type: "Error updating customer", message: "$e");

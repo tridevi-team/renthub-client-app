@@ -39,6 +39,7 @@ class ConstantString {
   static const String sessionTimeoutMessage = "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại.";
   static const String accountNotFoundMessage = "Tài khoản không tồn tại trong hệ thống. Vui lòng liên hệ với quản lý toà nhà.";
   static const String updateFailedMessage = "Cập nhật thông tin thất bại. Vui lòng thử lại.";
+  static const String updateSuccessMessage = "Cập nhật thông tin thành công";
   static const String uploadFailedMessage = "Tải file lên thất bại. Vui lòng thử lại.";
   static const String invalidOTPMessage = "Mã xác minh không hợp lệ hoặc đã hết hạn. Vui lòng nhập lại chính xác hoặc nhận mã khác";
 
