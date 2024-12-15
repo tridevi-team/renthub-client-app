@@ -140,7 +140,7 @@ class CustomerInfoController extends BaseController {
         isEditInfo.value = false;
         ToastUntil.toastNotification(
           description: ConstantString.updateSuccessMessage,
-          status: ToastStatus.error,
+          status: ToastStatus.success,
         );
         return;
       } else {

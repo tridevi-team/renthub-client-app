@@ -218,6 +218,14 @@ class HouseRenterScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.neutralFAFAFA,
               borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color.fromRGBO(99, 99, 99, 0.2),
+                  offset: Offset(0, 2),
+                  blurRadius: 4,
+                  spreadRadius: 0,
+                )
+              ]
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

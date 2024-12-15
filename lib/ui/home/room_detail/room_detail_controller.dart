@@ -117,6 +117,7 @@ class RoomDetailController extends BaseController {
       DialogUtil.showLoading();
       final body = {'roomId': roomId, "fullName": fullNameCtrl.text, "phoneNumber": phoneCtrl.text};
       final response = await HomeService.signUpReceiveRoomInformation(body);
+      DialogUtil.hideLoading();
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       if (decodedResponse["code"] == "SIGNUP_RECORD_ALREADY_EXISTS") {
         ToastUntil.toastNotification(
@@ -127,12 +128,11 @@ class RoomDetailController extends BaseController {
         return;
       }
       if (response.statusCode == 200) {
-        ToastUntil.toastNotification(description: "Đăng ký thành công", status: ToastStatus.success);
         Get.close(1);
+        ToastUntil.toastNotification(description: "Đăng ký thành công", status: ToastStatus.success);
       } else {
         ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
       }
-      DialogUtil.hideLoading();
     } catch (e) {
       DialogUtil.hideLoading();
       AppUtil.printDebugMode(type: 'Receive Room Info', message: "$e");

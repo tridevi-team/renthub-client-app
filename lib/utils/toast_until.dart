@@ -38,13 +38,13 @@ class ToastUntil {
     toastification.show(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       title: Text(title!),
-      description: Text(description),
+      description: Text(description, maxLines: 3),
       style: ToastificationStyle.fillColored,
       primaryColor: const Color(0xFF242C32),
       alignment: Alignment.topCenter,
       closeButtonShowType: CloseButtonShowType.none,
       showProgressBar: true,
-      autoCloseDuration: const Duration(seconds: 5),
+      autoCloseDuration: const Duration(seconds: 3),
       dismissDirection: DismissDirection.vertical,
       icon: Container(
         padding: const EdgeInsets.all(6),
