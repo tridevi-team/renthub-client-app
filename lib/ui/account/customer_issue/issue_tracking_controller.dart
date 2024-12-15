@@ -26,6 +26,7 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
   int currentIssueTabIndex = 0;
   int prevIssueTabIndex = 0;
   String _houseId = "";
+  String _roomId = "";
   int currentPage = 1;
   List<IssueModel> issueList = [];
 
@@ -33,6 +34,7 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
   void onInit() {
     super.onInit();
     _houseId = UserSingleton.instance.getUser().houseId ?? "";
+    _roomId = UserSingleton.instance.getUser().roomId ?? "";
     getHistoryOfIssueTab(isRefresh: true);
     issueTabController = TabController(length: issueTabs.length, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {});
@@ -67,6 +69,10 @@ class IssueTrackingController extends BaseController with GetTickerProviderState
      "field": "issues.status",
      "operator": "eq",
      "value": "$currentStatus"
+    }&filter[]={
+     "field": "rooms.id",
+     "operator": "eq",
+     "value": "$_roomId"
     }&''';
 
     try {

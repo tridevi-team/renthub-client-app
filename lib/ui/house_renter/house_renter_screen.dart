@@ -90,25 +90,8 @@ class HouseRenterScreen extends StatelessWidget {
               Text(
                 "Thành viên",
                 style: ConstantFont.boldText.copyWith(fontSize: 16),
-              ),
-              if (UserSingleton.instance.getUser().represent == 1)
-                GestureDetector(
-                  onTap: () {},
-                  child: Row(
-                    children: [
-                      Text(
-                        'Chỉnh sửa',
-                        style: ConstantFont.regularText.copyWith(fontSize: 12),
-                      ),
-                      const SizedBox(width: 2),
-                      SvgPicture.asset(
-                        AssetSvg.iconChevronForward,
-                        width: 16,
-                        height: 16,
-                      ),
-                    ],
-                  ),
-                ),
+              )
+
             ],
           ),
           const SizedBox(height: 10),
@@ -121,9 +104,31 @@ class HouseRenterScreen extends StatelessWidget {
           const SizedBox(height: 10),
           _buildServiceList(),
           const SizedBox(height: 20),
-          Text(
-            "Thiết bị",
-            style: ConstantFont.boldText.copyWith(fontSize: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Thiết bị",
+                style: ConstantFont.boldText.copyWith(fontSize: 16),
+              ),
+              GestureDetector(
+                onTap: onCreateIssue,
+                child: Row(
+                  children: [
+                    Text(
+                      'Phản ánh',
+                      style: ConstantFont.regularText.copyWith(fontSize: 12),
+                    ),
+                    const SizedBox(width: 2),
+                    SvgPicture.asset(
+                      AssetSvg.iconChevronForward,
+                      width: 16,
+                      height: 16,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           _buildEquipmentList()
@@ -206,7 +211,7 @@ class HouseRenterScreen extends StatelessWidget {
         EquipmentModel equipment = controller.room.equipments?[index] ?? EquipmentModel();
         return InkWell(
           onTap: () {
-            onCreateIssue(equipment);
+            onCreateIssue(equipment: equipment);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -343,7 +348,7 @@ class HouseRenterScreen extends StatelessWidget {
     );
   }
 
-  void onCreateIssue(EquipmentModel? equipment) {
+  void onCreateIssue({EquipmentModel? equipment}) {
     Get.dialog(
       Dialog(
         backgroundColor: AppColors.white,
@@ -357,7 +362,7 @@ class HouseRenterScreen extends StatelessWidget {
             children: [
               // Title
               Text(
-                'Chọn loại báo cáo',
+                'Chọn loại phản ánh',
                 style: ConstantFont.semiBoldText.copyWith(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
@@ -368,17 +373,17 @@ class HouseRenterScreen extends StatelessWidget {
                     Get.close(0);
                     Get.to(() => CustomerIssueScreen());
                   }),
-              const SizedBox(height: 8),
-              CustomElevatedButton(
-                label: 'Vấn đề thiết bị',
-                onTap: () {
-                  Get.close(0);
-                  Get.to(
-                    () => CustomerIssueScreen(equipment: equipment),
-                  );
-                },
-                isReverse: true,
-              ),
+              if (equipment != null) ...[
+                const SizedBox(height: 8),
+                CustomElevatedButton(
+                  label: 'Vấn đề thiết bị',
+                  onTap: () {
+                    Get.close(0);
+                    Get.to(() => CustomerIssueScreen(equipment: equipment));
+                  },
+                  isReverse: true,
+                ),
+              ]
             ],
           ),
         ),
