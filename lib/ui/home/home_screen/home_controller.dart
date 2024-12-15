@@ -9,7 +9,9 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
+import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/services/home_service.dart';
+import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';
 import 'package:rent_house/utils/response_error_util.dart';
 
@@ -17,7 +19,7 @@ class HomeController extends BaseController {
   //controller
   RefreshController refreshController = RefreshController();
   ScrollController scrollCtrl = ScrollController();
-
+  final BottomNavBarController bottomNavController = Get.find();
   //widgets
   RxList<Widget> widgets = <Widget>[].obs;
 
@@ -77,7 +79,25 @@ class HomeController extends BaseController {
         "value": ""
         }&
         ''';
+      String cityNameSelected =  bottomNavController.citySelected.value?.name ?? "";
+      String districtNameSelected =  bottomNavController.districtSelected.value?.name ?? "";
+      if (cityNameSelected != "") {
+        filters = '''filter[]={
+        "field": "houses.city",
+        "operator": "eq",
+        "value": "$cityNameSelected"
+        }&
+        ''';
+      }
 
+      if (districtNameSelected != "") {
+        filters = '''filter[]={
+        "field": "houses.district",
+        "operator": "eq",
+        "value": "$districtNameSelected"
+        }&
+        ''';
+      }
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
       if (response.statusCode < 300) {

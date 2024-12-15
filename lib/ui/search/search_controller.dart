@@ -118,13 +118,17 @@ class SearchXController extends BaseController {
         currentPage = 1;
       }
 
-      String sort = '''{
+      String sort = '''sort[]={
        "field": "${sorts[sortBySelected]}",
           "direction": "${orderBy.value}"
         }''';
 
-      String filters = 'filter[]={"field": "${sorts[sortBySelected]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&'
-          'filter[]={"field": "rooms.price", "operator": "gte", "value": "${currentFilterPrice.value.start}"}&'
+      String filters = '';
+      if (searchEdtCtrl.text.isNotEmpty) {
+        filters =
+            'filter[]={"field": "${sorts[0]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&';
+      }
+      filters ='${filters}filter[]={"field": "rooms.price", "operator": "gte", "value": "${currentFilterPrice.value.start}"}&'
           'filter[]={"field": "rooms.price", "operator": "lte", "value": "${currentFilterPrice.value.end}"}&';
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
@@ -144,7 +148,8 @@ class SearchXController extends BaseController {
             }
           }
           if (isFistFilter) {
-            currentFilterPrice.value = RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
+            currentFilterPrice.value =
+                RangeValues(roundDownToMillion(minPrice), roundUpToMillion(maxPrice));
           }
           houseList.addAll(houses);
           refreshController.loadComplete();
@@ -189,7 +194,10 @@ class SearchXController extends BaseController {
     }
     if (index == 2) {
       if (houseList.isEmpty) {
-        ToastUntil.toastNotification(title: "Thông báo", description: "Bạn cần có ít nhất 5 căn phòng để thực hiện việc lọc danh sách.", status: ToastStatus.warning);
+        ToastUntil.toastNotification(
+            title: "Thông báo",
+            description: "Bạn cần có ít nhất 5 căn phòng để thực hiện việc lọc danh sách.",
+            status: ToastStatus.warning);
         return;
       }
       DialogUtil.showFilterBottomSheet(
