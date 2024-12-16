@@ -12,6 +12,6 @@ flutter build apk --flavor product -t lib/main_product.dart
 
 ### Build AAB:
 # Live
-flutter build appbundle --flavor product -t lib/main.dart
+flutter build appbundle --flavor product -t lib/main_product.dart
 # Staging
-flutter build appbundle --flavor staging -t lib/main.dart
+flutter build appbundle --flavor staging -t lib/main_staging.dart
