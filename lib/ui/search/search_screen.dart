@@ -106,7 +106,7 @@ class SearchScreen extends StatelessWidget {
           controller: searchController.refreshController,
           scrollController: searchController.scrollCtrl,
           onRefresh: searchController.onRefreshData,
-          onLoadingMore: searchController.onLoadMoreHouse,
+          enablePullUp: false,
           child: CustomScrollView(
             slivers: [HomeList(houseList: searchController.houseList)],
           ),

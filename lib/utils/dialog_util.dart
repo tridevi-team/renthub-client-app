@@ -273,11 +273,13 @@ class DialogUtil {
   }
 
   static Future<void> showFilterBottomSheet({
-    required Rx<RangeValues> currentRange,
-    required ValueChanged<RangeValues> onChanged,
-    required VoidCallback onApply,
-    required double minPrice,
-    required double maxPrice,
+    Rx<RangeValues>? currentRange,
+    ValueChanged<RangeValues>? onChanged,
+    VoidCallback? onApply,
+    double min = 0,
+    double max = 0,
+    int division = 1000000,
+    bool isArea = false,
   }) async {
     await Get.bottomSheet(
       Container(
@@ -287,37 +289,55 @@ class DialogUtil {
           color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Obx(
-          () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Khoảng giá",
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(
+                "Bộ lọc",
+                textAlign: TextAlign.center,
                 style: ConstantFont.mediumText.copyWith(fontSize: 16),
               ),
-              RangeSlider(
-                values: currentRange.value,
-                min: minPrice,
-                max: maxPrice,
-                divisions: ((maxPrice - minPrice) ~/ 100000),
-                inactiveColor: AppColors.neutralCCCAC6,
-                activeColor: AppColors.primary1,
-                onChanged: onChanged,
+            ),
+            const SizedBox(height: 10),
+            if (currentRange != null) ...[
+              Obx(
+                () => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RangeSlider(
+                      values: currentRange.value,
+                      min: min,
+                      max: max,
+                      divisions: (max - min) ~/ division,
+                      inactiveColor: AppColors.neutralCCCAC6,
+                      activeColor: AppColors.primary1,
+                      onChanged: onChanged,
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          isArea ? "${currentRange.value.start.toInt()} m²" : FormatUtil.formatCurrency(currentRange.value.start.toInt()),
+                          style: ConstantFont.mediumText,
+                        ),
+                        Text(
+                          isArea ? "${currentRange.value.end.toInt()} m²" : FormatUtil.formatCurrency(currentRange.value.end.toInt()),
+                          style: ConstantFont.mediumText,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    FormatUtil.formatCurrency(currentRange.value.start.toInt()),
-                    style: ConstantFont.mediumText,
-                  ),
-                  Text(
-                    FormatUtil.formatCurrency(currentRange.value.end.toInt()),
-                    style: ConstantFont.mediumText,
-                  ),
-                ],
+            ] else ...[
+              Text(
+                "Hãy chọn lọc theo khoảng giá hoặc diện tích",
+                style: ConstantFont.mediumText.copyWith(fontSize: 16),
               ),
+            ],
+            if (onApply != null) ...[
               const Spacer(),
               CustomElevatedButton(
                 onTap: onApply,
@@ -325,8 +345,8 @@ class DialogUtil {
                 textColor: AppColors.white,
                 bgColor: AppColors.primary600,
               ),
-            ],
-          ),
+            ]
+          ],
         ),
       ),
       backgroundColor: AppColors.white,
@@ -353,17 +373,17 @@ class DialogUtil {
                     if (uploadProgress != null) ...[
                       Obx(() => uploadProgress.value != 0
                           ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 10),
-                          Text(
-                            "${uploadProgress.toStringAsFixed(0)}%",
-                            textAlign: TextAlign.center,
-                            style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
-                          )
-                        ],
-                      )
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(height: 10),
+                                Text(
+                                  "${uploadProgress.toStringAsFixed(0)}%",
+                                  textAlign: TextAlign.center,
+                                  style: ConstantFont.mediumText.copyWith(color: AppColors.white, fontSize: 16),
+                                )
+                              ],
+                            )
                           : const SizedBox())
                     ]
                   ],

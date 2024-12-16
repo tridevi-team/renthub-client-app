@@ -12,7 +12,6 @@ import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/response_error_util.dart';
-import 'package:rent_house/utils/toast_until.dart';
 
 class SearchXController extends BaseController {
   RefreshController refreshController = RefreshController();
@@ -45,7 +44,10 @@ class SearchXController extends BaseController {
   int? roomArea;
   double minPrice = 0;
   double maxPrice = 100000000;
-  Rx<RangeValues> currentFilterPrice = const RangeValues(0, 1000000000).obs;
+  double minArea = 0;
+  double maxArea = 300;
+  Rx<RangeValues> currentFilterPrice = const RangeValues(0, 100000000).obs;
+  Rx<RangeValues> currentFilterArea = const RangeValues(0, 300).obs;
 
   @override
   void onInit() {
@@ -128,8 +130,17 @@ class SearchXController extends BaseController {
         filters =
             'filter[]={"field": "${sorts[0]}", "operator": "cont", "value": "${searchEdtCtrl.text}"}&';
       }
-      filters ='${filters}filter[]={"field": "rooms.price", "operator": "gte", "value": "${currentFilterPrice.value.start}"}&'
-          'filter[]={"field": "rooms.price", "operator": "lte", "value": "${currentFilterPrice.value.end}"}&';
+
+      if (sortBySelected == 2) {
+        filters ='${filters}filter[]={"field": "rooms.room_area", "operator": "gte", "value": "${currentFilterArea.value.start}"}&'
+            'filter[]={"field": "rooms.room_area", "operator": "lte", "value": "${currentFilterArea.value.end}"}&';
+      }
+
+      if (sortBySelected == 3) {
+        filters ='${filters}filter[]={"field": "rooms.price", "operator": "gte", "value": "${currentFilterPrice.value.start}"}&'
+            'filter[]={"field": "rooms.price", "operator": "lte", "value": "${currentFilterPrice.value.end}"}&';
+      }
+
 
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
@@ -171,43 +182,72 @@ class SearchXController extends BaseController {
   void onFilterSelected(int index) {
     onHideKeyboard();
     filterSelected.value = index;
-    if (index == 0) {
-      DialogUtil.showSortBottomSheet(
-        selectedOption: sortBySelected,
-        options: sortOptions,
-        onSelected: (index) {
-          onSortBySelected(index);
-          Get.back();
-        },
-      );
-    }
-    if (index == 1) {
-      orderBy.value = (orderBy.value == "asc") ? "desc" : "asc";
-      fetchHouseList();
-    }
-    if (index == 2) {
-      if (houseList.isEmpty) {
-        ToastUntil.toastNotification(
-            title: "Thông báo",
-            description: "Bạn cần có ít nhất 5 căn phòng để thực hiện việc lọc danh sách.",
-            status: ToastStatus.warning);
-        return;
-      }
-      DialogUtil.showFilterBottomSheet(
-        currentRange: currentFilterPrice,
-        onChanged: updateRange,
-        onApply: () {
-          Get.close(0);
-          fetchHouseList();
-        },
-        minPrice: roundDownToMillion(minPrice),
-        maxPrice: roundUpToMillion(maxPrice),
-      );
+
+    switch (index) {
+      case 0:
+        DialogUtil.showSortBottomSheet(
+          selectedOption: sortBySelected,
+          options: sortOptions,
+          onSelected: (selectedIndex) {
+            onSortBySelected(selectedIndex);
+            Get.back();
+          },
+        );
+        break;
+
+      case 1:
+        orderBy.value = (orderBy.value == "asc") ? "desc" : "asc";
+        fetchHouseList();
+        break;
+
+      case 2:
+        if (sortBySelected == 3) {
+          _showPriceFilter();
+        } else if (sortBySelected == 2) {
+          _showAreaFilter();
+        } else {
+          DialogUtil.showFilterBottomSheet(currentRange: null);
+        }
+        break;
     }
   }
 
+  void _showPriceFilter() {
+    DialogUtil.showFilterBottomSheet(
+      currentRange: currentFilterPrice,
+      onChanged: updateRangePrice,
+      onApply: () {
+        Get.close(1);
+        fetchHouseList();
+      },
+      min: roundDownToMillion(minPrice),
+      max: roundUpToMillion(maxPrice),
+    );
+  }
+
+  void _showAreaFilter() {
+    DialogUtil.showFilterBottomSheet(
+      currentRange: currentFilterArea,
+      onChanged: updateRangeArea,
+      onApply: () {
+        Get.close(1);
+        fetchHouseList();
+      }, isArea: true,
+      min: minArea,
+      max: maxArea,
+      division: 5
+    );
+  }
+
+
   void onSortBySelected(int index) {
     sortBySelected = index;
+    if (sortBySelected == 2) {
+      currentFilterArea.value = const RangeValues(0, 300);
+    }
+    if (sortBySelected == 3) {
+      currentFilterPrice.value = const RangeValues(0, 100000000);
+    }
     fetchHouseList();
   }
 
@@ -218,9 +258,15 @@ class SearchXController extends BaseController {
     });
   }
 
-  void updateRange(RangeValues values) {
+  void updateRangePrice(RangeValues values) {
     if (values.end - values.start >= 100000) {
       currentFilterPrice.value = values;
+    }
+  }
+
+  void updateRangeArea(RangeValues values) {
+    if (values.end - values.start >= 5) {
+      currentFilterArea.value = values;
     }
   }
 
