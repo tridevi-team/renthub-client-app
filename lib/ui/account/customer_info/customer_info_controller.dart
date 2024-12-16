@@ -47,8 +47,7 @@ class CustomerInfoController extends BaseController {
 
   Future<void> useScanQR() async {
     final scannedData = await Get.to(() => QrScanScreen());
-
-    if (scannedData == null || !scannedData.contains("||")) {
+    if (!scannedData.contains("||")) {
       ToastUntil.toastNotification(
         description: ConstantString.dataInvalidMessage,
         status: ToastStatus.error,

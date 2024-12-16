@@ -148,6 +148,9 @@ class BottomNavBarController extends FullLifeCycleController {
         bool isValidAccessToken = JwtDecoder.isExpired(
             SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
         if (isValidAccessToken == false) {
+          if (Get.isRegistered<NotificationController>()) {
+            Get.find<NotificationController>().getAllNotifications();
+          }
           LocalNotificationUtil.createNotification(message);
         }
       }

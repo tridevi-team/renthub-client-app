@@ -35,8 +35,6 @@ class ScannerOverlay extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: use `Offset.zero & size` instead of Rect.largest
-    // we need to pass the size to the custom paint widget
     final backgroundPath = Path()..addRect(Rect.largest);
     final cutoutPath = Path()..addRect(scanWindow);
 
@@ -149,8 +147,8 @@ class _BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
   Widget build(BuildContext context) {
     final scanWindow = Rect.fromCenter(
       center: MediaQuery.sizeOf(context).center(Offset.zero),
-      width: 200,
-      height: 200,
+      width: 80,
+      height: 80,
     );
 
     return Scaffold(
