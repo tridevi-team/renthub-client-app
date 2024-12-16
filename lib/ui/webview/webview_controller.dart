@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/app_colors.dart';
+import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/web_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewInAppController extends BaseController {
@@ -52,9 +54,18 @@ class WebViewInAppController extends BaseController {
               statusPayment = uri.queryParameters['status']!;
               Get.back(result: statusPayment);
             }
-            if (request.url == "http://api.tmquang.com/") {
+            if (request.url == "${WebService.baseUrl}/") {
               Get.back(result: statusPayment);
               return NavigationDecision.prevent;
+            }
+            if (request.url.startsWith("https://dl.vietqr.io/pay?app=")) {
+              final uri = Uri.parse(request.url);
+              final app = uri.queryParameters['app'] ?? '';
+
+              if (app.isNotEmpty) {
+                openBankDeepLink("https://dl.vietqr.io/pay?app=$app");
+                return NavigationDecision.prevent;
+              }
             }
             return NavigationDecision.navigate;
           },
@@ -66,5 +77,12 @@ class WebViewInAppController extends BaseController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       webViewController?.loadRequest(Uri.parse(url ?? ''));
     });
+  }
+
+  void openBankDeepLink(String deeplink) async {
+    Uri deeplinkUri = Uri.parse(deeplink);
+    if (await canLaunchUrl(deeplinkUri)) {
+      launchUrl(deeplinkUri, mode: LaunchMode.externalApplication);
+    }
   }
 }

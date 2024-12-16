@@ -66,14 +66,13 @@ class PaymentResult extends StatelessWidget {
               },
             ),
             const SizedBox(height: 10),
-            if (!isSuccess)
-              CustomElevatedButton(
-                label: isSuccess ? "Xem chi tiết hóa đơn" : "Thanh toán lại",
-                onTap: () {
-                  Get.back(result: true);
-                },
-                isReverse: true,
-              )
+            CustomElevatedButton(
+              label: isSuccess ? "Xem chi tiết hóa đơn" : "Thanh toán lại",
+              onTap: () {
+                Get.back(result: true);
+              },
+              isReverse: true,
+            )
           ],
         ),
       ),
