@@ -30,8 +30,7 @@ class HomeScreen extends StatelessWidget {
         }
 
         // Handling completed or initial state
-        if (homeController.viewState.value == ViewState.complete ||
-            homeController.viewState.value == ViewState.init) {
+        if (homeController.viewState.value == ViewState.complete || homeController.viewState.value == ViewState.init) {
           return _buildHomeContent();
         }
 
@@ -50,28 +49,18 @@ class HomeScreen extends StatelessWidget {
       scrollController: homeController.scrollCtrl,
       onRefresh: homeController.onRefreshData,
       onLoadingMore: homeController.onLoadMoreHouse,
-      child: homeController.widgets.isEmpty
-          ? const Center(child: SizedBox.shrink())
-          : CustomScrollView(
+      child: CustomScrollView(
               physics: const ClampingScrollPhysics(),
               slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      ...homeController.widgets,
-                      if (homeController.recentHouse.isNotEmpty) ...[
-                        HomeRecentView(
-                          houseList: homeController.recentHouse,
-                        ),
-                      ],
-                    ],
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: false,
-                    addSemanticIndexes: false,
+                if (homeController.recentHouse.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: HomeRecentView(
+                      houseList: homeController.recentHouse,
+                    ),
                   ),
-                ),
+                ],
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  padding: const EdgeInsets.only(left: 14, top: 16, right: 14),
                   sliver: SliverToBoxAdapter(
                     child: Text(
                       'Danh sách nhà',

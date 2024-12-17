@@ -39,7 +39,6 @@ class HomeRecentView extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Divider(height: 1, color: AppColors.neutralF5F5F5),
-                const SizedBox(height: 16),
               ],
             ),
     );

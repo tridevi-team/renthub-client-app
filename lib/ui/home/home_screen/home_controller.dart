@@ -36,12 +36,12 @@ class HomeController extends BaseController {
   @override
   void onInit() {
     super.onInit();
-    _buildExploreWidget();
+    //_buildExploreWidget();
     fetchHouseList();
   }
 
   void _buildExploreWidget() {
-    widgets.add(const HomeExplore());
+    //widgets.add(const HomeExplore());
   }
 
   Future<void> fetchHouseList({
