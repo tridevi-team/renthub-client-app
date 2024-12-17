@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -6,8 +5,8 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class RoomWidget extends StatelessWidget {
   final void Function()? onTap;
@@ -37,21 +36,12 @@ class RoomWidget extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                   clipBehavior: Clip.hardEdge,
-                  child: CachedNetworkImage(
-                    imageUrl:(room.images?.isNotEmpty ?? false) ? (room.images?[0].imageUrl ?? "") : '',
+                  child: CommonNetworkImage(
+                    imageUrl: (room.images?.isNotEmpty ?? false) ? (room.images?[0].imageUrl ?? "") : '',
                     width: width,
                     height: width,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: AppColors.neutralF0F0F0,
-                      highlightColor: AppColors.shimmerColor,
-                      child: Container(
-                        width: width,
-                        height: width,
-                        color: Colors.white,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => ErrorImageWidget(
+                    errorWidget: ErrorImageWidget(
                       width: width,
                       height: width,
                     ),
@@ -62,13 +52,10 @@ class RoomWidget extends StatelessWidget {
                     right: 5,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      decoration: BoxDecoration(
-                          color: status ? AppColors.green : AppColors.red,
-                          borderRadius: BorderRadius.circular(50)),
+                      decoration: BoxDecoration(color: status ? AppColors.green : AppColors.red, borderRadius: BorderRadius.circular(50)),
                       child: Text(
                         status ? "Khả dụng" : "Không khả dụng",
-                        style:
-                            ConstantFont.mediumText.copyWith(fontSize: 10, color: AppColors.white),
+                        style: ConstantFont.mediumText.copyWith(fontSize: 10, color: AppColors.white),
                       ),
                     ))
               ],
@@ -85,12 +72,7 @@ class RoomWidget extends StatelessWidget {
                     style: ConstantFont.lightText.copyWith(fontSize: 16, color: AppColors.primary1),
                   ),
                   const SizedBox(height: 2),
-                  Text(
-                      (room.maxRenters ?? -1) < 0
-                          ? "Không giới hạn"
-                          : "Tối đa: ${room.maxRenters} người",
-                      maxLines: 3,
-                      style: ConstantFont.lightText.copyWith(fontSize: 12)),
+                  Text((room.maxRenters ?? -1) < 0 ? "Không giới hạn" : "Tối đa: ${room.maxRenters} người", maxLines: 3, style: ConstantFont.lightText.copyWith(fontSize: 12)),
                 ],
               ),
             )

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -18,6 +17,7 @@ import 'package:rent_house/ui/notification/notification_controller.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 
 class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
@@ -40,11 +40,11 @@ class CustomerScreen extends StatelessWidget {
               },
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                leading: CachedNetworkImage(
+                leading: CommonNetworkImage(
                   imageUrl: 'imageUrl',
                   height: 60,
                   width: 60,
-                  errorWidget: (context, url, error) => AvatarWidget(name: '${user.name}'),
+                  errorWidget: AvatarWidget(name: '${user.name}'),
                 ),
                 title: Text(
                   '${user.name}',

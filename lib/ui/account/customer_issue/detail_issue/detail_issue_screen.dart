@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -15,9 +14,9 @@ import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class DetailIssueScreen extends StatelessWidget {
   DetailIssueScreen({super.key});
@@ -36,19 +35,19 @@ class DetailIssueScreen extends StatelessWidget {
         Get.close(routes);
       },
       child: Scaffold(
-        appBar: CustomAppBar(label: 'Chi tiết vấn đề', onBack: () {
-          Get.close(routes);
-        },),
+        appBar: CustomAppBar(
+          label: 'Chi tiết vấn đề',
+          onBack: () {
+            Get.close(routes);
+          },
+        ),
         backgroundColor: AppColors.white,
         body: Obx(() {
           if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.init ||
-              controller.viewState.value == ViewState.complete ||
-              controller.viewState.value == ViewState.noData) {
+          } else if (controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.noData) {
             if (controller.viewState.value == ViewState.noData) {
-              return const NotFoundWidget(
-                  title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
+              return const NotFoundWidget(title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -192,15 +191,10 @@ class DetailIssueScreen extends StatelessWidget {
                         AssetSvg.iconPlay,
                         color: AppColors.neutral9E9E9E,
                       )
-                    : CachedNetworkImage(
+                    : CommonNetworkImage(
                         imageUrl: media,
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: AppColors.neutralF0F0F0,
-                          highlightColor: AppColors.shimmerColor,
-                          child: Container(color: Colors.white),
-                        ),
-                        errorWidget: (context, url, error) => const ErrorImageWidget(
+                        errorWidget: const ErrorImageWidget(
                           width: 100,
                           height: 100,
                         ),

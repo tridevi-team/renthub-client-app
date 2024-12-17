@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
@@ -10,9 +9,9 @@ import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 import 'package:rent_house/widgets/loading/loading_widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PaymentScreen extends StatelessWidget {
   PaymentScreen({super.key});
@@ -97,21 +96,12 @@ class PaymentScreen extends StatelessWidget {
                           ),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: CachedNetworkImage(
+                            child: CommonNetworkImage(
                               imageUrl: controller.getImageUrlBank(),
                               fit: BoxFit.cover,
                               height: 60,
                               width: 60,
-                              placeholder: (context, url) => Shimmer.fromColors(
-                                baseColor: AppColors.neutralF0F0F0,
-                                highlightColor: AppColors.shimmerColor,
-                                child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => const ErrorImageWidget(
+                              errorWidget: const ErrorImageWidget(
                                 height: 60,
                                 width: 60,
                                 imagePath: AssetSvg.imgLogoApp,

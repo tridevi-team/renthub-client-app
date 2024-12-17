@@ -1,6 +1,5 @@
 import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +18,7 @@ import 'package:rent_house/utils/toast_until.dart';
 import 'package:rent_house/widgets/avatar/avatar.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 import 'package:rent_house/widgets/textfield/title_input_widget.dart';
 
@@ -100,11 +100,11 @@ class CustomerInfo extends StatelessWidget {
   Widget _buildProfileImage(String name) {
     return Align(
       alignment: Alignment.topCenter,
-      child: CachedNetworkImage(
+      child: CommonNetworkImage(
         imageUrl: 'imageUrl',
         height: 80,
         width: 80,
-        errorWidget: (context, url, error) => AvatarWidget(name: name),
+        errorWidget: AvatarWidget(name: name),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,46 +12,89 @@ import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
-import 'package:rent_house/widgets/custom_app_bar.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
 
 class RoomDetailScreen extends StatelessWidget {
   RoomDetailScreen({super.key, required this.selectedRoom, this.address = '', this.contactModel});
 
-  final controller = Get.put(RoomDetailController());
   final Room selectedRoom;
   final String? address;
   final ContactModel? contactModel;
+
+  final controller = Get.put(RoomDetailController());
 
   @override
   Widget build(BuildContext context) {
     controller.roomId = selectedRoom.id;
     controller.address = address;
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: const CustomAppBar(isTransparent: true),
-      backgroundColor: AppColors.white,
-      body: CustomScrollView(
-        slivers: [
-          _buildRoomImage(),
-          _buildRoomDetails(),
-          _buildDivider(),
-          _buildRoomInfo(),
-        ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: controller.scrollListener,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: AnimatedBuilder(
+            animation: controller.colorAnimationController,
+            builder: (context, child) => AppBar(
+                backgroundColor: controller.colorTween.value,
+                surfaceTintColor: controller.colorTween.value,
+                automaticallyImplyLeading: false,
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: Get.back,
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: controller.iconColorTween.value,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: SvgPicture.asset(
+                          AssetSvg.iconChevronBack,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Chi tiết phòng",
+                          style: ConstantFont.boldText.copyWith(color: controller.colorTextTween.value, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 40),
+                  ],
+                )),
+          ),
+        ),
+        backgroundColor: AppColors.white,
+        body: CustomScrollView(
+          slivers: [
+            _buildRoomImage(),
+            _buildRoomDetails(),
+            _buildDivider(),
+            _buildRoomInfo(),
+          ],
+        ),
+        bottomNavigationBar: selectedRoom.status == ConstantString.statusExpired || selectedRoom.status == ConstantString.statusRented ? const SizedBox() : _buildBottomAppBar(),
       ),
-      bottomNavigationBar: selectedRoom.status == ConstantString.statusExpired || selectedRoom.status == ConstantString.statusRented ? const SizedBox() : _buildBottomAppBar(),
     );
   }
 
   Widget _buildRoomImage() {
     return SliverToBoxAdapter(
-      child: CachedNetworkImage(
+      child: CommonNetworkImage(
         imageUrl: (selectedRoom.images?.isNotEmpty ?? false) ? selectedRoom.images?.first.imageUrl ?? '' : '',
         width: Get.width,
         height: 300,
         fit: BoxFit.cover,
-        errorWidget: (_, __, ___) => const ErrorImageWidget(),
+        errorWidget: const ErrorImageWidget(),
       ),
     );
   }
@@ -347,12 +389,12 @@ class RoomDetailScreen extends StatelessWidget {
       items: selectedRoom.images?.map((image) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: CachedNetworkImage(
+          child: CommonNetworkImage(
             imageUrl: image.imageUrl ?? '',
-            width: double.infinity,
+            width: Get.width,
             height: 150,
             fit: BoxFit.cover,
-            errorWidget: (context, url, error) => const ErrorImageWidget(
+            errorWidget: const ErrorImageWidget(
               height: 150,
             ),
           ),

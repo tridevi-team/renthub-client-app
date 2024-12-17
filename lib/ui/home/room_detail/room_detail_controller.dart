@@ -14,7 +14,7 @@ import 'package:rent_house/utils/toast_until.dart';
 import 'package:rent_house/utils/validate_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class RoomDetailController extends BaseController {
+class RoomDetailController extends BaseController with GetTickerProviderStateMixin {
   RxBool isExpanded = false.obs;
   String? roomId;
   String? address;
@@ -22,12 +22,32 @@ class RoomDetailController extends BaseController {
   TextEditingController phoneCtrl = TextEditingController();
   final Rx<ErrorInputModel> fullNameError = ErrorInputModel().obs;
   final Rx<ErrorInputModel> phoneError = ErrorInputModel().obs;
+  late AnimationController colorAnimationController;
+  late Animation colorTween, iconColorTween, colorTextTween;
+
+  @override
+  void onInit() {
+    colorAnimationController = AnimationController(vsync: this, duration: const Duration(seconds: 0));
+    colorTween = ColorTween(begin: Colors.transparent, end: AppColors.white).animate(colorAnimationController);
+    colorTextTween = ColorTween(begin: Colors.transparent, end: AppColors.black).animate(colorAnimationController);
+    iconColorTween = ColorTween(begin: Colors.white, end: Colors.transparent).animate(colorAnimationController);
+    super.onInit();
+  }
 
   @override
   void dispose() {
     fullNameCtrl.dispose();
     phoneCtrl.dispose();
+    colorAnimationController.dispose();
     super.dispose();
+  }
+
+  bool scrollListener(ScrollNotification scrollInfo) {
+    if (scrollInfo.metrics.axis == Axis.vertical) {
+      colorAnimationController.animateTo(scrollInfo.metrics.pixels / 300);
+      return true;
+    }
+    return false;
   }
 
   void toggleExpanded() {

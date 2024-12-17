@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -76,58 +75,68 @@ class _VideoPlayerScreenState extends State<MediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutral1B1A19,
-      body: Stack(
-        children: [
-          if (widget.isMp4) ...[
-            Center(
-              child: _isError
-                  ? Text(
-                      ConstantString.tryAgainMessage,
-                      style: ConstantFont.mediumText.copyWith(
-                        fontSize: 16,
-                        color: AppColors.white,
-                      ),
-                    )
-                  : _isTimeout
-                      ? Text(
-                          "Đã hết thời gian tải video. Vui lòng thử lại.",
-                          style: ConstantFont.mediumText.copyWith(
-                            fontSize: 16,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : _isLoading
-                          ? const LoadingWidget()
-                          : _controller.value.isInitialized
-                              ? AspectRatio(
-                                  aspectRatio: _controller.value.aspectRatio,
-                                  child: VideoPlayer(_controller),
-                                )
-                              : const LoadingWidget(),
-            ),
-          ] else ...[
-            Center(
-              child: CachedNetworkImage(
-                imageUrl: widget.url,
-                fit: BoxFit.cover,
-                width: Get.width,
-                height: 300,
-                placeholder: (context, url) => const LoadingWidget(),
-                errorWidget: (context, url, error) => const ErrorImageWidget(),
+      body: Expanded(
+        child: Stack(
+          children: [
+            if (widget.isMp4) ...[
+              Center(
+                child: _isError
+                    ? Text(
+                        ConstantString.tryAgainMessage,
+                        style: ConstantFont.mediumText.copyWith(
+                          fontSize: 16,
+                          color: AppColors.white,
+                        ),
+                      )
+                    : _isTimeout
+                        ? Text(
+                            "Đã hết thời gian tải video. Vui lòng thử lại.",
+                            style: ConstantFont.mediumText.copyWith(
+                              fontSize: 16,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : _isLoading
+                            ? const LoadingWidget()
+                            : _controller.value.isInitialized
+                                ? AspectRatio(
+                                    aspectRatio: _controller.value.aspectRatio,
+                                    child: VideoPlayer(_controller),
+                                  )
+                                : const LoadingWidget(),
+              ),
+            ] else ...[
+              Center(
+                child: ExtendedImage.network(
+                  widget.url,
+                  fit: BoxFit.contain,
+                  mode: ExtendedImageMode.gesture,
+                  loadStateChanged: (ExtendedImageState state) {
+                    switch (state.extendedImageLoadState) {
+                      case LoadState.loading:
+                        return const LoadingWidget();
+                      case LoadState.completed:
+                        return null;
+                      case LoadState.failed:
+                        return const ErrorImageWidget();
+                    }
+                  },
+                ),
+              )
+
+            ],
+            Positioned(
+              top: 40,
+              right: 10,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
           ],
-          Positioned(
-            top: 40,
-            right: 10,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white, size: 30),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

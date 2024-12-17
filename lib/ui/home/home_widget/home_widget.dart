@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -7,8 +6,8 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/utils/format_util.dart';
+import 'package:rent_house/widgets/images/common_network_image.dart';
 import 'package:rent_house/widgets/images/error_image_widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HomeWidget extends StatelessWidget {
   final void Function()? onTap;
@@ -29,21 +28,12 @@ class HomeWidget extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: CachedNetworkImage(
+              child: CommonNetworkImage(
                 imageUrl: house.thumbnail ?? '',
                 width: imageWidth,
                 height: imageHeight,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => Shimmer.fromColors(
-                  baseColor: AppColors.neutralF0F0F0,
-                  highlightColor: AppColors.shimmerColor,
-                  child: Container(
-                    width: imageWidth,
-                    height: imageHeight,
-                    color: Colors.white,
-                  ),
-                ),
-                errorWidget: (_, __, ___) =>ErrorImageWidget(
+                errorWidget: ErrorImageWidget(
                   width: imageWidth,
                   height: imageHeight,
                 ),
@@ -83,8 +73,7 @@ class HomeWidget extends StatelessWidget {
                       _buildFeatureRow(
                         AssetSvg.iconMultiPeople,
                         '${(house.minRenters ?? 1) < 0 ? 1 : house.minRenters} - '
-                            '${(house.maxRenters ?? -1) < 0 ? "Không giới hạn" : "${house.maxRenters} người"}'
-                        ,
+                        '${(house.maxRenters ?? -1) < 0 ? "Không giới hạn" : "${house.maxRenters} người"}',
                       ),
                     ],
                   ),
