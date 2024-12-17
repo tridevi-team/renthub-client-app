@@ -50,35 +50,36 @@ class HomeScreen extends StatelessWidget {
       onRefresh: homeController.onRefreshData,
       onLoadingMore: homeController.onLoadMoreHouse,
       child: CustomScrollView(
-              physics: const ClampingScrollPhysics(),
-              slivers: [
-                if (homeController.recentHouse.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: HomeRecentView(
-                      houseList: homeController.recentHouse,
-                    ),
-                  ),
-                ],
-                SliverPadding(
-                  padding: const EdgeInsets.only(left: 14, top: 16, right: 14),
-                  sliver: SliverToBoxAdapter(
-                    child: Text(
-                      'Danh sách nhà',
-                      style: ConstantFont.boldText.copyWith(fontSize: 16),
-                    ),
-                  ),
-                ),
-                if (homeController.houseList.isEmpty) ...[
-                  const SliverFillRemaining(
-                    child: Center(child: NotFoundWidget(title: ConstantString.messageNoData)),
-                  )
-                ] else
-                  HomeList(
-                    houseList: homeController.houseList,
-                    addToRecentHouse: homeController.addToRecentHouse,
-                  ),
-              ],
+        key: const PageStorageKey("house_storage_key"),
+        physics: const ClampingScrollPhysics(),
+        slivers: [
+          if (homeController.recentHouse.isNotEmpty) ...[
+            SliverToBoxAdapter(
+              child: HomeRecentView(
+                houseList: homeController.recentHouse,
+              ),
             ),
+          ],
+          SliverPadding(
+            padding: const EdgeInsets.only(left: 14, top: 16, right: 14),
+            sliver: SliverToBoxAdapter(
+              child: Text(
+                'Danh sách nhà',
+                style: ConstantFont.boldText.copyWith(fontSize: 16),
+              ),
+            ),
+          ),
+          if (homeController.houseList.isEmpty) ...[
+            const SliverFillRemaining(
+              child: Center(child: NotFoundWidget(title: ConstantString.messageNoData)),
+            )
+          ] else
+            HomeList(
+              houseList: homeController.houseList,
+              addToRecentHouse: homeController.addToRecentHouse,
+            ),
+        ],
+      ),
     );
   }
 }

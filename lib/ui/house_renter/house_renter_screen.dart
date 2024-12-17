@@ -53,6 +53,7 @@ class HouseRenterScreen extends StatelessWidget {
         onRefresh: controller.onRefreshData,
         enablePullUp: false,
         child: ListView(
+          key: const PageStorageKey("renter_storage_key"),
           padding: const EdgeInsets.all(0),
           children: [
             CommonNetworkImage(

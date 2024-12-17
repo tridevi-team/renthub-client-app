@@ -30,6 +30,7 @@ class HouseDetailScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: ListView.separated(
+                    key: const PageStorageKey("floor_storage_key"),
                     itemBuilder: (_, floorIndex) {
                       final floor = houseDetailController.currentHouse.floors?[floorIndex];
                       ContactModel? contact = houseDetailController.currentHouse.contact;
@@ -44,17 +45,15 @@ class HouseDetailScreen extends StatelessWidget {
                           ...List.generate(floor?.rooms?.length ?? 0, (roomIndex) {
                             return Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: floor?.rooms?[roomIndex] != null ? RoomWidget(
-                                room: floor!.rooms![roomIndex],
-                                onTap: () {
-                                  final address =
-                                  houseDetailController.currentHouse.address.toString();
-                                  Get.to(() => RoomDetailScreen(
-                                      selectedRoom: floor.rooms![roomIndex],
-                                      address: address,
-                                      contactModel: contact));
-                                },
-                              ) : const SizedBox(),
+                              child: floor?.rooms?[roomIndex] != null
+                                  ? RoomWidget(
+                                      room: floor!.rooms![roomIndex],
+                                      onTap: () {
+                                        final address = houseDetailController.currentHouse.address.toString();
+                                        Get.to(() => RoomDetailScreen(selectedRoom: floor.rooms![roomIndex], address: address, contactModel: contact));
+                                      },
+                                    )
+                                  : const SizedBox(),
                             );
                           }),
                         ],

@@ -40,6 +40,7 @@ class NotificationScreen extends StatelessWidget {
                       content: ConstantString.messageContentNoData,
                     )
                   : ListView.builder(
+                      key: const PageStorageKey("notification_storage_key"),
                       addAutomaticKeepAlives: false,
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: controller.notifications.length,
