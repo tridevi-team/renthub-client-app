@@ -60,41 +60,22 @@ class CustomerInfoController extends BaseController {
 
     citizenIdCtrl.text = parts[0];
     fullNameCtrl.text = infoParts.length > 0 ? infoParts[0] : "Tên không xác định";
-    dateOfBirthCtrl.text = infoParts.length > 1 ? infoParts[1] : "Ngày sinh không xác định";
-    addressCtrl.text = infoParts.length > 2 ? infoParts[2] : "Địa chỉ không xác định";
+    dateOfBirthCtrl.text = infoParts.length > 1 ? FormatUtil.formatDateOfBirth(infoParts[1]) : "Ngày sinh không xác định";
 
-    final addressParts = addressCtrl.text.split(", ");
-    String ward = "Phường/Xã không xác định";
-    String district = "Quận/Huyện không xác định";
-    String city = "Thành phố không xác định";
-
-    for (var part in addressParts) {
-      if (part.startsWith("Thôn") || part.startsWith("Xã")) {
-        ward = part;
-      } else if (part.startsWith("Huyện") || part.startsWith("Quận")) {
-        district = part;
-      } else {
-        city = part;
-      }
-    }
-
+    final addressParts = infoParts.length > 2 ? infoParts[2].split(",") : "Địa chỉ không xác định";
+    String city = addressParts[2];
+    String district = addressParts[1];
+    String ward = addressParts[0];
+    addressCtrl.text = ward;
     citySelected.value = _findMatchingOrFirst<City>(
       ProvinceSingleton.instance.provinces,
       city,
     );
-
     districtSelected.value = _findMatchingOrFirst<District>(
       citySelected.value?.districts ?? [],
       district,
     );
-
-    wardSelected.value = _findMatchingOrFirst<Ward>(
-      districtSelected.value?.wards ?? [],
-      ward,
-    );
-
-    isVisible.value = false;
-    isVisible.value = true;
+    wardSelected.value = districtSelected.value?.wards?[0];
   }
 
   void confirmResidenceRegistration({int? closeDialogRoute = 1}) {
@@ -204,7 +185,7 @@ class CustomerInfoController extends BaseController {
 
   T? _findMatchingOrFirst<T>(List<T> items, String? name) {
     if (name?.isNotEmpty ?? false) {
-      final trimmedName = name!.toLowerCase().removeSign();
+      final trimmedName = name?.toLowerCase().removeSign() ?? "khong xac dinh";
       return items.firstWhere(
         (item) => _getName(item)?.toLowerCase().removeSign().contains(trimmedName) ?? false,
         orElse: () => items.first,
