@@ -37,7 +37,7 @@ class CommonNetworkImage extends StatelessWidget {
         fit: fit,
         cache: true,
         cacheWidth: width.ceil(),
-        compressionRatio: 0.8,
+        compressionRatio: 0.9,
         loadStateChanged: (state) {
           return _buildLoadState(state);
         },

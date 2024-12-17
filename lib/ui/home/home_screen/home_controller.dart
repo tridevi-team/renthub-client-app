@@ -18,6 +18,7 @@ class HomeController extends BaseController {
   RefreshController refreshController = RefreshController();
   ScrollController scrollCtrl = ScrollController();
   final BottomNavBarController bottomNavController = Get.find();
+
   //widgets
   RxList<Widget> widgets = <Widget>[].obs;
 
@@ -31,7 +32,6 @@ class HomeController extends BaseController {
   List<House> houseList = [];
   RxList<House> recentHouse = <House>[].obs;
   int currentPage = 1;
-
 
   @override
   void onInit() {
@@ -76,26 +76,22 @@ class HomeController extends BaseController {
         "field": "houses.name",
         "operator": "cont",
         "value": ""
-        }&
-        ''';
-      String cityNameSelected =  bottomNavController.citySelected.value?.name ?? "";
-      String districtNameSelected =  bottomNavController.districtSelected.value?.name ?? "";
+        }&''';
+      String cityNameSelected = bottomNavController.citySelected.value?.name ?? "";
+      String districtNameSelected = bottomNavController.districtSelected.value?.name ?? "";
       if (cityNameSelected != "") {
         filters = '''filter[]={
         "field": "houses.city",
         "operator": "eq",
         "value": "$cityNameSelected"
-        }&
-        ''';
+        }&''';
       }
 
       if (districtNameSelected != "") {
-        filters = '''${filters}filter[]={
-        "field": "houses.district",
+        filters = '''${filters}filter[]={"field": "houses.district",
         "operator": "eq",
         "value": "$districtNameSelected"
-        }&
-        ''';
+        }&''';
       }
       final response = await HomeService.fetchHouseList(sort, filters, currentPage);
       ResponseErrorUtil.handleErrorResponse(this, response.statusCode);

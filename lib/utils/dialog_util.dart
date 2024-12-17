@@ -39,14 +39,16 @@ class DialogUtil {
                       child: Image.asset("assets/images/image.png", width: 343, height: 208, fit: BoxFit.cover),
                     ),
                     Positioned(
-                        top: 10,
-                        right: 10,
-                        child: GestureDetector(
-                            onTap: () {
-                              controller.onSelectedCancel();
-                              Get.back();
-                            },
-                            child: SvgPicture.asset(AssetSvg.iconClose)))
+                      top: 10,
+                      right: 10,
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.onSelectedCancel();
+                          Get.back();
+                        },
+                        child: SvgPicture.asset(AssetSvg.iconClose),
+                      ),
+                    ),
                   ],
                 ),
                 Column(

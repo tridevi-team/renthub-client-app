@@ -8,6 +8,7 @@ import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/room_model.dart';
+import 'package:rent_house/ui/account/customer_issue/detail_issue/media_screen.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
@@ -88,13 +89,19 @@ class RoomDetailScreen extends StatelessWidget {
   }
 
   Widget _buildRoomImage() {
+    String imageUrl = (selectedRoom.images?.isNotEmpty ?? false) ? selectedRoom.images?.first.imageUrl ?? '' : '';
     return SliverToBoxAdapter(
-      child: CommonNetworkImage(
-        imageUrl: (selectedRoom.images?.isNotEmpty ?? false) ? selectedRoom.images?.first.imageUrl ?? '' : '',
-        width: Get.width,
-        height: 300,
-        fit: BoxFit.cover,
-        errorWidget: const ErrorImageWidget(),
+      child: InkWell(
+        onTap: () {
+          Get.to(() => MediaScreen(url: imageUrl));
+        },
+        child: CommonNetworkImage(
+          imageUrl: imageUrl,
+          width: Get.width,
+          height: 300,
+          fit: BoxFit.cover,
+          errorWidget: const ErrorImageWidget(),
+        ),
       ),
     );
   }
@@ -206,7 +213,11 @@ class RoomDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildEquipment(),
             const SizedBox(height: 10),
-            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) ...[Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)), const SizedBox(height: 20), _buildImageCarousel()]
+            if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) ...[
+              Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
+              const SizedBox(height: 20),
+              _buildImageCarousel(),
+            ],
           ],
         ),
       ),
@@ -387,15 +398,20 @@ class RoomDetailScreen extends StatelessWidget {
   Widget _buildImageCarousel() {
     return CarouselSlider(
       items: selectedRoom.images?.map((image) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: CommonNetworkImage(
-            imageUrl: image.imageUrl ?? '',
-            width: Get.width,
-            height: 150,
-            fit: BoxFit.cover,
-            errorWidget: const ErrorImageWidget(
+        return GestureDetector(
+          onTap: () {
+            Get.to(() => MediaScreen(url: image.imageUrl ?? ''));
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CommonNetworkImage(
+              imageUrl: image.imageUrl ?? '',
+              width: Get.width,
               height: 150,
+              fit: BoxFit.cover,
+              errorWidget: const ErrorImageWidget(
+                height: 150,
+              ),
             ),
           ),
         );
