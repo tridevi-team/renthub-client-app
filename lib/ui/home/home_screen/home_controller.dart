@@ -3,13 +3,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/explore_model.dart';
 import 'package:rent_house/models/house_data_model.dart';
-import 'package:rent_house/models/province/city.dart';
 import 'package:rent_house/services/home_service.dart';
 import 'package:rent_house/ui/home/bottom_nav_bar/bottom_nav_bar_controller.dart';
 import 'package:rent_house/ui/home/home_explore/home_explore.dart';

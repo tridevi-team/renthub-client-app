@@ -43,6 +43,7 @@ class DialogUtil {
                         right: 10,
                         child: GestureDetector(
                             onTap: () {
+                              controller.onSelectedCancel();
                               Get.back();
                             },
                             child: SvgPicture.asset(AssetSvg.iconClose)))

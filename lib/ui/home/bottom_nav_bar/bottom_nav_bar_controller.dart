@@ -173,8 +173,10 @@ class BottomNavBarController extends FullLifeCycleController {
       list.add(InkWell(
         onTap: () {
           if (isDistrict) {
+            districtTemp = districtSelected.value ?? districtTemp;
             districtSelected.value = location as District;
           } else {
+            cityTemp = citySelected.value ?? cityTemp;
             citySelected.value = location as City;
           }
         },
@@ -325,7 +327,6 @@ class BottomNavBarController extends FullLifeCycleController {
   void setSelectedCity() {
     filteredDistricts.clear();
     currentLabelCity.value = citySelected.value?.name ?? '';
-    cityTemp = citySelected.value ?? cityTemp;
     clearDistrict();
   }
 
@@ -336,7 +337,6 @@ class BottomNavBarController extends FullLifeCycleController {
   }
 
   void setSelectedDistrict() {
-    districtTemp = districtSelected.value ?? districtTemp;
     currentLabelDistrict.value = districtSelected.value?.name ?? '';
   }
 
