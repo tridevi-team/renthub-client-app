@@ -387,14 +387,13 @@ class BottomNavBarController extends FullLifeCycleController {
 
   Future<bool> onWillPop() async {
     final currentTime = DateTime.now();
-    const backButtonInterval = Duration(seconds: 2);
+    const backButtonInterval = Duration(seconds: 3);
     if (_lastPressedTime == null ||
         currentTime.difference(_lastPressedTime!) > backButtonInterval) {
       _lastPressedTime = currentTime;
       ToastUntil.toastNotification(description: 'Nhấn lần nữa để thoát', status: ToastStatus.warning);
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 }
