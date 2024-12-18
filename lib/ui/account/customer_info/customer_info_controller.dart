@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:get/get.dart';
@@ -15,6 +13,7 @@ import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/models/province/ward.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
+import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/qr_scan/qr_scan_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/dialog_util.dart';
@@ -33,6 +32,7 @@ class CustomerInfoController extends BaseController {
   RxBool isVisible = true.obs;
   RxBool isEditInfo = false.obs;
   UserModel user = UserSingleton.instance.getUser();
+  RxString nameUser = "".obs;
 
   Rxn<City> citySelected = Rxn<City>();
   Rxn<District> districtSelected = Rxn<District>();
@@ -132,6 +132,8 @@ class CustomerInfoController extends BaseController {
       DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         UserSingleton.instance.setUser(updatedUser);
+         Get.find<CustomerController>().nameUser.value = updatedUser.name ?? "";
+        nameUser.value = updatedUser.name ?? "";
         isEditInfo.value = false;
         ToastUntil.toastNotification(
           description: ConstantString.updateSuccessMessage,
@@ -176,6 +178,7 @@ class CustomerInfoController extends BaseController {
   }
 
   void loadUserAddressInfo() {
+    nameUser.value = user.name ?? "";
     citizenIdCtrl.text = user.citizenId ?? '';
     fullNameCtrl.text = user.name ?? '';
     dateOfBirthCtrl.text = FormatUtil.formatToDayMonthYear(user.birthday);

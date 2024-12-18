@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
-import 'package:rent_house/constants/singleton/user_singleton.dart';
-import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/ui/account/contract/contract_screen.dart';
 import 'package:rent_house/ui/account/customer/customer_controller.dart';
 import 'package:rent_house/ui/account/customer_info/customer_info.dart';
@@ -23,43 +21,47 @@ class CustomerScreen extends StatelessWidget {
   CustomerScreen({super.key});
 
   final customerController = Get.put(CustomerController());
-  final UserModel user = UserSingleton.instance.getUser();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: MediaQuery.of(context).padding.top),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: MediaQuery
+            .of(context)
+            .padding
+            .top),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkWell(
-              onTap: () {
-                Get.to(() => CustomerInfo());
-              },
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                leading: CommonNetworkImage(
-                  imageUrl: 'imageUrl',
-                  height: 60,
-                  width: 60,
-                  errorWidget: AvatarWidget(name: '${user.name}'),
+            Obx(() {
+              return InkWell(
+                onTap: () {
+                  Get.to(() => CustomerInfo());
+                },
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                  leading: CommonNetworkImage(
+                    imageUrl: 'imageUrl',
+                    height: 60,
+                    width: 60,
+                    errorWidget: AvatarWidget(name: customerController.nameUser.value),
+                  ),
+                  title: Text(
+                    customerController.nameUser.value,
+                    style: ConstantFont.boldText.copyWith(fontSize: 18),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text(
+                    'Xem thông tin',
+                    style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
+                  ),
+                  trailing:
+                  SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
                 ),
-                title: Text(
-                  '${user.name}',
-                  style: ConstantFont.boldText.copyWith(fontSize: 18),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Text(
-                  'Xem thông tin',
-                  style: ConstantFont.regularText.copyWith(color: AppColors.neutral8F8D8A),
-                ),
-                trailing:
-                    SvgPicture.asset(AssetSvg.iconChevronForward, color: AppColors.neutralCCCAC6),
-              ),
-            ),
+              );
+            }),
             const SizedBox(height: 10),
             const Divider(height: 1, color: AppColors.neutralF5F5F5),
             const SizedBox(height: 30),
@@ -89,8 +91,9 @@ class CustomerScreen extends StatelessWidget {
                 titleText: 'Chính sách bảo mật',
                 trailingAsset: AssetSvg.iconChevronForward,
                 onTap: () {
-                  Get.to(() => WebViewScreen(title: "Chính sách bảo mật",
-                      url:
+                  Get.to(() =>
+                      WebViewScreen(title: "Chính sách bảo mật",
+                          url:
                           "https://www.freeprivacypolicy.com/live/2ab662e0-312e-4350-8ed0-af2174976af4"));
                 }),
             const SizedBox(height: 20),

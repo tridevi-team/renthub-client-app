@@ -40,9 +40,9 @@ class CustomerInfo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildProfileImage(controller.user.name ?? ''),
+                Obx(() => _buildProfileImage(controller.nameUser.value)),
                 const SizedBox(height: 10),
-                _buildProfileName(controller.user.name ?? ''),
+                Obx(() => _buildProfileName(controller.nameUser.value)),
                 const SizedBox(height: 20),
                 _buildAccountInfo(email: controller.user.email ?? '', phone: controller.user.phoneNumber ?? ''),
                 const SizedBox(height: 20),

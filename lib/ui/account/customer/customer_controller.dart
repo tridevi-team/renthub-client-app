@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
@@ -13,12 +14,12 @@ import 'package:rent_house/utils/toast_until.dart';
 
 class CustomerController extends BaseController {
   String version = '';
-  Rx<UserModel> user = UserModel().obs;
+  RxString nameUser = "".obs;
 
   @override
   void onInit() {
     super.onInit();
-    user.value = UserSingleton.instance.getUser();
+    nameUser.value = UserSingleton.instance.getUser().name ?? "";
     getCurrentVersion();
   }
 

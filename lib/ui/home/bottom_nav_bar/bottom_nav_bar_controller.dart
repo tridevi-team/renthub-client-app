@@ -63,7 +63,7 @@ class BottomNavBarController extends FullLifeCycleController {
       refreshData();
       if (Get.isRegistered<CustomerController>()) {
         final currentCustomerController = Get.find<CustomerController>();
-        currentCustomerController.user.value = UserSingleton.instance.getUser();
+        currentCustomerController.nameUser.value = UserSingleton.instance.getUser().name ?? "";
       }
 
       if (Get.isRegistered<HomeController>() && isLogin.value == false) {
