@@ -35,6 +35,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      extendBodyBehindAppBar: true,
       body: SafeArea(
         child: Obx(
           () {
@@ -112,7 +113,6 @@ class _StatisticScreenState extends State<StatisticScreen> {
     );
   }
 
-
   Widget _buildAnalyticsView() {
     List<ServiceCompareData> serviceData = controller.statisticData.serviceCompare?.data ?? [];
 
@@ -133,12 +133,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
         if (previousData != null) {
           int previousValue = previousData.services?[serviceKey] ?? 0;
           Map<String, dynamic> data = controller.calculateFeeChange(previousValue, currentValue);
-          return _buildAnalyticItem(
-            serviceName: serviceKey,
-            serviceFee: currentValue,
-            serviceTrend: data["content"],
-            color: data["color"],
-          );
+          return _buildAnalyticItem(serviceName: serviceKey, serviceFee: currentValue, serviceTrend: data["content"], color: data["color"], prevServiceFee: previousValue);
         }
 
         return _buildAnalyticItem(
@@ -155,6 +150,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
     String serviceTrend = "",
     Color? color,
     required int serviceFee,
+    int? prevServiceFee,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -173,20 +169,50 @@ class _StatisticScreenState extends State<StatisticScreen> {
                 Expanded(
                   child: Text(controller.getServiceLabelAndColor(serviceName)[0], style: ConstantFont.mediumText),
                 ),
-                const SizedBox(width: 6),
+                if (prevServiceFee != null && serviceTrend != "Không thay đổi") ...[
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 200,
+                    child: Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: RichText(
+                          text: TextSpan(
+                            text: "Tháng trước: ",
+                            style: ConstantFont.mediumText,
+                            children: [
+                              TextSpan(
+                                text: FormatUtil.formatCurrency(prevServiceFee),
+                                style: ConstantFont.mediumText.copyWith(color: color),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    serviceTrend,
+                    style: ConstantFont.regularText.copyWith(
+                      fontSize: 12,
+                      color: color,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
                 Text(
                   FormatUtil.formatCurrency(serviceFee),
                   style: ConstantFont.mediumText,
                 ),
               ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              serviceTrend,
-              style: ConstantFont.regularText.copyWith(
-                fontSize: 12,
-                color: color,
-              ),
             ),
           ],
         ),
