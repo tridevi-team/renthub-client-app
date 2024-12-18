@@ -47,13 +47,13 @@ class HouseRenterScreen extends StatelessWidget {
     return Visibility(
       visible: controller.isVisible.value,
       child: SmartRefreshWidget(
-        key: UniqueKey(),
+        key: const PageStorageKey("renter_storage_key"),
         controller: RefreshController(),
         scrollController: controller.scrollController,
         onRefresh: controller.onRefreshData,
         enablePullUp: false,
         child: ListView(
-          key: const PageStorageKey("renter_storage_key"),
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.all(0),
           children: [
             CommonNetworkImage(

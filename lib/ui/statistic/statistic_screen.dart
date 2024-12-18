@@ -164,7 +164,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(controller.getServiceLabelAndColor(serviceName)[0], style: ConstantFont.mediumText),
@@ -173,20 +173,18 @@ class _StatisticScreenState extends State<StatisticScreen> {
                   const SizedBox(width: 10),
                   SizedBox(
                     width: 200,
-                    child: Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: RichText(
-                          text: TextSpan(
-                            text: "Tháng trước: ",
-                            style: ConstantFont.mediumText,
-                            children: [
-                              TextSpan(
-                                text: FormatUtil.formatCurrency(prevServiceFee),
-                                style: ConstantFont.mediumText.copyWith(color: color),
-                              ),
-                            ],
-                          ),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Tháng trước: ",
+                          style: ConstantFont.mediumText,
+                          children: [
+                            TextSpan(
+                              text: FormatUtil.formatCurrency(prevServiceFee),
+                              style: ConstantFont.mediumText.copyWith(color: color),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -196,15 +194,13 @@ class _StatisticScreenState extends State<StatisticScreen> {
             ),
             const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(
-                    serviceTrend,
-                    style: ConstantFont.regularText.copyWith(
-                      fontSize: 12,
-                      color: color,
-                    ),
+                Text(
+                  serviceTrend,
+                  style: ConstantFont.regularText.copyWith(
+                    fontSize: 12,
+                    color: color,
                   ),
                 ),
                 const SizedBox(width: 10),
