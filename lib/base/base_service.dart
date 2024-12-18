@@ -72,7 +72,7 @@ class BaseService {
       return http.Response('Something went wrong', 500);
     }
 
-    if (response.statusCode == 401) {
+    if (response.statusCode == 401 && auth == true) {
       final refreshed = await AppUtil.autoRefreshToken();
       if (refreshed) {
         return requestApi(

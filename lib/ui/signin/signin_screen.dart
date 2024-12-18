@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:rent_house/constants/asset_svg.dart';
+import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/signin/signin_controller.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
@@ -26,7 +27,7 @@ class SignInScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                SvgPicture.asset('assets/images/img_rent_house.svg', width: Get.width / 2),
+                Text("Trọ ơi..!", style: ConstantFont.regularText.copyWith(fontSize: , fontFamily: "PlaywriteMX"),),
                 const SizedBox(height: 50),
                 const TitleInputWidget(title: 'Email / Số điện thoại', isRequired: true),
                 const SizedBox(height: 4),

@@ -130,3 +130,7 @@ flutter:
           weight: 800
         - asset: assets/fonts/LexendDeca-Black.ttf
           weight: 900
+    - family: PlaywriteMX
+      fonts:
+        - asset: assets/fonts/PlaywriteMX-Regular.ttf
+          weight: 400
