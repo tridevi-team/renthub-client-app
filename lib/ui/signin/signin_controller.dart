@@ -43,8 +43,8 @@ class SignInController extends BaseController {
   @override
   void onInit() {
     if (kDebugMode) {
-      otpEditingController.text = "000000";
-      contactInputController.text = "0123456789";
+      otpEditingController.text = "123456";
+      contactInputController.text = "0395327016";
     }
     super.onInit();
   }
@@ -195,10 +195,11 @@ class SignInController extends BaseController {
         },
         verificationFailed: (FirebaseAuthException e) {
           DialogUtil.hideLoading();
-          _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
+          _handleAuthError(e.code);
         },
         codeSent: (String verificationId, int? resendToken) {
           this.verificationId = verificationId;
+          DialogUtil.hideLoading();
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           this.verificationId = verificationId;
@@ -224,6 +225,7 @@ class SignInController extends BaseController {
       _processLogin(token, ConstantString.prefTypePhone);
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e.code);
+      DialogUtil.hideLoading();
     } catch (e) {
       DialogUtil.hideLoading();
       _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
@@ -302,7 +304,7 @@ class SignInController extends BaseController {
         message = 'Lỗi xác thực';
         break;
     }
-    _showToast(message, ToastStatus.warning);
+    _showToast(message, ToastStatus.error);
   }
 
   void startCountdown() {
