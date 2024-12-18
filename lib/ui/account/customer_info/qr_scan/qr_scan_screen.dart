@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:rent_house/ui/qr_scan/qr_scan_controller.dart';
+import 'package:rent_house/ui/account/customer_info/qr_scan/qr_scan_controller.dart';
 import 'package:rent_house/widgets/errors/error_camera_widget.dart';
 
 class QrScanScreen extends StatelessWidget {

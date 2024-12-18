@@ -204,13 +204,13 @@ class CustomerInfo extends StatelessWidget {
               InkWell(
                 onTap: controller.useScanQR,
                 child: Text(
-                  "Use QR Scan",
+                  "Sử dụng QR Scan",
                   style: ConstantFont.mediumText.copyWith(color: AppColors.primary600),
                 ),
               ),
               InkWell(
-                onTap: controller.useNFC,
-                child: Text("Use NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600)),
+                onTap: controller.checkNFCStatus,
+                child: Text("Sử dụng NFC", style: ConstantFont.mediumText.copyWith(color: AppColors.primary600)),
               ),
             ],
           ),

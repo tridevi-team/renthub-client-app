@@ -8,7 +8,6 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/models/contract_model.dart';
 import 'package:rent_house/ui/account/contract/contract_controller.dart';
 import 'package:rent_house/ui/account/contract/detail/contract_detail_screen.dart';
-import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/errors/network_error_widget.dart';

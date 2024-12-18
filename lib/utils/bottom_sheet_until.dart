@@ -43,9 +43,7 @@ class BottomSheetUtils {
             const SizedBox(
               height: 20,
             ),
-            isError != true
-                ? const Text('Thành công')
-                : const SizedBox(),
+            isError != true ? const Text('Thành công') : const SizedBox(),
             const Spacer(),
             Text(
               title ?? '',
@@ -65,7 +63,7 @@ class BottomSheetUtils {
                   child: Text(
                     textAlign: TextAlign.center,
                     content ?? '',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF56575B), height: 20/14),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Color(0xFF56575B), height: 20 / 14),
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
@@ -406,5 +407,15 @@ class DialogUtil {
     } catch (e) {
       AppUtil.printDebugMode(type: "hide loading", message: "$e");
     }
+  }
+
+  static void showNFCAnimation() {
+    Get.dialog(
+      barrierDismissible: false,
+      Dialog(insetPadding: EdgeInsets.zero, backgroundColor: Colors.transparent, child: SizedBox(
+        height: Get.height * 0.5,
+        child: Lottie.asset('assets/anim/nfc.json'),
+      )),
+    );
   }
 }

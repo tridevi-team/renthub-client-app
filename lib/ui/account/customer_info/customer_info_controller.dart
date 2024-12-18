@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rent_house/base/base_controller.dart';
@@ -11,8 +15,7 @@ import 'package:rent_house/models/province/district.dart';
 import 'package:rent_house/models/province/ward.dart';
 import 'package:rent_house/models/user_model.dart';
 import 'package:rent_house/services/customer_service.dart';
-import 'package:rent_house/ui/account/customer_info/nfc_screen.dart';
-import 'package:rent_house/ui/qr_scan/qr_scan_screen.dart';
+import 'package:rent_house/ui/account/customer_info/qr_scan/qr_scan_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/utils/extensions/string_extension.dart';
@@ -41,41 +44,54 @@ class CustomerInfoController extends BaseController {
     super.onInit();
   }
 
-  void useNFC() {
-    Get.to(() => NFCScreen());
+  Future<void> useScanQR() async {
+    String scannedData = await Get.to(() => QrScanScreen());
+    parseUserInfo(scannedData);
   }
 
-  Future<void> useScanQR() async {
-    final scannedData = await Get.to(() => QrScanScreen());
-    if (!scannedData.contains("||")) {
+  void parseUserInfo(String data, {bool isNFC = false}) {
+    if (!data.contains("||")) {
       ToastUntil.toastNotification(
         description: ConstantString.dataInvalidMessage,
         status: ToastStatus.error,
       );
       return;
     }
-
-    final parts = scannedData.split("||");
+    final parts = data.split("||");
     final infoParts = parts[1].split("|");
 
-    citizenIdCtrl.text = parts[0];
-    fullNameCtrl.text = infoParts.length > 0 ? infoParts[0] : "Tên không xác định";
-    dateOfBirthCtrl.text = infoParts.length > 1 ? FormatUtil.formatDateOfBirth(infoParts[1]) : "Ngày sinh không xác định";
+    citizenIdCtrl.text = parts[0].replaceAll(RegExp(r'[^0-9]'), '');
+    fullNameCtrl.text = infoParts.isNotEmpty ? infoParts[0] : "Tên không xác định";
+    dateOfBirthCtrl.text = infoParts.length > 1 ? FormatUtil.formatDateOfBirth(infoParts[1]) : FormatUtil.formatToDayMonthYear(DateTime.now().toIso8601String());
 
-    final addressParts = infoParts.length > 2 ? infoParts[2].split(",") : "Địa chỉ không xác định";
-    String city = addressParts[2];
-    String district = addressParts[1];
-    String ward = addressParts[0];
-    addressCtrl.text = ward;
-    citySelected.value = _findMatchingOrFirst<City>(
-      ProvinceSingleton.instance.provinces,
-      city,
-    );
-    districtSelected.value = _findMatchingOrFirst<District>(
-      citySelected.value?.districts ?? [],
-      district,
-    );
-    wardSelected.value = districtSelected.value?.wards?[0];
+    List addressParts;
+    if (isNFC) {
+      selectedGender.value = parseGender(infoParts.length > 2 ? infoParts[2] : 'other');
+      addressParts = infoParts.length > 3 ? infoParts[3].split(",") : [];
+    } else {
+      addressParts = infoParts.length > 2 ? infoParts[2].split(",") : [];
+    }
+    if (addressParts.length >= 3) {
+      String city = addressParts[2];
+      String district = addressParts[1];
+      String ward = addressParts[0];
+      addressCtrl.text = ward;
+
+      citySelected.value = _findMatchingOrFirst<City>(
+        ProvinceSingleton.instance.provinces,
+        city,
+      );
+      districtSelected.value = _findMatchingOrFirst<District>(
+        citySelected.value?.districts ?? [],
+        district,
+      );
+      wardSelected.value = districtSelected.value?.wards?[0];
+    } else {
+      addressCtrl.text = "";
+      citySelected.value = ProvinceSingleton.instance.provinces[0];
+      districtSelected.value = citySelected.value?.districts?[0];
+      wardSelected.value = districtSelected.value?.wards?[0];
+    }
   }
 
   void confirmResidenceRegistration({int? closeDialogRoute = 1}) {
@@ -109,7 +125,6 @@ class CustomerInfoController extends BaseController {
         ),
         gender: selectedGender.value,
       );
-
 
       DialogUtil.showLoading();
       final response = await CustomerService.updateCustomerInfo(user.id ?? '', updatedUser.toUpdateJson());
@@ -204,5 +219,47 @@ class CustomerInfoController extends BaseController {
   void cancelUpdateInfo() {
     isEditInfo.toggle();
     loadUserAddressInfo();
+  }
+
+  Future<void> checkNFCStatus() async {
+    try {
+      NFCAvailability nfcStatus = await FlutterNfcKit.nfcAvailability;
+      if (nfcStatus == NFCAvailability.not_supported) {
+        throw Exception('NFC is unavailable');
+      } else if (nfcStatus == NFCAvailability.disabled) {
+        ToastUntil.toastNotification(description: "Để sử dụng chức năng này vui lòng bật NFC trên thiết bị và thử lại.", status: ToastStatus.warning);
+      } else {
+        _readNFC();
+      }
+    } catch (e) {
+      AppUtil.printDebugMode(type: "NFC status", message: "$e");
+      ToastUntil.toastNotification(description: "NFC is not supported on this device.", status: ToastStatus.error);
+    }
+  }
+
+  Future<void> _readNFC() async {
+    try {
+      DialogUtil.showNFCAnimation();
+      await FlutterNfcKit.poll();
+      final ndefRecords = await FlutterNfcKit.readNDEFRecords();
+      final ndefData = ndefRecords.map((record) => record.payload ?? <int>[]).expand((element) => element).toList();
+      String nfcData = utf8.decode(ndefData);
+      await FlutterNfcKit.finish().then((value) => Get.close(1));
+      parseUserInfo(nfcData, isNFC: true);
+    } catch (e) {
+      ToastUntil.toastNotification(description: "Có lỗi xảy ra. Vui lòng thử lại hoặc cập nhật thông tin thủ công.", status: ToastStatus.error);
+      AppUtil.printDebugMode(type: "NFC Error", message: "$e");
+    }
+  }
+
+  String parseGender(String gender) {
+    gender = gender.toLowerCase().removeSign();
+    if (gender.toLowerCase().removeSign() == "nam") {
+      return "male";
+    } else if (gender == "nu") {
+      return "female";
+    } else {
+      return "other";
+    }
   }
 }
