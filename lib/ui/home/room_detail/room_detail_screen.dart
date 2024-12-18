@@ -10,6 +10,7 @@ import 'package:rent_house/models/house_data_model.dart';
 import 'package:rent_house/models/room_model.dart';
 import 'package:rent_house/ui/account/customer_issue/detail_issue/media_screen.dart';
 import 'package:rent_house/ui/home/room_detail/room_detail_controller.dart';
+import 'package:rent_house/ui/home/room_detail/view_360.dart';
 import 'package:rent_house/utils/app_util.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
@@ -214,7 +215,25 @@ class RoomDetailScreen extends StatelessWidget {
             _buildEquipment(),
             const SizedBox(height: 10),
             if (selectedRoom.images != null && selectedRoom.images!.isNotEmpty) ...[
-              Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Ảnh căn phòng', style: ConstantFont.semiBoldText.copyWith(fontSize: 16)),
+                  InkWell(
+                    onTap: () {
+                      Get.to(() => const View360());
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Xem 360°', style: ConstantFont.mediumText),
+                        const SizedBox(width: 4),
+                        SvgPicture.asset(AssetSvg.iconGlobal),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
               _buildImageCarousel(),
             ],
