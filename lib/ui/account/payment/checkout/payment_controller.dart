@@ -7,6 +7,7 @@ import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/bill_model.dart';
 import 'package:rent_house/services/bill_service.dart';
+import 'package:rent_house/ui/account/payment/payment_history_controller.dart';
 import 'package:rent_house/ui/account/payment/status/payment_result.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/app_util.dart';
@@ -100,6 +101,7 @@ class PaymentController extends BaseController {
               mainText: "Thanh toán thành công",
               subText: "Thanh toán thành công. Bạn có thể xem hóa đơn hoặc điều hướng về màn hình chính.",
             ));
+        Get.find<PaymentHistoryController>().fetchPaymentHistoryByStatus(isRefresh: true);
         await getBillDetails();
         break;
 
