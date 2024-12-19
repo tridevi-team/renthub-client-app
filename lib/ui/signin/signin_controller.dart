@@ -117,35 +117,32 @@ class SignInController extends BaseController {
     DialogUtil.showLoading();
     final email = contactInputController.text.trim();
     final otp = otpEditingController.text.trim();
-    viewState.value = ViewState.loading;
 
     try {
       final response = await AuthService.verifyEmailByOTP({
         "email": email,
         "code": otp,
       });
-      ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
-      if (response.statusCode < 300) {
-        final model = ResponseModel<UserModel>.fromJson(
-          jsonDecode(response.body),
-          parseData: (data) => UserModel.fromJson(data),
-        );
-        if (model.success == true && model.data != null) {
-          final user = model.data!;
-          UserSingleton.instance.setUser(user);
-          _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
+      DialogUtil.hideLoading();
+      final model = ResponseModel<UserModel>.fromJson(
+        jsonDecode(response.body),
+        parseData: (data) => UserModel.fromJson(data),
+      );
+      if (model.success == true && model.data != null && response.statusCode == 200) {
+        final user = model.data!;
+        UserSingleton.instance.setUser(user);
+        _processLogin(user.accessToken, ConstantString.prefTypeServer, refreshToken: user.refreshToken);
+      } else {
+        if (model.code == "INVALID_VERIFICATION_CODE") {
+          _showToast(ConstantString.invalidOTPMessage, ToastStatus.error);
         } else {
-          if (model.code == "INVALID_VERIFICATION_CODE") {
-            _showToast(ConstantString.invalidOTPMessage, ToastStatus.error);
-          }
           _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
-          viewState.value = ViewState.complete;
         }
+        return;
       }
     } catch (e) {
       DialogUtil.hideLoading();
       _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
-      viewState.value = ViewState.complete;
     }
   }
 
