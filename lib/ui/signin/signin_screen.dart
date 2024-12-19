@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/ui/signin/signin_controller.dart';
+import 'package:rent_house/utils/dialog_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
 import 'package:rent_house/widgets/textfield/text_input_widget.dart';
@@ -26,7 +29,10 @@ class SignInScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 50),
-                Text("Trọ ơi..!", style: ConstantFont.regularText.copyWith(fontSize: 28, fontFamily: "PlaywriteMX"),),
+                Text(
+                  "Trọ ơi..!",
+                  style: ConstantFont.regularText.copyWith(fontSize: 28, fontFamily: "PlaywriteMX"),
+                ),
                 const SizedBox(height: 50),
                 const TitleInputWidget(title: 'Email / Số điện thoại', isRequired: true),
                 const SizedBox(height: 4),
@@ -62,7 +68,40 @@ class SignInScreen extends StatelessWidget {
                       )),
                     ),*/
                 const SizedBox(height: 18),
-                CustomElevatedButton(label: 'Đăng nhập', onTap: controller.onLogin, bgColor: const Color(0xFF4B7BE5), textColor: Colors.white),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomElevatedButton(
+                        label: 'Đăng nhập',
+                        onTap: controller.onLogin,
+                        bgColor: const Color(0xFF4B7BE5),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    InkWell(
+                      onTap: controller.authenticateFingerprint,
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: const Border.fromBorderSide(
+                            BorderSide(
+                              width: 1,
+                              color: AppColors.primary1,
+                            ),
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          AssetSvg.iconFingerprint,
+                          color: AppColors.primary1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 16),
                 CustomElevatedButton(label: 'Tiếp tục với Google', iconPath: 'assets/icons/ic_google.svg', onTap: controller.signInWithGoogle, textColor: Colors.black.withOpacity(0.5)),
                 const SizedBox(height: 30),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/constant_string.dart';
-import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/constants/singleton/token_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/models/error_input_model.dart';
@@ -23,6 +23,7 @@ import 'package:rent_house/utils/response_error_util.dart';
 import 'package:rent_house/utils/shared_pref_helper.dart';
 import 'package:rent_house/utils/toast_until.dart';
 import 'package:rent_house/utils/validate_util.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SignInController extends BaseController {
   final CustomerController customerController = Get.put(CustomerController());
@@ -40,12 +41,16 @@ class SignInController extends BaseController {
   int initialSeconds = 90;
   RxInt remainingSeconds = 0.obs;
 
+  bool isSupportBiometrics = false;
+  final LocalAuthentication localAuth = LocalAuthentication();
+
   @override
   void onInit() {
     if (kDebugMode) {
       otpEditingController.text = "123456";
       contactInputController.text = "0395327016";
     }
+    _checkBiometrics();
     super.onInit();
   }
 
@@ -234,12 +239,12 @@ class SignInController extends BaseController {
     if (token?.isNotEmpty ?? false) {
       accessToken = token!;
       this.refreshToken = refreshToken ?? '';
-      saveToken(type);
 
       if (type != ConstantString.prefTypeServer) {
         final isHaveAccount = await customerController.getCustomerInfo();
         if (!isHaveAccount) return;
       }
+      saveToken(type);
       moveToNextPage(true);
       return;
     }
@@ -247,13 +252,13 @@ class SignInController extends BaseController {
     return;
   }
 
-
   void saveToken(String type) async {
     TokenSingleton.instance.setAccessToken(accessToken);
     TokenSingleton.instance.setRefreshToken(refreshToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefAccessToken, accessToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, refreshToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefAppType, type);
+    SharedPrefHelper.instance.saveString(ConstantString.prefUserId, UserSingleton.instance.getUser().id ?? "");
   }
 
   void moveToNextPage(bool isCustomer) {
@@ -326,5 +331,60 @@ class SignInController extends BaseController {
     final minutes = (remainingSeconds ~/ 60).toString().padLeft(2, '0');
     final seconds = (remainingSeconds % 60).toString().padLeft(2, '0');
     return "$minutes:$seconds";
+  }
+
+  Future<void> loginWithFingerprint() async {
+    try {
+      DialogUtil.showLoading();
+      String token = SharedPrefHelper.instance.getString(ConstantString.prefRefreshToken) ?? "";
+      String userId = UserSingleton.instance.getUser().id ?? "";
+      final response = await AuthService.refreshToken(token, userId);
+      DialogUtil.hideLoading();
+      if (response.statusCode == 200) {
+        accessToken = jsonDecode(response.body)["data"]["accessToken"];
+        log("kkffk $response");
+        _processLogin(accessToken, "");
+      } else {
+        ToastUntil.toastNotification(description: "Bạn cần đăng nhập bằng gmail để sử dụng chức năng này.", status: ToastStatus.error);
+      }
+    } catch (e) {
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
+      AppUtil.printDebugMode(type: "login fingerprint", message: "$e");
+    }
+  }
+
+  Future<void> _checkBiometrics() async {
+    localAuth.isDeviceSupported().then((bool isSupported) => isSupportBiometrics = isSupported);
+  }
+
+  Future<void> authenticateFingerprint() async {
+    try {
+      int? isFirstLogin = SharedPrefHelper.instance.getInt(ConstantString.prefFirstLogin);
+      if (isFirstLogin != 1) {
+        ToastUntil.toastNotification(description: "Bạn cần đăng nhập lần đầu tiên trước khi sử dụng chức năng này.", status: ToastStatus.error);
+        return;
+      }
+
+      if (!isSupportBiometrics) {
+        ToastUntil.toastNotification(description: "Thiết bị của bạn không hỗ trợ vân tay.", status: ToastStatus.error);
+        return;
+      }
+      bool authenticated = await localAuth.authenticate(
+        localizedReason: 'Sử dụng dấu vân tay của bạn để xác minh',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true
+        ),
+      );
+      if (authenticated) {
+        loginWithFingerprint();
+        return;
+      } else {
+        ToastUntil.toastNotification(description: "Xác minh thất bại. Vui lòng thử lại hoặc sử dụng phương thức đăng nhập khác.", status: ToastStatus.error);
+      }
+    } catch (e) {
+      AppUtil.printDebugMode(type: "authenticate fingerprint", message: "$e");
+      ToastUntil.toastNotification(description: ConstantString.tryAgainMessage, status: ToastStatus.error);
+    }
   }
 }

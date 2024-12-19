@@ -11,6 +11,7 @@ class ConstantString {
   static const String prefTypeServer = 'pref_type_server';
   static const String prefCity = 'pref_city';
   static const String prefDistrict = 'pref_district';
+  static const String prefUserId = 'pref_user_id';
 
   static const String titleTempReg = "Đăng ký tạm trú";
   static const String descriptionTempReg = "Bạn xác nhận những thông tin này là đúng sự thật. Nếu có bất cứ vấn đề gì bạn sẽ phải chịu hoàn toàn mọi trách nhiệm?";

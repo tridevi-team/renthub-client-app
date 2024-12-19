@@ -57,6 +57,7 @@ class AssetSvg {
   static const String iconPlay = "assets/icons/ic_play.svg";
   static const String iconCard = "assets/icons/ic_card.svg";
   static const String iconGlobal = "assets/icons/ic_global.svg";
+  static const String iconFingerprint = "assets/icons/ic_fingerprint.svg";
 
   //image
   static const String imgLogoApp = "assets/images/rent_logo.png";

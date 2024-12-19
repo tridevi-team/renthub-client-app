@@ -23,7 +23,6 @@ class AppUtil {
   static Future<void> logout() async {
     try {
       TokenSingleton.instance.setAccessToken('');
-      TokenSingleton.instance.setRefreshToken('');
       UserSingleton.instance.resetUser();
 
       await Future.wait([
@@ -59,7 +58,6 @@ class AppUtil {
     try {
       await Future.wait([
         SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken),
-        SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
         SharedPrefHelper.instance.removeString(ConstantString.prefAppType),
       ]);
     } catch (e) {
@@ -84,7 +82,8 @@ class AppUtil {
         }
       } else if (refreshToken?.isNotEmpty ?? false) {
         try {
-          final response = await AuthService.refreshToken(refreshToken!);
+          String userId = UserSingleton.instance.getUser().id ?? "";
+          final response = await AuthService.refreshToken(refreshToken!, userId);
           if (response.statusCode == 200) {
             final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
             accessToken = decodedResponse["data"]["accessToken"] ?? '';

@@ -8,10 +8,10 @@ class AuthService{
         httpMethod: HttpMethod.post);
   }
 
-  static Future<http.Response> refreshToken(String refreshToken) async {
+  static Future<http.Response> refreshToken(String refreshToken, String userId) async {
     String endpoint = '/auth/refresh-token';
     return BaseService.requestApi(endpoint: endpoint,
-        httpMethod: HttpMethod.put, params: {"refresh_token": refreshToken});
+        httpMethod: HttpMethod.post, params: {"userId": userId, "refreshToken": refreshToken});
   }
 
   static Future<http.Response> generateForgotPasswordOtpByEmail(String email) async {
@@ -44,9 +44,8 @@ class AuthService{
         httpMethod: HttpMethod.post);
   }
 
-  static Future<http.Response> firstLogin() async {
-    String endpoint = '/renters/firstLogin';
-    return BaseService.requestApi(endpoint: endpoint,
-        httpMethod: HttpMethod.put,auth: true);
+  static Future<http.Response> logout() async {
+    String endpoint = '/auth/logout';
+    return BaseService.requestApi(endpoint: endpoint, httpMethod: HttpMethod.post, auth: true);
   }
 }
