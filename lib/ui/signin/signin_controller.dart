@@ -337,13 +337,12 @@ class SignInController extends BaseController {
     try {
       DialogUtil.showLoading();
       String token = SharedPrefHelper.instance.getString(ConstantString.prefRefreshToken) ?? "";
-      String userId = UserSingleton.instance.getUser().id ?? "";
+      String userId = SharedPrefHelper.instance.getString(ConstantString.prefUserId) ?? "";
       final response = await AuthService.refreshToken(token, userId);
       DialogUtil.hideLoading();
       if (response.statusCode == 200) {
         accessToken = jsonDecode(response.body)["data"]["accessToken"];
-        log("kkffk $response");
-        _processLogin(accessToken, "");
+        _processLogin(accessToken, "", refreshToken: token);
       } else {
         ToastUntil.toastNotification(description: "Bạn cần đăng nhập bằng gmail để sử dụng chức năng này.", status: ToastStatus.error);
       }

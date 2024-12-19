@@ -47,7 +47,6 @@ class SplashController extends BaseController {
       } else {
         if (JwtDecoder.isExpired(token)) {
           SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken);
-          SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken);
           ToastUntil.toastNotification(description: ConstantString.sessionTimeoutMessage, status: ToastStatus.error);
         } else {
           TokenSingleton.instance.setAccessToken(token);
