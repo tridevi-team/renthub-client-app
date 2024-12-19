@@ -239,7 +239,7 @@ class SignInController extends BaseController {
     if (token?.isNotEmpty ?? false) {
       accessToken = token!;
       this.refreshToken = refreshToken ?? '';
-
+      TokenSingleton.instance.setAccessToken(token);
       if (type != ConstantString.prefTypeServer) {
         final isHaveAccount = await customerController.getCustomerInfo();
         if (!isHaveAccount) return;
@@ -253,7 +253,6 @@ class SignInController extends BaseController {
   }
 
   void saveToken(String type) async {
-    TokenSingleton.instance.setAccessToken(accessToken);
     TokenSingleton.instance.setRefreshToken(refreshToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefAccessToken, accessToken);
     SharedPrefHelper.instance.saveString(ConstantString.prefRefreshToken, refreshToken);
