@@ -101,10 +101,7 @@ class OnboardingScreen extends StatelessWidget {
           height: 300,
         ),
         const SizedBox(height: 20),
-        Text(
-          'Rent House',
-          style: ConstantFont.extraBoldText.copyWith(fontSize: 32, color: AppColors.white),
-        ),
+        Text("Trọ ơi..!", style: ConstantFont.regularText.copyWith(fontSize: 32, fontFamily: "PlaywriteMX", color: Colors.white),),
         const SizedBox(height: 20),
         Text(
             description,
