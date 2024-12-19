@@ -75,68 +75,66 @@ class _VideoPlayerScreenState extends State<MediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.neutral1B1A19,
-      body: Expanded(
-        child: Stack(
-          children: [
-            if (widget.isMp4) ...[
-              Center(
-                child: _isError
-                    ? Text(
-                        ConstantString.tryAgainMessage,
-                        style: ConstantFont.mediumText.copyWith(
-                          fontSize: 16,
-                          color: AppColors.white,
-                        ),
-                      )
-                    : _isTimeout
-                        ? Text(
-                            "Đã hết thời gian tải video. Vui lòng thử lại.",
-                            style: ConstantFont.mediumText.copyWith(
-                              fontSize: 16,
-                              color: AppColors.white,
-                            ),
-                          )
-                        : _isLoading
-                            ? const LoadingWidget()
-                            : _controller.value.isInitialized
-                                ? AspectRatio(
-                                    aspectRatio: _controller.value.aspectRatio,
-                                    child: VideoPlayer(_controller),
-                                  )
-                                : const LoadingWidget(),
-              ),
-            ] else ...[
-              Center(
-                child: ExtendedImage.network(
-                  widget.url,
-                  fit: BoxFit.contain,
-                  mode: ExtendedImageMode.gesture,
-                  loadStateChanged: (ExtendedImageState state) {
-                    switch (state.extendedImageLoadState) {
-                      case LoadState.loading:
-                        return const LoadingWidget();
-                      case LoadState.completed:
-                        return null;
-                      case LoadState.failed:
-                        return const ErrorImageWidget();
-                    }
-                  },
-                ),
-              )
-
-            ],
-            Positioned(
-              top: 40,
-              right: 10,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white, size: 30),
-                onPressed: () {
-                  Navigator.pop(context);
+      body: Stack(
+        children: [
+          if (widget.isMp4) ...[
+            Center(
+              child: _isError
+                  ? Text(
+                      ConstantString.tryAgainMessage,
+                      style: ConstantFont.mediumText.copyWith(
+                        fontSize: 16,
+                        color: AppColors.white,
+                      ),
+                    )
+                  : _isTimeout
+                      ? Text(
+                          "Đã hết thời gian tải video. Vui lòng thử lại.",
+                          style: ConstantFont.mediumText.copyWith(
+                            fontSize: 16,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : _isLoading
+                          ? const LoadingWidget()
+                          : _controller.value.isInitialized
+                              ? AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: VideoPlayer(_controller),
+                                )
+                              : const LoadingWidget(),
+            ),
+          ] else ...[
+            Center(
+              child: ExtendedImage.network(
+                widget.url,
+                fit: BoxFit.contain,
+                mode: ExtendedImageMode.gesture,
+                loadStateChanged: (ExtendedImageState state) {
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      return const LoadingWidget();
+                    case LoadState.completed:
+                      return null;
+                    case LoadState.failed:
+                      return const ErrorImageWidget();
+                  }
                 },
               ),
-            ),
+            )
+
           ],
-        ),
+          Positioned(
+            top: 40,
+            right: 10,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

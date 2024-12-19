@@ -163,14 +163,13 @@ class BottomNavBarController extends FullLifeCycleController {
     });
   }
 
-  List<Widget> listLocationItem({bool isDistrict = false}) {
-    List<Widget> list = [];
-
+  List<Widget> listLocationItem({required bool isDistrict}) {
     final List<dynamic> filteredLocations = isDistrict ? filteredDistricts : filteredCities;
-    final dynamic selectedLocation = isDistrict ? districtSelected.value : citySelected.value;
 
-    for (var location in filteredLocations) {
-      list.add(InkWell(
+    return List.generate(filteredLocations.length, (index) {
+      final location = filteredLocations[index];
+
+      return InkWell(
         onTap: () {
           if (isDistrict) {
             districtTemp = districtSelected.value ?? districtTemp;
@@ -180,24 +179,27 @@ class BottomNavBarController extends FullLifeCycleController {
             citySelected.value = location as City;
           }
         },
-        child: ListTile(
-          title: Text(
-            location.name ?? "",
-            style: TextStyle(
-              color: const Color(0xff1C1D1F),
-              fontWeight:
-                  selectedLocation?.name == location.name ? FontWeight.w500 : FontWeight.w400,
-              fontSize: 14,
+        child: Obx(() {
+          final bool isSelected = isDistrict
+              ? districtSelected.value?.name == location.name
+              : citySelected.value?.name == location.name;
+          return ListTile(
+            key: ValueKey("$index"),
+            title: Text(
+              location.name ?? "",
+              style: TextStyle(
+                color: const Color(0xff1C1D1F),
+                fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+                fontSize: 14,
+              ),
             ),
-          ),
-          trailing: selectedLocation?.name == location.name
-              ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1)
-              : const SizedBox.shrink(),
-        ),
-      ));
-    }
-
-    return list;
+            trailing: isSelected
+                ? SvgPicture.asset(AssetSvg.iconCheckMark, color: AppColors.primary1)
+                : const SizedBox.shrink(),
+          );
+        }),
+      );
+    });
   }
 
   void onTapOpenCityList({bool isDistrict = false}) {
@@ -257,10 +259,11 @@ class BottomNavBarController extends FullLifeCycleController {
                       ),
                       const Divider(height: 1, thickness: 1, color: Color(0xffF4F4F4)),
                       Expanded(
-                        child: SingleChildScrollView(
-                          child: Obx(() => Column(
-                                children: listLocationItem(isDistrict: isDistrict),
-                              )),
+                        child: ListView.builder(
+                          itemCount: isDistrict ? filteredDistricts.length : filteredCities.length,
+                          itemBuilder: (context, index) {
+                            return listLocationItem(isDistrict: isDistrict)[index];
+                          },
                         ),
                       ),
                     ],
