@@ -149,7 +149,7 @@ class BottomNavBarController extends FullLifeCycleController {
             SharedPrefHelper.instance.getString(ConstantString.prefAccessToken) ?? '');
         if (isValidAccessToken == false) {
           if (Get.isRegistered<NotificationController>()) {
-            Get.find<NotificationController>().getAllNotifications();
+            Get.find<NotificationController>().refreshData();
           }
           LocalNotificationUtil.createNotification(message);
         }
@@ -158,7 +158,7 @@ class BottomNavBarController extends FullLifeCycleController {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (Get.isRegistered<NotificationController>()) {
-        Get.find<NotificationController>().getAllNotifications();
+        Get.find<NotificationController>().refreshData();
       }
     });
   }

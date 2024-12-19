@@ -22,14 +22,14 @@ class AppUtil {
 
   static Future<void> logout() async {
     try {
+      TokenSingleton.instance.setAccessToken('');
+      TokenSingleton.instance.setRefreshToken('');
+      UserSingleton.instance.resetUser();
+
       await Future.wait([
         signOutWithGoogle(),
         _clearLocalStorage(),
       ]);
-
-      TokenSingleton.instance.setAccessToken('');
-      TokenSingleton.instance.setRefreshToken('');
-      UserSingleton.instance.resetUser();
 
     } catch (e) {
       AppUtil.printDebugMode(type: "Error Logout", message: '$e');
@@ -60,6 +60,7 @@ class AppUtil {
       await Future.wait([
         SharedPrefHelper.instance.removeString(ConstantString.prefAccessToken),
         SharedPrefHelper.instance.removeString(ConstantString.prefRefreshToken),
+        SharedPrefHelper.instance.removeString(ConstantString.prefAppType),
       ]);
     } catch (e) {
       AppUtil.printDebugMode(type: 'Error clear Local Storage', message: "$e");
