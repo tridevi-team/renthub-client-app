@@ -45,9 +45,13 @@ class DetailIssueScreen extends StatelessWidget {
         body: Obx(() {
           if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.init || controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.noData) {
+          } else if (controller.viewState.value == ViewState.init ||
+              controller.viewState.value == ViewState.complete ||
+              controller.viewState.value == ViewState.noData) {
             if (controller.viewState.value == ViewState.noData) {
-              return const NotFoundWidget(title: ConstantString.messageNoData, content: ConstantString.messageContentNoData);
+              return const NotFoundWidget(
+                  title: ConstantString.messageNoData,
+                  content: ConstantString.messageContentNoData);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -69,6 +73,15 @@ class DetailIssueScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     _buildDescriptionField(controller.issueModel?.content),
                     const SizedBox(height: 12),
+                    if (controller.issueModel?.status != "OPEN") ...[
+                      Text(
+                        "Phản hồi từ quản lý",
+                        style: ConstantFont.mediumText.copyWith(fontSize: 16),
+                      ),
+                      const SizedBox(height: 6),
+                      _buildDescriptionField(controller.issueModel?.description),
+                      const SizedBox(height: 12),
+                    ],
                     _buildMediaSection(
                       title: "Hình ảnh",
                       mediaList: controller.issueModel?.files?.image,

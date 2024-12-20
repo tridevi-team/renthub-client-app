@@ -20,8 +20,10 @@ class RoomDetailController extends BaseController with GetTickerProviderStateMix
   String? address;
   TextEditingController fullNameCtrl = TextEditingController();
   TextEditingController phoneCtrl = TextEditingController();
+  TextEditingController emailCtrl = TextEditingController();
   final Rx<ErrorInputModel> fullNameError = ErrorInputModel().obs;
   final Rx<ErrorInputModel> phoneError = ErrorInputModel().obs;
+  final Rx<ErrorInputModel> emailError = ErrorInputModel().obs;
   late AnimationController colorAnimationController;
   late Animation colorTween, iconColorTween, colorTextTween;
 
@@ -130,12 +132,22 @@ class RoomDetailController extends BaseController with GetTickerProviderStateMix
     );
   }
 
+  void onChangeEmailInput(String value) {
+    onChangeInput(
+      value,
+      emailError,
+      ValidateUtil.isValidEmail,
+      "Đây là trường bắt buộc",
+      "Dữ liệu nhập vào của bạn không đúng định dạng, vui lòng kiểm tra lại",
+    );
+  }
+
   Future<void> receiveRoomInformation() async {
-    if (fullNameError.value.isError || phoneError.value.isError) return;
+    if (fullNameError.value.isError || phoneError.value.isError || emailError.value.isError) return;
 
     try {
       DialogUtil.showLoading();
-      final body = {'roomId': roomId, "fullName": fullNameCtrl.text, "phoneNumber": phoneCtrl.text};
+      final body = {'roomId': roomId, "fullName": fullNameCtrl.text, "phoneNumber": phoneCtrl.text, "email": emailCtrl.text};
       final response = await HomeService.signUpReceiveRoomInformation(body);
       DialogUtil.hideLoading();
       final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;

@@ -22,6 +22,7 @@ class NotificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(
         label: "Thông báo",
+        isBack: false,
       ),
       backgroundColor: AppColors.white,
       body: Obx(

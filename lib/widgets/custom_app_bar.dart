@@ -14,6 +14,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBack;
   final bool isShared;
   final bool isTransparent;
+  final bool isBack;
   final PreferredSizeWidget? bottomWidget;
 
   const CustomAppBar({
@@ -27,6 +28,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isTransparent = false,
     this.bottomWidget,
     this.onBack,
+    this.isBack = true,
   });
 
   Widget _buildIconButton({required String iconAsset, VoidCallback? onPressed}) {
@@ -59,7 +61,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _buildIconButton(iconAsset: AssetSvg.iconChevronBack, onPressed: onBack ?? Get.back),
+         isBack ?  _buildIconButton(iconAsset: AssetSvg.iconChevronBack, onPressed: onBack ?? Get.back) : const SizedBox(),
           const SizedBox(width: 8),
           Expanded(
             child: Align(

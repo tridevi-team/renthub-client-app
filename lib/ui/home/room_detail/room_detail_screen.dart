@@ -546,7 +546,7 @@ class RoomDetailScreen extends StatelessWidget {
   void receiveRoomInformationForm() {
     Get.bottomSheet(
         Container(
-          height: Get.height * 0.4,
+          height: Get.height * 0.5,
           padding: const EdgeInsets.all(14),
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -582,9 +582,17 @@ class RoomDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               TextInputWidget(
+                hintText: "Email",
+                controller: controller.emailCtrl,
+                errorInput: controller.emailError,
+                onChanged: controller.onChangeEmailInput,
+              ),
+              const SizedBox(height: 10),
+              TextInputWidget(
                 hintText: "Số điện thoại",
                 controller: controller.phoneCtrl,
                 errorInput: controller.phoneError,
+                keyboardType: TextInputType.number,
                 onChanged: controller.onChangePhoneInput,
               ),
               const Spacer(),
