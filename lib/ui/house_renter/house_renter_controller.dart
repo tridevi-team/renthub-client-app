@@ -5,6 +5,7 @@ import 'package:rent_house/base/base_controller.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_string.dart';
 import 'package:rent_house/constants/enums/enums.dart';
+import 'package:rent_house/constants/singleton/room_singleton.dart';
 import 'package:rent_house/constants/singleton/user_singleton.dart';
 import 'package:rent_house/constants/web_service.dart';
 import 'package:rent_house/models/room_model.dart';
@@ -64,6 +65,8 @@ class HouseRenterController extends BaseController {
       if (response.statusCode < 300) {
         final decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
         room = Room.fromJson(decodedResponse["data"]);
+        RoomSingleton.instance.setRoomName(room.name ?? "");
+        RoomSingleton.instance.setHouseName(room.house?.name ?? "");
         return ViewState.complete;
       } else {
         return viewState.value;

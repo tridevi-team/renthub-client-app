@@ -4,6 +4,7 @@ import 'package:rent_house/constants/app_colors.dart';
 import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
+import 'package:rent_house/constants/singleton/room_singleton.dart';
 import 'package:rent_house/ui/account/payment/checkout/payment_controller.dart';
 import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/format_util.dart';
@@ -21,6 +22,8 @@ class PaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String roomName = RoomSingleton.instance.roomName;
+    String houseName = RoomSingleton.instance.houseName.replaceFirst(RegExp(r'Chung cư|Nhà trọ'), '');
     return Scaffold(
       appBar: const CustomAppBar(label: "Chi tiết hóa đơn"),
       backgroundColor: AppColors.white,
@@ -87,12 +90,11 @@ class PaymentScreen extends StatelessWidget {
                                       "https://img.vietqr.io/image/${controller.bill?.bankName
                                           ?.toLowerCase()}-${controller.bill
                                           ?.accountNumber}-compact2.jpg?amount=${controller.bill
-                                          ?.amount}&addInfo=${controller.bill
-                                          ?.title}&accountName=${controller.bill?.accountName}",
+                                          ?.amount}&addInfo=$roomName $houseName&accountName=${controller.bill?.accountName}",
                                     ));
                               },
                               child: Text(
-                                "Tạo mã QR",
+                                "Xem mã QR",
                                 style: ConstantFont.semiBoldText,
                               ),
                             ),
