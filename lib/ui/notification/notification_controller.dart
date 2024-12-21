@@ -128,8 +128,10 @@ class NotificationController extends BaseController {
   void viewNotification(int index) {
     final notification = notifications[index];
     final data = notification.data;
+    navigateNotifications(data);
+  }
 
-
+  void navigateNotifications(Map<String, dynamic>? data) {
     if (isValid(data?['billId'])) {
       Get.to(() => PaymentScreen(), arguments: {"billId": data?['billId']});
       return;

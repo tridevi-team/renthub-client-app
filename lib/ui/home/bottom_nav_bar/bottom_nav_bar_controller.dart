@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -140,8 +141,7 @@ class BottomNavBarController extends FullLifeCycleController {
 
   Future<void> _registerFirebaseNotification() async {
     RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-    }
+    if (initialMessage != null) {}
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (Platform.isAndroid) {
@@ -159,6 +159,9 @@ class BottomNavBarController extends FullLifeCycleController {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       if (Get.isRegistered<NotificationController>()) {
         Get.find<NotificationController>().refreshData();
+      }
+      if (message.data.isNotEmpty) {
+        Get.find<NotificationController>().navigateNotifications(message.data);
       }
     });
   }
@@ -394,7 +397,8 @@ class BottomNavBarController extends FullLifeCycleController {
     if (_lastPressedTime == null ||
         currentTime.difference(_lastPressedTime!) > backButtonInterval) {
       _lastPressedTime = currentTime;
-      ToastUntil.toastNotification(description: 'Nhấn lần nữa để thoát', status: ToastStatus.warning);
+      ToastUntil.toastNotification(
+          description: 'Nhấn lần nữa để thoát', status: ToastStatus.warning);
       return false;
     }
     return true;
