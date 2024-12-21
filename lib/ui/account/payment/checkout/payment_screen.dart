@@ -5,6 +5,7 @@ import 'package:rent_house/constants/asset_svg.dart';
 import 'package:rent_house/constants/constant_font.dart';
 import 'package:rent_house/constants/enums/enums.dart';
 import 'package:rent_house/ui/account/payment/checkout/payment_controller.dart';
+import 'package:rent_house/ui/webview/webview_screen.dart';
 import 'package:rent_house/utils/format_util.dart';
 import 'package:rent_house/widgets/buttons/custom_elevated_button.dart';
 import 'package:rent_house/widgets/custom_app_bar.dart';
@@ -24,10 +25,11 @@ class PaymentScreen extends StatelessWidget {
       appBar: const CustomAppBar(label: "Chi tiết hóa đơn"),
       backgroundColor: AppColors.white,
       body: Obx(
-        () {
+            () {
           if (controller.viewState.value == ViewState.loading) {
             return const LoadingWidget();
-          } else if (controller.viewState.value == ViewState.complete || controller.viewState.value == ViewState.init) {
+          } else if (controller.viewState.value == ViewState.complete ||
+              controller.viewState.value == ViewState.init) {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -49,23 +51,55 @@ class PaymentScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Thời gian: ${FormatUtil.formatToDayMonthYear(controller.bill?.startDate)} - ${FormatUtil.formatToDayMonthYear(controller.bill?.endDate)}",
+                      "Thời gian: ${FormatUtil.formatToDayMonthYear(
+                          controller.bill?.startDate)} - ${FormatUtil.formatToDayMonthYear(
+                          controller.bill?.endDate)}",
                       style: ConstantFont.regularText,
                     ),
                     const SizedBox(height: 10),
                     if (controller.bill?.status == "PAID") ...[
                       Text(
-                        "Đã thanh toán: ${FormatUtil.formatToDayMonthYearTime(controller.bill?.paymentDate)}",
+                        "Đã thanh toán: ${FormatUtil.formatToDayMonthYearTime(controller.bill
+                            ?.paymentDate)}",
                         style: ConstantFont.regularText,
                       ),
                     ],
                     const SizedBox(height: 10),
                     const Divider(height: 1, color: AppColors.neutralE9e9e9),
                     const SizedBox(height: 20),
-                    Text(
-                      "Tài khoản người nhận",
-                      style: ConstantFont.semiBoldText,
-                    ),
+                    Obx(() {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Tài khoản người nhận",
+                              style: ConstantFont.semiBoldText,
+                            ),
+                          ),
+                          if (controller.isCheckout.value) ...[
+                            InkWell(
+                              onTap: () {
+                                Get.to(() =>
+                                    WebViewScreen(
+                                      title: "Thanh toán",
+                                      url:
+                                      "https://img.vietqr.io/image/${controller.bill?.bankName
+                                          ?.toLowerCase()}-${controller.bill
+                                          ?.accountNumber}-compact2.jpg?amount=${controller.bill
+                                          ?.amount}&addInfo=${controller.bill
+                                          ?.title}&accountName=${controller.bill?.accountName}",
+                                    ));
+                              },
+                              child: Text(
+                                "Tạo mã QR",
+                                style: ConstantFont.semiBoldText,
+                              ),
+                            ),
+                          ]
+                        ],
+                      );
+                    }),
                     const SizedBox(height: 10),
                     Container(
                       width: Get.width,
@@ -86,11 +120,14 @@ class PaymentScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Chủ tài khoản: ${controller.bill?.accountName}", style: ConstantFont.regularText),
+                                Text("Chủ tài khoản: ${controller.bill?.accountName}",
+                                    style: ConstantFont.regularText),
                                 const SizedBox(height: 6),
-                                Text("Số tài khoản: ${controller.bill?.accountNumber}", style: ConstantFont.regularText),
+                                Text("Số tài khoản: ${controller.bill?.accountNumber}",
+                                    style: ConstantFont.regularText),
                                 const SizedBox(height: 6),
-                                Text("Ngân hàng: ${controller.bill?.bankName}", style: ConstantFont.regularText),
+                                Text("Ngân hàng: ${controller.bill?.bankName}",
+                                    style: ConstantFont.regularText),
                               ],
                             ),
                           ),
@@ -132,52 +169,59 @@ class PaymentScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: controller.bill?.services?.map((service) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            "${service.name} x${service.amount}",
-                                            style: ConstantFont.regularText,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          FormatUtil.formatCurrency(service.unitPrice ?? 0),
-                                          style: ConstantFont.regularText.copyWith(color: AppColors.red),
-                                        ),
-
-                                      ],
-                                    ),
-                                    const SizedBox(height: 4),
-                                    if (service.oldValue != null && service.oldValue! >= 0 && service.newValue != null && service.newValue! > 0) ...[
-                                      Text(
-                                        "Chỉ số cũ: ${service.oldValue!}",
+                                    Expanded(
+                                      child: Text(
+                                        "${service.name} x${service.amount}",
                                         style: ConstantFont.regularText,
                                       ),
-                                      const SizedBox(width: 4),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Chỉ số mới: ${service.newValue}",
-                                            style: ConstantFont.regularText,
-                                          ),
-                                          Text(FormatUtil.formatCurrency(
-                                              (service.unitPrice ?? 0) * ((service.newValue ?? 0) - (service.oldValue ?? 0))
-                                          ), style: ConstantFont.regularText.copyWith(color: AppColors.red),)
-                                        ],
-                                      ),
-                                    ]
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      FormatUtil.formatCurrency(service.unitPrice ?? 0),
+                                      style: ConstantFont.regularText
+                                          .copyWith(color: AppColors.red),
+                                    ),
                                   ],
                                 ),
-                              );
-                            }).toList() ??
+                                const SizedBox(height: 4),
+                                if (service.oldValue != null &&
+                                    service.oldValue! >= 0 &&
+                                    service.newValue != null &&
+                                    service.newValue! > 0) ...[
+                                  Text(
+                                    "Chỉ số cũ: ${service.oldValue!}",
+                                    style: ConstantFont.regularText,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Chỉ số mới: ${service.newValue}",
+                                        style: ConstantFont.regularText,
+                                      ),
+                                      Text(
+                                        FormatUtil.formatCurrency((service.unitPrice ?? 0) *
+                                            ((service.newValue ?? 0) -
+                                                (service.oldValue ?? 0))),
+                                        style: ConstantFont.regularText
+                                            .copyWith(color: AppColors.red),
+                                      )
+                                    ],
+                                  ),
+                                ]
+                              ],
+                            ),
+                          );
+                        }).toList() ??
                             [],
                       ),
                     ),
@@ -209,15 +253,16 @@ class PaymentScreen extends StatelessWidget {
           }
         },
       ),
-      bottomNavigationBar: Obx(() => controller.isCheckout.value
+      bottomNavigationBar: Obx(() =>
+      controller.isCheckout.value
           ? Container(
-              padding: const EdgeInsets.all(10),
-              child: CustomElevatedButton(
-                label: "Thanh toán",
-                isReverse: true,
-                onTap: controller.checkout,
-              ),
-            )
+        padding: const EdgeInsets.all(10),
+        child: CustomElevatedButton(
+          label: "Thanh toán",
+          isReverse: true,
+          onTap: controller.checkout,
+        ),
+      )
           : const SizedBox()),
     );
   }
