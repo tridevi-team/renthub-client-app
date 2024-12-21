@@ -95,17 +95,15 @@ class SignInController extends BaseController {
       DialogUtil.showLoading();
       final email = contactInputController.text.trim();
       final response = await AuthService.generateOTPByEmail({"email": email});
+      final model = ResponseModel.fromJson(jsonDecode(response.body));
       DialogUtil.hideLoading();
-      if (response.statusCode < 300) {
-        final model = ResponseModel.fromJson(jsonDecode(response.body));
-        if (model.success != true) {
-          _showToast(model.message ?? ConstantString.tryAgainMessage, ToastStatus.error);
-        } else {
-          _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
-          startCountdown();
-        }
+      if (response.statusCode == 200 && model.success == true) {
+        _showToast('Mã xác thực đã gửi đến email của bạn.', ToastStatus.success);
+        startCountdown();
+      } else if (model.success == false && model.code == "RENTER_NOT_FOUND") {
+        _showToast(ConstantString.accountNotFoundMessage, ToastStatus.error);
       } else {
-        ResponseErrorUtil.handleErrorResponse(this, response.statusCode);
+        _showToast(ConstantString.tryAgainMessage, ToastStatus.error);
       }
     } catch (e) {
       DialogUtil.hideLoading();
