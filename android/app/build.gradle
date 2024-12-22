@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
 
 def localProperties = new Properties()
@@ -24,9 +25,9 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.tridevi.rent_house.rent_house"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace = "com.tridevi.rent_house"
+    compileSdk = 34
+
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,24 +36,93 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.tridevi.rent_house.rent_house"
+        applicationId = "com.tridevi.rent_house"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 26
+        targetSdk = 34
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
 
+    signingConfigs {
+        product {
+            keyAlias 'dHJpZGV2aV9yZW50aG91c203U='
+            keyPassword 'password'
+            storeFile file('src/product/renthub_key.jks')
+            storePassword 'password'
+        }
+
+        staging {
+            keyAlias 'dHJpZGV2aV9yZW50aG91c2Vfc3RhZ203luZw=='
+            keyPassword 'password'
+            storeFile file('src/staging/renthub_staging_key.jks')
+            storePassword 'password'
+        }
+    }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        staging {
+            dimension "default"
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "UAT Trọ ơi"
+            resValue "string", "scheme", "staging-renthouse"
+        }
+        product {
+            dimension "default"
+            resValue "string", "app_name", "Trọ ơi"
+            resValue "string", "scheme", "renthouse"
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        assembleDebug {
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        assembleRelease {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        bundleRelease {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig null
+            productFlavors.staging.signingConfig signingConfigs.staging
+            productFlavors.product.signingConfig signingConfigs.product
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.4.0')
 }
